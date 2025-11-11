@@ -32,11 +32,11 @@ jobs:
         sdkmanager "ndk;28.2.13676358"
 
     - name: Make Gradle Executable
-      working-directory: PuppyGit
+      working-directory: PuppyGit/PuppyGit
       run: chmod +x ./gradlew
 
     - name: Build Release (Unsigned)
-      working-directory: PuppyGit
+      working-directory: PuppyGit/PuppyGit
       run: ./gradlew assembleRelease --no-daemon
 
     - name: Upload Release APK (Unsigned)
