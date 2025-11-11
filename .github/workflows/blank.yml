@@ -14,8 +14,13 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-      - name: Unzip Project
-        run: unzip PuppyGit.zip -d project
+    - name: Unzip Project
+      run: unzip PuppyGit.zip -d project
+
+    - name: Locate Gradle Directory
+      id: locate
+      run: |
+        echo "DIR=$(find project -type f -name gradlew | head -n 1 | xargs dirname)" >> $GITHUB_OUTPUT
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -35,15 +40,14 @@ jobs:
         sdkmanager "ndk;28.2.13676358"
 
     - name: Make Gradle Executable
-      working-directory: PuppyGit/PuppyGit
-      run: chmod +x ./gradlew
+      run: chmod +x "${{ steps.locate.outputs.DIR }}/gradlew"
 
     - name: Build Release (Unsigned)
-      working-directory: PuppyGit/PuppyGit
+      working-directory: ${{ steps.locate.outputs.DIR }}
       run: ./gradlew assembleRelease --no-daemon
 
     - name: Upload Release APK (Unsigned)
       uses: actions/upload-artifact@v4
       with:
         name: Release-APK-Unsigned
-        path: PuppyGit/app/build/outputs/apk/release/*.apk
+        path: ${{ steps.locate.outputs.DIR }}/app/build/outputs/apk/release/*.apk
