@@ -24,7 +24,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("/storage/emulated/0/AndroidIDEProjects/GitSilent/AK_CREATION_KEY.jks")
+            storeFile = file("AK_CREATION_KEY.jks")
             storePassword = "ajoy70##"
             keyAlias = "ak_creation_key"
             keyPassword = "ajoy70##"
