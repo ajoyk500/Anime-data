@@ -1,4 +1,4 @@
-name: Android Releaseg Build
+name: Android Release Build
 
 on:
   push:
