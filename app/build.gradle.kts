@@ -23,28 +23,28 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("AK_CREATION_KEY.jks")
-            storePassword = "ajoy70##"
-            keyAlias = "ak_creation_key"
-            keyPassword = "ajoy70##"
-        }
+    create("release") {
+        storeFile = file("AK_CREATION_KEY.jks")
+        storePassword = "ajoy70##"
+        keyAlias = "ak_creation_key"
+        keyPassword = "ajoy70##"
+    }
+}
+
+buildTypes {
+    getByName("release") {
+        isMinifyEnabled = true
+        signingConfig = signingConfigs.getByName("release")
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("release")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-
-        debug {
-            isMinifyEnabled = false
-        }
+    getByName("debug") {
+        isMinifyEnabled = false
     }
+}
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
