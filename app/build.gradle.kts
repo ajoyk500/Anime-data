@@ -28,8 +28,8 @@ android {
         applicationId = packageName
         minSdk = 26
         targetSdk = 36
-        versionCode = 122
-        versionName = "2.0"
+        versionCode = 121
+        versionName = "1.1.4.5"
 
         buildConfigField("String", "FILE_PROVIDIER_AUTHORITY", """"$applicationId.file_provider"""")
         resValue("string", "file_provider_authority", "$applicationId.file_provider")
@@ -43,44 +43,41 @@ android {
             abiFilters += listOf("arm64-v8a")
         }
 
-        // Locale configuration - updated syntax
+        // Locale configuration
         androidResources {
-            // Sirf required languages
             localeFilters += listOf("en", "hi")
         }
 
         externalNativeBuild {
             cmake {
                 arguments += listOf("-DANDROID_STL=none")
-                // Native code optimization
                 cFlags += listOf("-Os", "-fvisibility=hidden", "-ffunction-sections", "-fdata-sections")
                 cppFlags += listOf("-Os", "-fvisibility=hidden", "-ffunction-sections", "-fdata-sections")
             }
         }
     }
 
-    // Signing Configuration - Fixed
+    // Signing Configuration
     signingConfigs {
         create("release") {
-            // GitHub Actions ke liye environment variables check karein
             val keystoreFile = System.getenv("KEYSTORE_FILE")
             val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
             val keyAlias = System.getenv("KEY_ALIAS")
             val keyPassword = System.getenv("KEY_PASSWORD")
 
             if (keystoreFile != null && keystorePassword != null && keyAlias != null && keyPassword != null) {
-                // GitHub Actions environment
                 storeFile = file(keystoreFile)
                 storePassword = keystorePassword
                 this.keyAlias = keyAlias
                 this.keyPassword = keyPassword
-                println("✓ Using keystore from GitHub Actions environment")
+                println("✓ Using keystore from GitHub Actions")
             } else {
-                // Local build - direct values (root directory mein hai)
                 storeFile = file("../AK_CREATION_KEY.jks")
                 storePassword = "ajoy70##"
                 this.keyAlias = "ak_creation_key"
                 this.keyPassword = "ajoy70##"
+                println("✓ Using local keystore")
+            }
         }
     }
 
@@ -93,7 +90,6 @@ android {
 
     buildTypes {
         release {
-            // ProGuard/R8 enable karein - APK size bahut kam hogi
             isMinifyEnabled = true
             isShrinkResources = true
             
@@ -105,7 +101,6 @@ android {
             
             signingConfig = signingConfigs.getByName("release")
             
-            // Native libraries strip karein
             ndk {
                 debugSymbolLevel = "NONE"
             }
@@ -118,7 +113,7 @@ android {
         }
     }
     
-    // Split APKs by ABI - multiple smaller APKs banegi
+    // Split APKs by ABI
     splits {
         abi {
             isEnable = true
@@ -134,11 +129,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     
-    // Updated kotlinOptions - new syntax
     kotlin {
         jvmToolchain(17)
         compilerOptions {
-            // Kotlin compiler optimizations
             freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
                 "-Xjvm-default=all"
@@ -149,7 +142,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-        // Unnecessary features disable karein
         aidl = false
         renderScript = false
         shaders = false
@@ -161,7 +153,6 @@ android {
     
     packaging {
         resources {
-            // Duplicate aur unnecessary files remove karein
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
             excludes.add("META-INF/INDEX.LIST")
             excludes.add("META-INF/io.netty.versions.properties")
@@ -174,24 +165,19 @@ android {
             excludes.add("META-INF/notice.txt")
             excludes.add("META-INF/ASL2.0")
             excludes.add("META-INF/*.kotlin_module")
-            
-            // Native debug symbols remove karein
             excludes.add("lib/*/libcrashlytics.so")
             excludes.add("lib/*/libc++_shared.so")
         }
         
-        // Native libraries compress karein
         jniLibs {
             useLegacyPackaging = false
         }
         
-        // Resources compress karein
         dex {
             useLegacyPackaging = false
         }
     }
 
-    // Lint options - build time kam aur size optimize
     lint {
         checkReleaseBuilds = false
         abortOnError = false
@@ -199,7 +185,6 @@ android {
 
     ndkVersion = "28.2.13676358"
     
-    // Bundle configuration for smaller size
     bundle {
         language {
             enableSplit = true
@@ -213,31 +198,14 @@ android {
     }
 }
 
-// Version code different ABIs ke liye
-android.applicationVariants.all { variant ->
-    variant.outputs.all { output ->
-        val abiVersionCode = when (output.getFilter("ABI")) {
-            "arm64-v8a" -> 4
-            "armeabi-v7a" -> 1
-            "x86" -> 2
-            "x86_64" -> 3
-            else -> 0
-        }
-        output.versionCodeOverride = (variant.versionCode * 10) + abiVersionCode
-    }
-  }
-}
 dependencies {
-    // File encoding detector
     implementation("com.github.albfernandez:juniversalchardet:2.5.0")
 
-    // Sora editor dependencies
     implementation("org.eclipse.jdt:org.eclipse.jdt.annotation:2.3.100")
     implementation("org.jruby.joni:joni:2.2.6")
     implementation("com.google.code.gson:gson:2.13.1")
     implementation("org.snakeyaml:snakeyaml-engine:2.10")
 
-    // Markdown dependencies
     val markwonVersion = "4.6.2"
     val coilVersion = "2.7.0"
     implementation("androidx.appcompat:appcompat:1.7.1")
@@ -249,13 +217,11 @@ dependencies {
     implementation("io.noties.markwon:ext-tasklist:$markwonVersion")
     implementation("com.github.jeziellago:Markwon:58aa5aba6a")
 
-    // Coil for image loading
     implementation("io.coil-kt:coil:$coilVersion")
     implementation("io.coil-kt:coil-compose:$coilVersion")
     implementation("io.coil-kt:coil-gif:$coilVersion")
     implementation("io.coil-kt:coil-svg:$coilVersion")
 
-    // Ktor for HTTP server
     val ktorVersion = "3.2.2"
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
@@ -269,23 +235,19 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
 
-    // Room
     val room_version = "2.7.2"
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
-    // JSR305 for git24j
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
-    // Splash screen
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2025.07.00")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
@@ -298,7 +260,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
 
-    // Testing dependencies
     testImplementation(composeBom)
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
