@@ -1,25 +1,36 @@
 plugins {
+
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+//    id("kotlin-android-extensions") 
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
     id("androidx.room")
+//    kotlin("jvm") version "1.9.23"
+//    kotlin("plugin.serialization")  == id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.compose")
-}
 
+    // err: The 'java' plugin has been applied, but it is not compatible with the Android plugins.
+//    id("io.ktor.plugin")
+
+
+}
 val dbSchemaLocation="$projectDir/schemas"
 room {
     schemaDirectory(dbSchemaLocation)
 }
-
 android {
+    // quit include google signature block in the built apk file, these info using google public key encrypted, if don't publish app to google play, is nonsense
+    // see: https://developer.android.com/build/dependencies?hl=zh-cn#dependency-info-play
     dependenciesInfo {
+        // Disables dependency metadata when building APKs.
         includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
         includeInBundle = false
     }
 
-    val packageName = "com.akcreation.gitsilent.play.pro"
+    val packageName = "com.catpuppyapp.puppygit.play.pro"
 
     namespace = packageName
     compileSdk = 36
@@ -32,166 +43,90 @@ android {
         versionName = "1.1.4.5"
 
         buildConfigField("String", "FILE_PROVIDIER_AUTHORITY", """"$applicationId.file_provider"""")
+
         resValue("string", "file_provider_authority", "$applicationId.file_provider")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        // Locale configuration
-        androidResources {
-            localeFilters += listOf("en", "hi")
+        ndk {
+            abiFilters += listOf("arm64-v8a","x86_64","x86","armeabi-v7a")
         }
+
+//        resourceConfigurations.plus(listOf("en", "zh-rCN"))
+//        androidResources {
+//            generateLocaleConfig=true
+//        }
 
         externalNativeBuild {
             cmake {
-                arguments += listOf("-DANDROID_STL=none")
-                cFlags += listOf("-Os", "-fvisibility=hidden", "-ffunction-sections", "-fdata-sections")
-                cppFlags += listOf("-Os", "-fvisibility=hidden", "-ffunction-sections", "-fdata-sections")
+            
+                arguments+= listOf("-DANDROID_STL=none")
             }
         }
+   
+//        ksp{
+////            arg("room.schemaLocation", dbSchemaLocation)
+//        }
     }
-
-    // Signing Configuration
-    signingConfigs {
-        create("release") {
-            val keystoreFile = System.getenv("KEYSTORE_FILE")
-            val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
-            val keyAlias = System.getenv("KEY_ALIAS")
-            val keyPassword = System.getenv("KEY_PASSWORD")
-
-            if (keystoreFile != null && keystorePassword != null && keyAlias != null && keyPassword != null) {
-                storeFile = file(keystoreFile)
-                storePassword = keystorePassword
-                this.keyAlias = keyAlias
-                this.keyPassword = keyPassword
-                println("✓ Using keystore from GitHub Actions")
-            } else {
-                storeFile = file("../AK_CREATION_KEY.jks")
-                storePassword = "ajoy70##"
-                this.keyAlias = "ak_creation_key"
-                this.keyPassword = "ajoy70##"
-                println("✓ Using local keystore")
-            }
-        }
-    }
-
     externalNativeBuild {
         cmake {
             path = file("CMakeLists.txt")
             version = "3.31.6"
         }
     }
+//    sourceSets["main"].jniLibs.srcDir("jniLibs")
 
+    signingConfigs {
+    create("release") {
+        storeFile = file("my-release-key.jks")
+        storePassword = System.getenv("KEYSTORE_PASSWORD")
+        keyAlias = System.getenv("KEY_ALIAS")
+        keyPassword = System.getenv("KEY_PASSWORD")
+    }
+}
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
                 "gson.pro"
             )
-            
-            signingConfig = signingConfigs.getByName("release")
-            
-            ndk {
-                debugSymbolLevel = "NONE"
-            }
-        }
-        
-        debug {
-            isMinifyEnabled = false
-            isShrinkResources = false
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
-    
-    // Split APKs by ABI
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-            isUniversalApk = false
-        }
-    }
-
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     kotlin {
         jvmToolchain(17)
-        compilerOptions {
-            freeCompilerArgs.addAll(
-                "-opt-in=kotlin.RequiresOptIn",
-                "-Xjvm-default=all"
-            )
-        }
     }
-    
     buildFeatures {
         compose = true
         buildConfig = true
-        aidl = false
-        renderScript = false
-        shaders = false
     }
-    
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
     }
-    
     packaging {
         resources {
+         
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
             excludes.add("META-INF/INDEX.LIST")
             excludes.add("META-INF/io.netty.versions.properties")
-            excludes.add("META-INF/DEPENDENCIES")
-            excludes.add("META-INF/LICENSE")
-            excludes.add("META-INF/LICENSE.txt")
-            excludes.add("META-INF/license.txt")
-            excludes.add("META-INF/NOTICE")
-            excludes.add("META-INF/NOTICE.txt")
-            excludes.add("META-INF/notice.txt")
-            excludes.add("META-INF/ASL2.0")
-            excludes.add("META-INF/*.kotlin_module")
-            excludes.add("lib/*/libcrashlytics.so")
-            excludes.add("lib/*/libc++_shared.so")
-        }
-        
-        jniLibs {
-            useLegacyPackaging = false
-        }
-        
-        dex {
-            useLegacyPackaging = false
-        }
-    }
+//            excludes.add("META-INF/DEPENDENCIES")
 
-    lint {
-        checkReleaseBuilds = false
-        abortOnError = false
+        }
     }
 
     ndkVersion = "28.2.13676358"
-    
-    bundle {
-        language {
-            enableSplit = true
-        }
-        density {
-            enableSplit = true
-        }
-        abi {
-            enableSplit = true
-        }
-    }
 }
 
 dependencies {
