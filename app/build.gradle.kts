@@ -40,12 +40,14 @@ android {
         }
         
         ndk {
-            // Sirf ek ABI rakhein - APK size 60-70% kam ho jayegi
             abiFilters += listOf("arm64-v8a")
         }
 
-        // Resource configurations - sirf required languages
-        resourceConfigurations += listOf("en", "hi")
+        // Locale configuration - updated syntax
+        androidResources {
+            // Sirf required languages
+            localeFilters += listOf("en", "hi")
+        }
 
         externalNativeBuild {
             cmake {
@@ -57,34 +59,28 @@ android {
         }
     }
 
-    // Signing Configuration
+    // Signing Configuration - Fixed
     signingConfigs {
         create("release") {
+            // GitHub Actions ke liye environment variables check karein
             val keystoreFile = System.getenv("KEYSTORE_FILE")
             val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
             val keyAlias = System.getenv("KEY_ALIAS")
             val keyPassword = System.getenv("KEY_PASSWORD")
 
             if (keystoreFile != null && keystorePassword != null && keyAlias != null && keyPassword != null) {
+                // GitHub Actions environment
                 storeFile = file(keystoreFile)
                 storePassword = keystorePassword
                 this.keyAlias = keyAlias
                 this.keyPassword = keyPassword
+                println("✓ Using keystore from GitHub Actions environment")
             } else {
-                val keystorePropertiesFile = rootProject.file("keystore.properties")
-                if (keystorePropertiesFile.exists()) {
-                    val keystoreProperties = java.util.Properties()
-                    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
-                    
-                    storeFile = file(keystoreProperties["storeFile"] as String)
-                    storePassword = keystoreProperties["storePassword"] as String
-                    this.keyAlias = keystoreProperties["keyAlias"] as String
-                    this.keyPassword = keystoreProperties["keyPassword"] as String
-                } else {
-                    storeFile = file("AK_CREATION_KEY.jks")
-                    println("Warning: Using keystore without properties file")
-                }
-            }
+                // Local build - direct values (root directory mein hai)
+                storeFile = file("../AK_CREATION_KEY.jks")
+                storePassword = "ajoy70##"
+                this.keyAlias = "ak_creation_key"
+                this.keyPassword = "ajoy70##"
         }
     }
 
@@ -116,7 +112,6 @@ android {
         }
         
         debug {
-            // Debug mein size optimization disable - faster builds
             isMinifyEnabled = false
             isShrinkResources = false
             signingConfig = signingConfigs.getByName("debug")
@@ -129,7 +124,7 @@ android {
             isEnable = true
             reset()
             include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
-            isUniversalApk = false // Universal APK disable - smaller APKs
+            isUniversalApk = false
         }
     }
 
@@ -139,17 +134,16 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     
-    kotlinOptions {
-        jvmTarget = "17"
-        // Kotlin compiler optimizations
-        freeCompilerArgs += listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xjvm-default=all"
-        )
-    }
-    
+    // Updated kotlinOptions - new syntax
     kotlin {
         jvmToolchain(17)
+        compilerOptions {
+            // Kotlin compiler optimizations
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xjvm-default=all"
+            )
+        }
     }
     
     buildFeatures {
@@ -216,6 +210,20 @@ android {
         abi {
             enableSplit = true
         }
+    }
+}
+
+// Version code different ABIs ke liye
+android.applicationVariants.all { variant ->
+    variant.outputs.all { output ->
+        val abiVersionCode = when (output.getFilter("ABI")) {
+            "arm64-v8a" -> 4
+            "armeabi-v7a" -> 1
+            "x86" -> 2
+            "x86_64" -> 3
+            else -> 0
+        }
+        output.versionCodeOverride = (variant.versionCode * 10) + abiVersionCode
     }
 }
 
@@ -290,7 +298,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
 
-    // Testing dependencies - release mein include nahi honge
+    // Testing dependencies
     testImplementation(composeBom)
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
