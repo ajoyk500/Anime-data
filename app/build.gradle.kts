@@ -28,8 +28,8 @@ android {
         applicationId = packageName
         minSdk = 26
         targetSdk = 36
-        versionCode = 121
-        versionName = "1.1.4.5"
+        versionCode = 122
+        versionName = "2.0"
 
         buildConfigField("String", "FILE_PROVIDIER_AUTHORITY", """"$applicationId.file_provider"""")
         resValue("string", "file_provider_authority", "$applicationId.file_provider")
