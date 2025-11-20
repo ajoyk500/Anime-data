@@ -225,8 +225,8 @@ android.applicationVariants.all { variant ->
         }
         output.versionCodeOverride = (variant.versionCode * 10) + abiVersionCode
     }
+  }
 }
-
 dependencies {
     // File encoding detector
     implementation("com.github.albfernandez:juniversalchardet:2.5.0")
