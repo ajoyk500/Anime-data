@@ -30,7 +30,7 @@ android {
         includeInBundle = false
     }
 
-    val packageName = "com.catpuppyapp.puppygit.play.pro"
+    val packageName = "com.akcreation.gitsilent.play.pro"
 
     namespace = packageName
     compileSdk = 36
