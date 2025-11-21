@@ -20,12 +20,6 @@ val dbSchemaLocation="$projectDir/schemas"
 room {
     schemaDirectory(dbSchemaLocation)
 }
-val keystorePropertiesFile = rootProject.file("keystore.properties")
-val keystoreProperties = java.util.Properties()
-
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(java.io.FileInputStream(keystorePropertiesFile))
-}
 android {
     // quit include google signature block in the built apk file, these info using google public key encrypted, if don't publish app to google play, is nonsense
     // see: https://developer.android.com/build/dependencies?hl=zh-cn#dependency-info-play
@@ -85,19 +79,15 @@ android {
 //    sourceSets["main"].jniLibs.srcDir("jniLibs")
 
     signingConfigs {
-        create("release") {
-            if (keystorePropertiesFile.exists()) {
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-            }
-        }
+    create("release") {
+        storeFile = file("../my-release-key.jks")
+        storePassword = System.getenv("KEYSTORE_PASSWORD")
+        keyAlias = System.getenv("KEY_ALIAS")
+        keyPassword = System.getenv("KEY_PASSWORD")
     }
-
+}
     buildTypes {
-        getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+        release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
