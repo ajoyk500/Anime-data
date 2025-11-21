@@ -80,10 +80,10 @@ android {
 
     signingConfigs {
     create("release") {
-        storeFile = file("../my-release-key.jks")
-        storePassword = System.getenv("KEYSTORE_PASSWORD")
-        keyAlias = System.getenv("KEY_ALIAS")
-        keyPassword = System.getenv("KEY_PASSWORD")
+        storeFile = file("../AK_CREATION_KEY.jks")  // app folder ke bahar root me hai
+        storePassword = "ajoy70##"                    // apna original password daalo
+        keyAlias = "ak_creation_key"
+        keyPassword = "ajoy70##"
     }
 }
     buildTypes {
