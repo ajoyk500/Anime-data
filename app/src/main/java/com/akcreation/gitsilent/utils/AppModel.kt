@@ -25,7 +25,7 @@ import com.akcreation.gitsilent.dev.FlagFileName
 import com.akcreation.gitsilent.dev.dev_EnableUnTestedFeature
 import com.akcreation.gitsilent.jni.LibLoader
 import com.akcreation.gitsilent.notification.util.NotifyUtil
-import com.akcreation.gitsilent.play.pro.BuildConfig
+import com.akcreation.gitsilent.BuildConfig
 import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.shared.SharedState
 import com.akcreation.gitsilent.service.HttpService
