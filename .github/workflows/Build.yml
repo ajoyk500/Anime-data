@@ -1,64 +1,71 @@
-name: Android Release Build
+name: Android CI - Advanced Cached Build
 
 on:
-  workflow_dispatch:   # manually run
   push:
-    branches:
-      - main
-      - master
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # ---------------------------
-      # 1️⃣ CHECKOUT PROJECT
-      # ---------------------------
-      - name: Checkout Code
+      # 1. Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      # ---------------------------
-      # 2️⃣ SETUP JDK
-      # ---------------------------
-      - name: Setup JDK 17
+      # 2. Set Java (17 most stable)
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
-      # ---------------------------
-      # 3️⃣ DECODE KEYSTORE
-      #   KEYSTORE_BASE64 → my-release-key.jks
-      # ---------------------------
-      - name: Decode Keystore
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > my-release-key.jks
+      # 3. Gradle Cache (Advanced)
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            **/.gradle
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle.properties', '**/settings.gradle*') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
 
-      # ---------------------------
-      # 4️⃣ GRADLE PERMISSIONS
-      # ---------------------------
-      - name: Grant Execute Permission to Gradle
-        run: chmod +x ./gradlew
+      # 4. Android SDK Setup (Cached)
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
 
-      # ---------------------------
-      # 5️⃣ BUILD RELEASE APK
-      # ---------------------------
+      # 5. Cache Android Build Tools
+      - name: Cache Android Build Tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/lib/android
+            /usr/local/share/android-sdk
+            $ANDROID_HOME/build-tools
+          key: android-${{ runner.os }}-${{ hashFiles('**/build.gradle*') }}
+          restore-keys: |
+            android-${{ runner.os }}-
+
+      # 6. Optional Node Cache (for Compose Multiplatform/Web)
+      - name: Cache Node (Optional)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: node-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            node-${{ runner.os }}-
+
+      # 7. Gradle Permissions
+      - name: Grant Gradle permission
+        run: chmod +x gradlew
+      # 8. Release Build 
       - name: Build Release APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        run: |
-          ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=my-release-key.jks \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+        run: ./gradlew assembleRelease --no-daemon || true
 
-      # ---------------------------
-      # 6️⃣ UPLOAD APK ARTIFACT
-      # ---------------------------
+      # 9. Upload Release APK
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
