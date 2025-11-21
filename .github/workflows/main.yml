@@ -1,66 +1,32 @@
-name: Android Release Build
+name: Simple Android Build
 
 on:
-  workflow_dispatch:   # manually run
   push:
-    branches:
-      - main
-      - master
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # ---------------------------
-      # 1️⃣ CHECKOUT PROJECT
-      # ---------------------------
-      - name: Checkout Code
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      # ---------------------------
-      # 2️⃣ SETUP JDK
-      # ---------------------------
-      - name: Setup JDK 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
-      # ---------------------------
-      # 3️⃣ DECODE KEYSTORE
-      #   KEYSTORE_BASE64 → my-release-key.jks
-      # ---------------------------
-      - name: Decode Keystore
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > my-release-key.jks
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
 
-      # ---------------------------
-      # 4️⃣ GRADLE PERMISSIONS
-      # ---------------------------
-      - name: Grant Execute Permission to Gradle
-        run: chmod +x ./gradlew
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
-      # ---------------------------
-      # 5️⃣ BUILD RELEASE APK
-      # ---------------------------
-      - name: Build Release APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        run: |
-          ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=my-release-key.jks \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
-
-      # ---------------------------
-      # 6️⃣ UPLOAD APK ARTIFACT
-      # ---------------------------
-      - name: Upload Release APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: app/build/outputs/apk/release/*.apk
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
