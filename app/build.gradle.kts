@@ -79,13 +79,27 @@ android {
 //    sourceSets["main"].jniLibs.srcDir("jniLibs")
 
     signingConfigs {
-    create("release") {
-        storeFile = file("../AK_CREATION_KEY.jks")  // app folder ke bahar root me hai
-        storePassword = "ajoy70##"                    // apna original password daalo
-        keyAlias = "ak_creation_key"
-        keyPassword = "ajoy70##"
+        create("release") {
+            val keystoreFile = System.getenv("KEYSTORE_FILE")
+            val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
+            val keyAlias = System.getenv("KEY_ALIAS")
+            val keyPassword = System.getenv("KEY_PASSWORD")
+
+            if (keystoreFile != null && keystorePassword != null && keyAlias != null && keyPassword != null) {
+                storeFile = file(keystoreFile)
+                storePassword = keystorePassword
+                this.keyAlias = keyAlias
+                this.keyPassword = keyPassword
+                println("✓ Using keystore from GitHub Actions")
+            } else {
+                storeFile = file("../AK_CREATION_KEY.jks")
+                storePassword = "ajoy70##"
+                this.keyAlias = "ak_creation_key"
+                this.keyPassword = "ajoy70##"
+                println("✓ Using local keystore")
+            }
+        }
     }
-}
     buildTypes {
         release {
             isMinifyEnabled = true
