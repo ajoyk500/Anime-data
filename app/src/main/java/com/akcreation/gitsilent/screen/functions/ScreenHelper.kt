@@ -18,7 +18,7 @@ import com.akcreation.gitsilent.dto.UndoStack
 import com.akcreation.gitsilent.fileeditor.texteditor.state.EditorStateOnChangeCallerFrom
 import com.akcreation.gitsilent.fileeditor.texteditor.state.TextEditorState
 import com.akcreation.gitsilent.git.DiffableItem
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.shared.CommitListFrom
 import com.akcreation.gitsilent.screen.shared.DiffFromScreen
 import com.akcreation.gitsilent.screen.shared.FileChooserType

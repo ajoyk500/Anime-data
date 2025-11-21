@@ -112,7 +112,7 @@ import com.akcreation.gitsilent.dev.tagsTestPassed
 import com.akcreation.gitsilent.etc.Ret
 import com.akcreation.gitsilent.git.CommitDto
 import com.akcreation.gitsilent.git.DrawCommitNode
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.CommitItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterTheList

@@ -46,7 +46,7 @@ import com.akcreation.gitsilent.dev.commitsTreeToTreeDiffReverseTestPassed
 import com.akcreation.gitsilent.dev.dev_EnableUnTestedFeature
 import com.akcreation.gitsilent.git.CommitDto
 import com.akcreation.gitsilent.git.StatusTypeEntrySaver
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.homescreen.innerpage.ChangeListInnerPage
 import com.akcreation.gitsilent.screen.functions.ChangeListFunctions
 import com.akcreation.gitsilent.screen.shared.SharedState

@@ -71,7 +71,7 @@ import com.akcreation.gitsilent.dev.commitsDiffCommitsTestPassed
 import com.akcreation.gitsilent.dev.proFeatureEnabled
 import com.akcreation.gitsilent.dev.resetByHashTestPassed
 import com.akcreation.gitsilent.git.FileHistoryDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.FileHistoryItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

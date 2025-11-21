@@ -72,7 +72,7 @@ import com.akcreation.gitsilent.data.entity.CredentialEntity
 import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.git.ImportRepoResult
 import com.akcreation.gitsilent.git.SubmoduleDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.SubmoduleItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

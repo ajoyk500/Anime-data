@@ -3,7 +3,7 @@ package com.akcreation.gitsilent.git
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import com.akcreation.gitsilent.constants.Cons
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.Libgit2Helper
 import com.github.git24j.core.Repository

@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.constants.Cons
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.AppModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

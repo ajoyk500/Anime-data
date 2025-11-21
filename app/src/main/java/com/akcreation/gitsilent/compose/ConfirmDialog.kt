@@ -7,7 +7,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 
 @Composable

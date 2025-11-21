@@ -77,7 +77,7 @@ import com.akcreation.gitsilent.etc.PathType
 import com.akcreation.gitsilent.fileeditor.texteditor.state.TextEditorState
 import com.akcreation.gitsilent.fileeditor.texteditor.view.ScrollEvent
 import com.akcreation.gitsilent.fileeditor.ui.composable.FileEditor
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.editor.FileDetailList
 import com.akcreation.gitsilent.screen.functions.getEditorStateOnChange
 import com.akcreation.gitsilent.screen.functions.goToFileHistory

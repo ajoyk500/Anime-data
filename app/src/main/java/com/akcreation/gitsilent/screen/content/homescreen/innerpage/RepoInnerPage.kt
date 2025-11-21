@@ -86,7 +86,7 @@ import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.etc.RepoPendingTask
 import com.akcreation.gitsilent.etc.Ret
 import com.akcreation.gitsilent.git.Upstream
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled
 import com.akcreation.gitsilent.screen.functions.filterTheList
 import com.akcreation.gitsilent.screen.functions.goToErrScreen

@@ -10,7 +10,7 @@ import com.akcreation.gitsilent.notification.HttpServiceHoldNotify
 import com.akcreation.gitsilent.notification.base.NotifyBase
 import com.akcreation.gitsilent.notification.util.NotifyUtil
 import com.akcreation.gitsilent.base.BaseService
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.server.HttpServer
 import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.settings.SettingsUtil

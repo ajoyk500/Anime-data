@@ -32,7 +32,7 @@ import com.akcreation.gitsilent.compose.CopyableDialog2
 import com.akcreation.gitsilent.compose.LoadingText
 import com.akcreation.gitsilent.compose.SshUnknownHostDialog
 import com.akcreation.gitsilent.jni.SshAskUserUnknownHostRequest
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.AppScreenNavigator
 import com.akcreation.gitsilent.screen.RequireMasterPasswordScreen
 import com.akcreation.gitsilent.screen.functions.KnownHostRequestStateMan

@@ -8,7 +8,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.constants.PageRequest
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 @Composable
 fun FileDetailListActions(

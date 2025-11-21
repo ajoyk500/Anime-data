@@ -36,7 +36,7 @@ import com.akcreation.gitsilent.dev.editorSearchTestPassed
 import com.akcreation.gitsilent.dev.proFeatureEnabled
 import com.akcreation.gitsilent.dto.UndoStack
 import com.akcreation.gitsilent.fileeditor.texteditor.state.TextEditorState
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.shared.EditorPreviewNavStack
 import com.akcreation.gitsilent.screen.shared.FilePath
 import com.akcreation.gitsilent.settings.SettingsCons

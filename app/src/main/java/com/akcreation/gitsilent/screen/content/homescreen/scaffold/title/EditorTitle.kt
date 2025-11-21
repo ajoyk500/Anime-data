@@ -40,7 +40,7 @@ import com.akcreation.gitsilent.compose.SmallIcon
 import com.akcreation.gitsilent.constants.PageRequest
 import com.akcreation.gitsilent.dev.dev_EnableUnTestedFeature
 import com.akcreation.gitsilent.dev.editorMergeModeTestPassed
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClickRequest
 import com.akcreation.gitsilent.screen.shared.EditorPreviewNavStack

@@ -60,7 +60,7 @@ import com.akcreation.gitsilent.data.entity.DomainCredentialEntity
 import com.akcreation.gitsilent.data.entity.RemoteEntity
 import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.dto.DomainCredentialDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.DomainCredItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

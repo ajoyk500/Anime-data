@@ -33,7 +33,7 @@ import com.akcreation.gitsilent.compose.InLineIcon
 import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.compose.SingleLineClickableText
 import com.akcreation.gitsilent.git.TagDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.Msg
 import com.akcreation.gitsilent.utils.UIHelper

@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 @Composable
 fun MenuIcon(modifier: Modifier = Modifier, color:Color?=null) { //传null是为了在这个组件里获取颜色，要不然在外部调用LocalContentColor.current，可能获取到别的颜色

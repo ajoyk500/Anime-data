@@ -109,7 +109,7 @@ import com.akcreation.gitsilent.git.PuppyLine
 import com.akcreation.gitsilent.git.PuppyLineOriginType
 import com.akcreation.gitsilent.git.StatusTypeEntrySaver
 import com.akcreation.gitsilent.msg.OneTimeToast
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.actions.DiffPageActions
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.title.DiffScreenTitle
 import com.akcreation.gitsilent.screen.functions.ChangeListFunctions

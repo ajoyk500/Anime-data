@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import com.akcreation.gitsilent.activity.findActivity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 private const val TAG = "ActivityUtil"
 

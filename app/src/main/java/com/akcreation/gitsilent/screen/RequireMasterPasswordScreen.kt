@@ -37,7 +37,7 @@ import com.akcreation.gitsilent.compose.ClearMasterPasswordDialog
 import com.akcreation.gitsilent.compose.ClickableText
 import com.akcreation.gitsilent.compose.MySelectionContainer
 import com.akcreation.gitsilent.compose.PasswordTextFiled
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.SettingsUtil
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.AppModel

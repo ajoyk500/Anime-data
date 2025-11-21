@@ -3,7 +3,7 @@ package com.akcreation.gitsilent.utils
 import android.content.Context
 import com.akcreation.gitsilent.constants.LangCode
 import com.akcreation.gitsilent.constants.StrCons
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.pref.PrefMan
 
 

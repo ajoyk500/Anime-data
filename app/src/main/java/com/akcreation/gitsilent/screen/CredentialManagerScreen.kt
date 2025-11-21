@@ -52,7 +52,7 @@ import com.akcreation.gitsilent.data.entity.CredentialEntity
 import com.akcreation.gitsilent.data.entity.RemoteEntity
 import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.dto.RemoteDtoForCredential
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.CredentialItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

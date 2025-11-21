@@ -64,7 +64,7 @@ import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.constants.StrCons
 import com.akcreation.gitsilent.dev.DevFeature
 import com.akcreation.gitsilent.dev.DevItem
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.SettingsCons
 import com.akcreation.gitsilent.settings.SettingsUtil
 import com.akcreation.gitsilent.style.MyStyleKt

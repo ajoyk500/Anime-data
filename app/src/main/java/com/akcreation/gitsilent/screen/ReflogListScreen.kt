@@ -50,7 +50,7 @@ import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.dev.proFeatureEnabled
 import com.akcreation.gitsilent.dev.resetByHashTestPassed
 import com.akcreation.gitsilent.git.ReflogEntryDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.ReflogItem
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled
 import com.akcreation.gitsilent.screen.functions.filterTheList

@@ -68,7 +68,7 @@ import com.akcreation.gitsilent.dev.dev_EnableUnTestedFeature
 import com.akcreation.gitsilent.dev.proFeatureEnabled
 import com.akcreation.gitsilent.dev.shallowAndSingleBranchTestPassed
 import com.akcreation.gitsilent.dto.RemoteDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.RemoteItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

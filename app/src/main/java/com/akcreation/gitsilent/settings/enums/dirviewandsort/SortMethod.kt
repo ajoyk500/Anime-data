@@ -1,7 +1,7 @@
 package com.akcreation.gitsilent.settings.enums.dirviewandsort
 
 import android.content.Context
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 enum class SortMethod(val code: Int) {
     NAME(1),

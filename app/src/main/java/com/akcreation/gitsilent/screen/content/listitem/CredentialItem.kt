@@ -33,7 +33,7 @@ import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.constants.SpecialCredential
 import com.akcreation.gitsilent.data.entity.CredentialEntity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.UIHelper

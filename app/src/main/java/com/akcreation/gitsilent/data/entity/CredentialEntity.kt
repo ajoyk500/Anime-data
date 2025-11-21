@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.data.entity.common.BaseFields
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.encrypt.PassEncryptHelper
 import com.akcreation.gitsilent.utils.getShortUUID

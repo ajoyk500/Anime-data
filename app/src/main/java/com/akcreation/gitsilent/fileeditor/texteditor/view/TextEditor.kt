@@ -78,7 +78,7 @@ import com.akcreation.gitsilent.fileeditor.texteditor.state.LineChangeType
 import com.akcreation.gitsilent.fileeditor.texteditor.state.MyTextFieldState
 import com.akcreation.gitsilent.fileeditor.texteditor.state.SelectionOption
 import com.akcreation.gitsilent.fileeditor.texteditor.state.TextEditorState
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.shared.FilePath
 import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.settings.FileEditedPos

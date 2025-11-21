@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.data.entity.RepoEntity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.Libgit2Helper
 import com.akcreation.gitsilent.utils.Msg
 import com.akcreation.gitsilent.utils.createAndInsertError

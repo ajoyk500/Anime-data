@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.constants.SpecialCredential
 import com.akcreation.gitsilent.data.entity.CredentialEntity
 import com.akcreation.gitsilent.dto.RemoteDtoForCredential
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.doJobThenOffLoading
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable

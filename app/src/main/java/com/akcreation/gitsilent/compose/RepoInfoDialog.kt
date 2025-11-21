@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.git.CommitDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.Libgit2Helper
 import com.akcreation.gitsilent.utils.dbIntToBool
 

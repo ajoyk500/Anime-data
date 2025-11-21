@@ -18,7 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.syntaxhighlight.base.PLFont
 import com.akcreation.gitsilent.syntaxhighlight.markdown.MarkDownSyntaxHighlighter
 import kotlinx.coroutines.delay

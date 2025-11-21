@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.activity.findActivity
 import com.akcreation.gitsilent.syntaxhighlight.base.TextMateUtil
 import com.akcreation.gitsilent.utils.MyLog

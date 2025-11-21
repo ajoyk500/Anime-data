@@ -1,7 +1,7 @@
 package com.akcreation.gitsilent.git
 
 import android.content.Context
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.utils.Libgit2Helper
 import com.akcreation.gitsilent.utils.formatMinutesToUtc

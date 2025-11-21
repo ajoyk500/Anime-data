@@ -35,7 +35,7 @@ import com.akcreation.gitsilent.git.CompareLinePairHelper
 import com.akcreation.gitsilent.git.CompareLinePairResult
 import com.akcreation.gitsilent.git.DiffItemSaver
 import com.akcreation.gitsilent.git.PuppyLine
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.getClipboardText
 import com.akcreation.gitsilent.screen.functions.openFileWithInnerSubPageEditor
 import com.akcreation.gitsilent.settings.AppSettings

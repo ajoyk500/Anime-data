@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.akcreation.gitsilent.notification.base.NotifyBase
 import com.akcreation.gitsilent.notification.bean.Action
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.service.HttpService
 
 class HttpServiceHoldNotify private constructor(

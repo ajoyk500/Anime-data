@@ -30,7 +30,7 @@ import com.akcreation.gitsilent.dev.ignoreWorktreeFilesTestPassed
 import com.akcreation.gitsilent.dev.proFeatureEnabled
 import com.akcreation.gitsilent.dev.pushForceTestPassed
 import com.akcreation.gitsilent.dev.rebaseTestPassed
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.UIHelper

@@ -18,7 +18,7 @@ import com.akcreation.gitsilent.compose.AddRepoDropDownMenu
 import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.data.entity.RepoEntity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.changeStateTriggerRefreshPage
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 

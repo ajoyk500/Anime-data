@@ -28,7 +28,7 @@ import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.dto.FileItemDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.homescreen.innerpage.FilesInnerPage
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.actions.FilesPageActions
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.title.FilesTitle

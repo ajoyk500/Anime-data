@@ -34,7 +34,7 @@ import com.akcreation.gitsilent.dto.FileItemDto
 import com.akcreation.gitsilent.dto.NameAndPath
 import com.akcreation.gitsilent.dto.NameAndPathList
 import com.akcreation.gitsilent.dto.NameAndPathType
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.getFilesScreenTitle
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.Theme

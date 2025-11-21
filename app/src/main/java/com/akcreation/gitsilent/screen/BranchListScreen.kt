@@ -93,7 +93,7 @@ import com.akcreation.gitsilent.dev.resetByHashTestPassed
 import com.akcreation.gitsilent.dto.RemoteDto
 import com.akcreation.gitsilent.etc.Ret
 import com.akcreation.gitsilent.git.BranchNameAndTypeDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.BranchItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

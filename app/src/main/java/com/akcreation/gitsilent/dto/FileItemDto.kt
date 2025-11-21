@@ -1,7 +1,7 @@
 package com.akcreation.gitsilent.dto
 
 import android.content.Context
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.FsUtils
 import com.akcreation.gitsilent.utils.MyLog
 import com.akcreation.gitsilent.utils.getFileAttributes

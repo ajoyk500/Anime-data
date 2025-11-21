@@ -6,7 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.git.IgnoreItem
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.FsUtils
 import com.akcreation.gitsilent.utils.Libgit2Helper

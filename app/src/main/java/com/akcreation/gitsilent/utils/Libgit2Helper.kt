@@ -39,7 +39,7 @@ import com.akcreation.gitsilent.jni.LibgitTwo
 import com.akcreation.gitsilent.jni.SaveBlobRet
 import com.akcreation.gitsilent.jni.SaveBlobRetCode
 import com.akcreation.gitsilent.jni.SshAskUserUnknownHostRequest
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.KnownHostRequestStateMan
 import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.settings.SettingsUtil

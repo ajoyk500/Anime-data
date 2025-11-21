@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.constants.PageRequest
 import com.akcreation.gitsilent.fileeditor.texteditor.state.TextEditorState
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 
 @Composable

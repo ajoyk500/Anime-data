@@ -111,7 +111,7 @@ import com.akcreation.gitsilent.dto.FileItemDto
 import com.akcreation.gitsilent.etc.Ret
 import com.akcreation.gitsilent.git.IgnoreItem
 import com.akcreation.gitsilent.git.ImportRepoResult
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.FileListItem
 import com.akcreation.gitsilent.screen.content.listitem.SelectedFileItemsDialog
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

@@ -97,7 +97,7 @@ import com.akcreation.gitsilent.fileeditor.texteditor.state.TextEditorState
 import com.akcreation.gitsilent.fileeditor.texteditor.view.ScrollEvent
 import com.akcreation.gitsilent.fileeditor.texteditor.view.TextEditor
 import com.akcreation.gitsilent.fileeditor.texteditor.view.lineNumOffsetForGoToEditor
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.getClipboardText
 import com.akcreation.gitsilent.screen.shared.EditorPreviewNavStack
 import com.akcreation.gitsilent.screen.shared.FilePath

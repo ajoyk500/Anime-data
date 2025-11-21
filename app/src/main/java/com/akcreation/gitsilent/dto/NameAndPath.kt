@@ -5,7 +5,7 @@ import android.os.Parcelable
 import androidx.compose.runtime.mutableStateListOf
 import com.akcreation.gitsilent.constants.StrCons
 import com.akcreation.gitsilent.dev.DevFeature
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.FsUtils
 import com.akcreation.gitsilent.utils.doActWithLockIfFree

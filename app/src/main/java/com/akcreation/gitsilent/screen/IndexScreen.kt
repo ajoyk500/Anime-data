@@ -24,7 +24,7 @@ import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.git.StatusTypeEntrySaver
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.homescreen.innerpage.ChangeListInnerPage
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.actions.ChangeListPageActions
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.title.IndexScreenTitle

@@ -2,7 +2,7 @@ package com.akcreation.gitsilent.utils.cert
 
 import android.content.Context
 import com.akcreation.gitsilent.etc.CertSaver
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.FsUtils
 import com.akcreation.gitsilent.utils.Msg
 import com.akcreation.gitsilent.utils.MyLog

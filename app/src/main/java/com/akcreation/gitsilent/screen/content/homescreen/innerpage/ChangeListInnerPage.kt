@@ -100,7 +100,7 @@ import com.akcreation.gitsilent.git.IgnoreItem
 import com.akcreation.gitsilent.git.ImportRepoResult
 import com.akcreation.gitsilent.git.StatusTypeEntrySaver
 import com.akcreation.gitsilent.git.Upstream
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.ChangeListItem
 import com.akcreation.gitsilent.screen.content.listitem.SelectedFileItemsDialog
 import com.akcreation.gitsilent.screen.functions.ChangeListFunctions

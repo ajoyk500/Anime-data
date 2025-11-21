@@ -10,7 +10,7 @@ import com.akcreation.gitsilent.etc.Ret
 import com.akcreation.gitsilent.git.PatchFile
 import com.akcreation.gitsilent.git.StatusTypeEntrySaver
 import com.akcreation.gitsilent.git.Upstream
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.SettingsUtil
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.FsUtils

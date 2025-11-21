@@ -71,7 +71,7 @@ import com.akcreation.gitsilent.dev.dev_EnableUnTestedFeature
 import com.akcreation.gitsilent.dev.shallowAndSingleBranchTestPassed
 import com.akcreation.gitsilent.dto.NameAndPath
 import com.akcreation.gitsilent.dto.NameAndPathType
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.title.ScrollableTitle
 import com.akcreation.gitsilent.screen.shared.SharedState
 import com.akcreation.gitsilent.style.MyStyleKt

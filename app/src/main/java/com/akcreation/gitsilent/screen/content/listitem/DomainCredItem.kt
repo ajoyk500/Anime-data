@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.akcreation.gitsilent.dto.DomainCredentialDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.listItemPadding
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable

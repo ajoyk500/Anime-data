@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.compositionContext
 import androidx.compose.ui.platform.createLifecycleAwareWindowRecomposer
 import androidx.core.view.WindowCompat
 import com.akcreation.gitsilent.activity.CrashActivity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.ContextUtil
 import com.akcreation.gitsilent.utils.MyLog

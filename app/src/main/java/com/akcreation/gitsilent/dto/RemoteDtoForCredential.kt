@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Ignore
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.constants.SpecialCredential
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.AppModel
 
 /*

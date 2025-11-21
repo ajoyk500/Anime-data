@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 
 /**

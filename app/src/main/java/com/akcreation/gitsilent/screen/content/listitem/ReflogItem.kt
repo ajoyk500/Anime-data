@@ -24,7 +24,7 @@ import com.akcreation.gitsilent.compose.InLineCopyIcon
 import com.akcreation.gitsilent.compose.InLineHistoryIcon
 import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.git.ReflogEntryDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.fromTagToCommitHistory
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.Libgit2Helper

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.dto.RemoteDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.listItemPadding

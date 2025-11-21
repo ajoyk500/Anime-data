@@ -21,7 +21,7 @@ import com.akcreation.gitsilent.dto.FileSimpleDto
 import com.akcreation.gitsilent.etc.Ret
 import com.akcreation.gitsilent.fileeditor.texteditor.state.TextEditorState
 import com.akcreation.gitsilent.play.pro.BuildConfig
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.shared.FilePath
 import com.akcreation.gitsilent.screen.shared.FuckSafFile
 import com.akcreation.gitsilent.settings.AppSettings

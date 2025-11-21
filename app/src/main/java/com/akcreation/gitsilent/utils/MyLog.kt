@@ -2,7 +2,7 @@ package com.akcreation.gitsilent.utils
 
 import android.content.Context
 import android.util.Log
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.base.DateNamedFileWriter
 import java.io.File
 import java.time.LocalDateTime

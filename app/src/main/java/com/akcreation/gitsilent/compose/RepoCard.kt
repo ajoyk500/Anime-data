@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.constants.PageRequest
 import com.akcreation.gitsilent.data.entity.RepoEntity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.goToCloneScreen
 import com.akcreation.gitsilent.screen.functions.goToCommitListScreen
 import com.akcreation.gitsilent.screen.functions.goToErrScreen

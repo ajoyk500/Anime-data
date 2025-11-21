@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.akcreation.gitsilent.compose.TwoLineTextsAndIcons
 import com.akcreation.gitsilent.data.entity.RepoEntity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.settings.util.AutomationUtil
 import com.akcreation.gitsilent.utils.appendSecondsUnit

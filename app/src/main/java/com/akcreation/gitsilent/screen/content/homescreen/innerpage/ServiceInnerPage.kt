@@ -49,7 +49,7 @@ import com.akcreation.gitsilent.compose.SettingsContentSwitcher
 import com.akcreation.gitsilent.compose.SettingsTitle
 import com.akcreation.gitsilent.compose.SoftkeyboardVisibleListener
 import com.akcreation.gitsilent.compose.SpacerRow
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.server.isHttpServerOnline
 import com.akcreation.gitsilent.service.HttpService
 import com.akcreation.gitsilent.settings.SettingsUtil

@@ -44,7 +44,7 @@ import com.akcreation.gitsilent.compose.AppIconMonoChrome
 import com.akcreation.gitsilent.compose.MyHorizontalDivider
 import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.compose.SpacerRow
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.ActivityUtil
 import com.akcreation.gitsilent.utils.AppModel

@@ -2,7 +2,7 @@ package com.akcreation.gitsilent.utils
 
 import android.content.Context
 import com.akcreation.gitsilent.jni.SshCert
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.github.git24j.core.Libgit2
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

@@ -13,7 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.akcreation.gitsilent.notification.bean.Action
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.MyLog
 import com.akcreation.gitsilent.utils.forEachBetter
 

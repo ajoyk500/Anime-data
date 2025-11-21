@@ -60,7 +60,7 @@ import com.akcreation.gitsilent.compose.SettingsTitle
 import com.akcreation.gitsilent.compose.SizeIcon
 import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.dto.AppInfo
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.AppItem
 import com.akcreation.gitsilent.screen.content.listitem.RepoNameAndIdItem
 import com.akcreation.gitsilent.screen.functions.maybeIsGoodKeyword

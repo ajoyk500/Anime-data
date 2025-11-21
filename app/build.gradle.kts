@@ -30,7 +30,7 @@ android {
         includeInBundle = false
     }
 
-    val packageName = "com.akcreation.gitsilent.play.pro"
+    val packageName = "com.akcreation.gitsilent"
 
     namespace = packageName
     compileSdk = 36
@@ -51,7 +51,7 @@ android {
             useSupportLibrary = true
         }
         ndk {
-            abiFilters += listOf("arm64-v8a","x86_64","x86","armeabi-v7a")
+            abiFilters += listOf("arm64-v8a")
         }
 
 //        resourceConfigurations.plus(listOf("en", "zh-rCN"))
@@ -80,10 +80,10 @@ android {
 
     signingConfigs {
     create("release") {
-        storeFile = file("../my-release-key.jks")
-        storePassword = System.getenv("KEYSTORE_PASSWORD")
-        keyAlias = System.getenv("KEY_ALIAS")
-        keyPassword = System.getenv("KEY_PASSWORD")
+        storeFile = file("../AK_CREATION_KEY.jks")  // app folder ke bahar root me hai
+        storePassword = "ajoy70##"                    // apna original password daalo
+        keyAlias = "ak_creation_key"
+        keyPassword = "ajoy70##"
     }
 }
     buildTypes {

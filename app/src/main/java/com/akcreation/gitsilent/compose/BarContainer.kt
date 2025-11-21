@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.dto.MenuIconBtnItem
 import com.akcreation.gitsilent.dto.MenuTextItem
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.UIHelper
 

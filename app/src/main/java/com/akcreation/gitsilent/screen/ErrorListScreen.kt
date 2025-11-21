@@ -46,7 +46,7 @@ import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.data.entity.ErrorEntity
 import com.akcreation.gitsilent.data.entity.RepoEntity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.listitem.ErrorItem
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.screen.functions.filterModeActuallyEnabled

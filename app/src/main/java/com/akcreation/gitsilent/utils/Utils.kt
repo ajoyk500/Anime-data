@@ -23,7 +23,7 @@ import com.akcreation.gitsilent.dto.AppInfo
 import com.akcreation.gitsilent.dto.LineNumParseResult
 import com.akcreation.gitsilent.dto.rawAppInfoToAppInfo
 import com.akcreation.gitsilent.etc.Ret
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.shared.FuckSafFile
 import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.settings.DirViewAndSort

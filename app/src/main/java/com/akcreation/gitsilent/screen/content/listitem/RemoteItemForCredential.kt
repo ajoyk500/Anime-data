@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.dto.RemoteDtoForCredential
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.listItemPadding
 

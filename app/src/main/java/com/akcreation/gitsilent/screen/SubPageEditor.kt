@@ -30,7 +30,7 @@ import com.akcreation.gitsilent.dto.FileDetail
 import com.akcreation.gitsilent.dto.FileSimpleDto
 import com.akcreation.gitsilent.dto.UndoStack
 import com.akcreation.gitsilent.fileeditor.texteditor.view.ScrollEvent
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.editor.FileDetailListActions
 import com.akcreation.gitsilent.screen.content.homescreen.innerpage.EditorInnerPage
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.actions.EditorPageActions

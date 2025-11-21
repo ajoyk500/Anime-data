@@ -27,7 +27,7 @@ import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.constants.PageRequest
 import com.akcreation.gitsilent.dev.detailsDiffTestPassed
 import com.akcreation.gitsilent.dev.proFeatureEnabled
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.SettingsUtil
 
 private const val TAG = "DiffPageActions"

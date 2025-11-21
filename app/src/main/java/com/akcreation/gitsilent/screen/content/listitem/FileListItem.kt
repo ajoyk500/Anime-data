@@ -33,7 +33,7 @@ import com.akcreation.gitsilent.compose.ListItemToggleButton
 import com.akcreation.gitsilent.compose.ListItemTrailingIconRow
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.dto.FileItemDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.ui.theme.Theme
 import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.getParentPathEndsWithSeparator

@@ -14,7 +14,7 @@ import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.jni.LibgitTwo
 import com.akcreation.gitsilent.jni.SaveBlobRet
 import com.akcreation.gitsilent.jni.SaveBlobRetCode
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.shared.DiffFromScreen
 import com.akcreation.gitsilent.utils.Libgit2Helper
 import com.akcreation.gitsilent.utils.MyLog

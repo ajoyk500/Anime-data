@@ -22,7 +22,7 @@ import com.akcreation.gitsilent.dev.forceCheckoutTestPassed
 import com.akcreation.gitsilent.dev.overwriteExistWhenCreateBranchTestPassed
 import com.akcreation.gitsilent.dev.proFeatureEnabled
 import com.akcreation.gitsilent.etc.Ret
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.Libgit2Helper
 import com.akcreation.gitsilent.utils.Msg

@@ -20,7 +20,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.constants.PageRequest
 import com.akcreation.gitsilent.dev.DevFeature
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable

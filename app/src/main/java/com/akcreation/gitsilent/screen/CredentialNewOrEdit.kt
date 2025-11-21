@@ -39,7 +39,7 @@ import com.akcreation.gitsilent.compose.PasswordTextFiled
 import com.akcreation.gitsilent.constants.Cons
 import com.akcreation.gitsilent.data.entity.CredentialEntity
 import com.akcreation.gitsilent.data.entity.RepoEntity
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.content.homescreen.scaffold.title.ScrollableTitle
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.AppModel

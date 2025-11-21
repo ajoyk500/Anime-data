@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 /**
  * 注：这个组件应该放到Scaffold里，不然背景色无法随系统主题变化(例如开了dark theme，这个背景色还是全白，会很刺眼)（旧版曾是这样 ，新版我没测试，总之放到脚手架里就稳了）

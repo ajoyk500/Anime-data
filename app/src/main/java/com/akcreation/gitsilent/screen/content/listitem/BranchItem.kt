@@ -38,7 +38,7 @@ import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.compose.SingleLineClickableText
 import com.akcreation.gitsilent.constants.PageRequest
 import com.akcreation.gitsilent.git.BranchNameAndTypeDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.Msg
 import com.akcreation.gitsilent.utils.UIHelper

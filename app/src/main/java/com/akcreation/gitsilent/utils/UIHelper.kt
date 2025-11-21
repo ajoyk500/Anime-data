@@ -34,7 +34,7 @@ import com.akcreation.gitsilent.dto.DeviceWidthHeight
 import com.akcreation.gitsilent.fileeditor.texteditor.view.ExpectConflictStrDto
 import com.akcreation.gitsilent.git.PuppyLine
 import com.akcreation.gitsilent.git.PuppyLineOriginType
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.Theme

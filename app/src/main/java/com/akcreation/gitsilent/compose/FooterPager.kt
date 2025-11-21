@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 
 @Composable
 fun FooterPager(currentPage:MutableIntState, sumPage:Int) {

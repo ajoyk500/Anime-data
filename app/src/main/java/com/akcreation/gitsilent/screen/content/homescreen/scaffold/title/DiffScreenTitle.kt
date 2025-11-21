@@ -17,7 +17,7 @@ import com.akcreation.gitsilent.compose.ReadOnlyIcon
 import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.constants.PageRequest
 import com.akcreation.gitsilent.git.DiffableItem
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.UIHelper

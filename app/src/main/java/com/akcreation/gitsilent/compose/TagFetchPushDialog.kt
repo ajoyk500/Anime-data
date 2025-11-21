@@ -23,7 +23,7 @@ import com.akcreation.gitsilent.data.entity.RepoEntity
 import com.akcreation.gitsilent.git.PushFailedItem
 import com.akcreation.gitsilent.git.RemoteAndCredentials
 import com.akcreation.gitsilent.git.TagDto
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.Libgit2Helper

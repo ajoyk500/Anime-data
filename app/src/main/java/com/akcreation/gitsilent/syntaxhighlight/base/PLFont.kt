@@ -2,7 +2,7 @@ package com.akcreation.gitsilent.syntaxhighlight.base
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import com.akcreation.gitsilent.play.pro.R
+import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.SettingsUtil
 
 object PLFont {
