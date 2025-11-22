@@ -33,7 +33,7 @@ import com.akcreation.gitsilent.compose.SpacerRow
 import com.akcreation.gitsilent.constants.IntentCons
 import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.base.BaseComposeActivity
-import com.akcreation.gitsilent.constants.LinksCons.*
+import com.akcreation.gitsilent.screen.content.homescreen.innerpage.reportBugsLink
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.InitContent
 import com.akcreation.gitsilent.utils.ActivityUtil

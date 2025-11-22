@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.R
-import com.akcreation.gitsilent.constants.LinksCons.donateLink
+import com.akcreation.gitsilent.screen.content.homescreen.innerpage.donateLink
 import com.akcreation.gitsilent.utils.ActivityUtil
 import com.akcreation.gitsilent.utils.AppModel
 
