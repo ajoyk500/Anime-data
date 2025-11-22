@@ -3,7 +3,9 @@ package com.akcreation.gitsilent.compose
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,8 +41,7 @@ private val featuresList = listOf(
     "Branch management and merging",
     "File editing with syntax highlighting",
     "SSH and HTTPS authentication",
-    "Beautiful and intuitive Material Design UI",
-    "Offline support for local operations",
+    "Beautiful Material Design UI"
 )
 
 
@@ -61,23 +62,26 @@ fun ChangelogDialog(
         title = stringResource(R.string.app_name),
         requireShowTextCompose = true,
         textCompose = {
-            ScrollableColumn {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 450.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 // App Icon
                 Surface(
                     modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(20.dp)),
+                        .size(60.dp)
+                        .clip(RoundedCornerShape(16.dp)),
                     color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp
                 ) {
                     AppIcon()
                 }
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(16.dp))
 
                 // Developer Section
                 Column(
@@ -91,7 +95,7 @@ fun ChangelogDialog(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(6.dp))
 
                     Text(
                         text = "Made by: $developerName",
@@ -99,7 +103,7 @@ fun ChangelogDialog(
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(2.dp))
 
                     MultiLineClickableText(
                         text = "Telegram: $developerTelegram"
@@ -108,7 +112,7 @@ fun ChangelogDialog(
                     }
                 }
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(12.dp))
 
                 // Description Section
                 Column(
@@ -122,17 +126,17 @@ fun ChangelogDialog(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(6.dp))
 
                     Text(
                         text = appDescription.trim(),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
-                        lineHeight = 20.sp
+                        lineHeight = 18.sp
                     )
                 }
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(12.dp))
 
                 // Features Section
                 Column(
@@ -146,20 +150,19 @@ fun ChangelogDialog(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(6.dp))
 
                     featuresList.forEach { feature ->
                         Text(
                             text = "• $feature",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding(vertical = 2.dp)
+                            modifier = Modifier.padding(vertical = 1.dp)
                         )
                     }
                 }
 
-                Spacer(Modifier.height(16.dp))
-            }
+                Spacer(Modifier.height(12.dp))
             }
         }
     )
