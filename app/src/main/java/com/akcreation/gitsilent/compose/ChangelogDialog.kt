@@ -61,10 +61,11 @@ fun ChangelogDialog(
         title = stringResource(R.string.app_name),
         requireShowTextCompose = true,
         textCompose = {
-            ScrollableColumn(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            ScrollableColumn {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                 // App Icon
                 Surface(
                     modifier = Modifier
@@ -101,10 +102,7 @@ fun ChangelogDialog(
                     Spacer(Modifier.height(4.dp))
 
                     MultiLineClickableText(
-                        text = "Telegram: $developerTelegram",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        text = "Telegram: $developerTelegram"
                     ) {
                         ActivityUtil.openUrl(activityContext, developerTelegram)
                     }
@@ -161,6 +159,7 @@ fun ChangelogDialog(
                 }
 
                 Spacer(Modifier.height(16.dp))
+            }
             }
         }
     )
