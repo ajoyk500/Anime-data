@@ -50,14 +50,18 @@ import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.baseVerticalScrollablePageModifier
 
 
-const val authorMail = "luckyclover33xx@gmail.com"
+const val authorMail = "ajoykundu500@gmail.com"
 const val authorMailLink = "mailto:$authorMail"
 
-const val developerName = "Bandeapart1964"
-const val developerTelegram = "https://t.me/bandeapart1964"
+const val developerName = "AK_CREATION_DEV"
+const val developerTelegram = "https://t.me/AK_CREATION_DEV"
 
-const val sourceCodeLink = "https://github.com/catpuppyapp/PuppyGit"
+const val sourceCodeLink = "https://github.com/"
 const val releasesLink = "$sourceCodeLink/releases"
+const val reportBugsLink = "$sourceCodeLink/issues/new"
+const val donateLink = "https://github.com/catpuppyapp/PuppyGit/blob/main/donate.md"
+const val httpServiceApiUrl = "$sourceCodeLink/blob/main/http_service_api.md"
+const val automationDocUrl = "$sourceCodeLink/blob/main/automation_doc.md"
 
 
 @Composable
@@ -133,7 +137,7 @@ fun AboutInnerPage(
 
                 // Tagline
                 Text(
-                    text = "Learn, build, launch. All on your Android.",
+                    text = "A LightWeight, offline-first GitSilent. All on your Android.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center

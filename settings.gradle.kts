@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PuppyGit"
+rootProject.name = "GitSilent"
 include(":app")
