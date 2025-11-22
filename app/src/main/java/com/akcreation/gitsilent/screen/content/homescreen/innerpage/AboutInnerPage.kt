@@ -137,7 +137,7 @@ fun AboutInnerPage(
 
                 // Tagline
                 Text(
-                    text = "A LightWeight, offline-first GitSilent. All on your Android.",
+                    text = "A LightWeight, powerful GitSilent for Android.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -202,7 +202,7 @@ fun AboutInnerPage(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = "Premium Download",
+                        text = "Download",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp
                     )
