@@ -16,7 +16,6 @@ import com.akcreation.gitsilent.utils.AppModel
 
 private val changelog = """
 - adjust UI of clone screen
-- 调整克隆页面UI
 """.trimIndent()
 
 
