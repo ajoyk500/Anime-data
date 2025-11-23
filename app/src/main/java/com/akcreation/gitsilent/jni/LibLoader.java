@@ -14,7 +14,7 @@ public class LibLoader {
         System.loadLibrary("ssh2");
         System.loadLibrary("git2");
 //        System.loadLibrary("git24j");
-        System.loadLibrary("puppygit");
+        System.loadLibrary("gitsilent");
 
         Log.d(TAG, "c libs loaded");
 
