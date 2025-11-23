@@ -58,8 +58,8 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          BUILD_TOOLS=$ANDROID_SDK_ROOT/build-tools/34.0.0
-          UNSIGNED_APK=$(find app/build/outputs/apk/release -name "*-unsigned.apk" | head -1)
+          BUILD_TOOLS=$ANDROID_SDK_ROOT/build-tools/36.0.0
+          UNSIGNED_APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
           ALIGNED_APK=app-release-aligned.apk
           SIGNED_APK=app-release-signed.apk
 
