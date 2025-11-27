@@ -16,14 +16,11 @@ fun MyCard(
     content:@Composable ()->Unit,
 ) {
     val containerColor = containerColor ?: UIHelper.defaultCardColor()
-
     Card(
         modifier = modifier,
-
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         ),
-
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
@@ -31,7 +28,6 @@ fun MyCard(
         content()
     }
 }
-
 @Composable
 fun MyToggleCard(
     modifier: Modifier,

@@ -11,10 +11,8 @@ fun DropDownMenuItemText(
     text1:String,
     text2:String = "",
     basePadding: PaddingValues = PaddingValues(0.dp),
-
     text1Scrollable: Boolean = true,
     text2Scrollable: Boolean = true,
-
     trailIcon: ImageVector? = null,
     trailIconWidth: Dp = 0.dp,
     trailIconOnClick: () -> Unit = {},

@@ -1,13 +1,7 @@
 package com.akcreation.gitsilent.git
 
-data class PatchFile(
-    /**
-     * output file path
-     */
-    val outFileFullPath:String? = null,
 
-    /**
-     * diff content (patch content)
-     */
+data class PatchFile(
+    val outFileFullPath:String? = null,
     val content:String? = null,
 )

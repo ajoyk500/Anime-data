@@ -15,7 +15,6 @@ import com.akcreation.gitsilent.settings.AppSettings
 import com.akcreation.gitsilent.settings.util.AutomationUtil
 import com.akcreation.gitsilent.utils.appendSecondsUnit
 
-
 @Composable
 fun RepoNameAndIdItem(
     settings: AppSettings,
@@ -25,10 +24,8 @@ fun RepoNameAndIdItem(
     trailIconWidth: Dp,
     trailIcons: @Composable BoxScope.(containerModifier:Modifier)->Unit,
 ) {
-
     Row(
         modifier = Modifier.fillMaxWidth(),
-
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TwoLineTextsAndIcons(
@@ -38,13 +35,10 @@ fun RepoNameAndIdItem(
                     stringResource(R.string.pull_interval)+": "+appendSecondsUnit(it.getPullIntervalFormatted())+", "+ stringResource(R.string.push_delay)+": "+appendSecondsUnit(it.getPushDelayFormatted())
                 }
             } else {
-//               // repoEntity.id
                 ""
             },
             trailIconWidth = trailIconWidth,
             trailIcons = trailIcons
         )
     }
-
 }
-

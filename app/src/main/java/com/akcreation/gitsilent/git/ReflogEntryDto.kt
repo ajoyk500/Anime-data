@@ -14,31 +14,23 @@ data class ReflogEntryDto(
     var idOld:Oid?=null,
     var msg:String=""
 ) : ItemKey {
-
     private var shortNewIdCached:String? = null
     private var shortOldIdCached:String? = null
-
     private var cached_OneLineMsg:String? = null
     fun getCachedOneLineMsg(): String = (cached_OneLineMsg ?: Libgit2Helper.zipOneLineMsg(msg).let { cached_OneLineMsg = it; it });
-
-
     override fun getItemKey():String {
         return username+email+date+idNew+idOld+msg
     }
-
     fun getShortNewId():String {
         if(shortNewIdCached == null) {
             shortNewIdCached = Libgit2Helper.getShortOidStrByFull(idNew.toString())
         }
-
         return shortNewIdCached ?: ""
     }
-
     fun getShortOldId():String {
         if(shortOldIdCached == null) {
             shortOldIdCached = Libgit2Helper.getShortOidStrByFull(idOld.toString())
         }
-
         return shortOldIdCached ?: ""
     }
 }

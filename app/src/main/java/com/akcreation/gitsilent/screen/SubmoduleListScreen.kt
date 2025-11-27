@@ -102,7 +102,6 @@ import com.github.git24j.core.Repository
 import java.io.File
 
 private const val TAG = "SubmoduleListScreen"
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SubmoduleListScreen(
@@ -110,7 +109,6 @@ fun SubmoduleListScreen(
     naviUp: () -> Boolean,
 ) {
     val stateKeyTag = Cache.getSubPageKey(TAG)
-
     val homeTopBarScrollBehavior = AppModel.homeTopBarScrollBehavior
     val navController = AppModel.navController
     val activityContext = LocalContext.current
@@ -118,19 +116,12 @@ fun SubmoduleListScreen(
     val clipboardManager = LocalClipboardManager.current
     val scope = rememberCoroutineScope()
     val settings = remember { SettingsUtil.getSettingsSnapshot() }
-
     val inDarkTheme = Theme.inDarkTheme
-
-    //获取假数据
     val list = mutableCustomStateListOf(keyTag = stateKeyTag, keyName = "list", initValue = listOf<SubmoduleDto>())
-
     val filterList = mutableCustomStateListOf(keyTag = stateKeyTag, keyName = "filterList", initValue = listOf<SubmoduleDto>())
-
-    //这个页面的滚动状态不用记住，每次点开重置也无所谓
     val listState = rememberLazyListState()
     val needRefresh = rememberSaveable { mutableStateOf("") }
     val curRepo = mutableCustomStateOf(keyTag = stateKeyTag, keyName = "curRepo", initValue = RepoEntity(id=""))
-
     val defaultLoadingText = stringResource(R.string.loading)
     val loading = rememberSaveable { mutableStateOf(false)}
     val loadingText = rememberSaveable { mutableStateOf( defaultLoadingText)}
@@ -142,29 +133,22 @@ fun SubmoduleListScreen(
         loadingText.value = activityContext.getString(R.string.loading)
         loading.value=false
     }
-
-
     val credentialList = mutableCustomStateListOf(stateKeyTag, "credentialList", listOf<CredentialEntity>())
     val selectedCredentialIdx = rememberSaveable{mutableIntStateOf(0)}
-
-
     val showCreateDialog = rememberSaveable { mutableStateOf(false)}
     val remoteUrlForCreate = rememberSaveable { mutableStateOf("")}
     val pathForCreate = rememberSaveable { mutableStateOf("")}
     val initCreateDialog = {
         showCreateDialog.value = true
     }
-
     if(showCreateDialog.value) {
         ConfirmDialog2(
             title = stringResource(R.string.create),
             requireShowTextCompose = true,
             textCompose = {
                 ScrollableColumn{
-                    //path
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-
                         value = pathForCreate.value,
                         singleLine = true,
                         onValueChange = {
@@ -174,13 +158,9 @@ fun SubmoduleListScreen(
                             Text(stringResource(R.string.path))
                         },
                     )
-
                     Spacer(Modifier.height(10.dp))
-
-                    //remoteUrl
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-
                         value = remoteUrlForCreate.value,
                         singleLine = true,
                         onValueChange = {
@@ -190,7 +170,6 @@ fun SubmoduleListScreen(
                             Text(stringResource(R.string.url))
                         },
                     )
-
                 }
             },
             okBtnEnabled = pathForCreate.value.isNotBlank() &&remoteUrlForCreate.value.isNotBlank(),
@@ -206,7 +185,6 @@ fun SubmoduleListScreen(
                             relativePathUnderParentRepo = pathForCreate.value
                         )
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.success))
                 }catch (e:Exception) {
                     val errPrefix = "create submodule '${pathForCreate.value}' err: "
@@ -220,47 +198,30 @@ fun SubmoduleListScreen(
             }
         }
     }
-
-    // BottomBar相关变量，开始
     val multiSelectionMode = rememberSaveable { mutableStateOf(false)}
     val selectedItemList = mutableCustomStateListOf(keyTag = stateKeyTag, keyName = "selectedItemList",listOf<SubmoduleDto>() )
-
-
     val quitSelectionMode = {
-        multiSelectionMode.value=false  //关闭选择模式
-        selectedItemList.value.clear()  //清空选中文件列表
+        multiSelectionMode.value=false  
+        selectedItemList.value.clear()  
     }
-
     val getSelectedFilesCount = {
         selectedItemList.value.size
     }
-
-    // BottomBar相关变量，结束
-
     val containsForSelectedItems = { srcList:List<SubmoduleDto>, curItem:SubmoduleDto ->
         srcList.indexOfFirst { it.name == curItem.name } != -1
     }
-
-    //多选模式相关函数，开始
     val switchItemSelected = { item: SubmoduleDto ->
-        //如果元素不在已选择条目列表则添加
         UIHelper.selectIfNotInSelectedListElseRemove(item, selectedItemList.value, contains = containsForSelectedItems)
-        //开启选择模式
         multiSelectionMode.value = true
     }
-
     val selectItem = { item:SubmoduleDto ->
         multiSelectionMode.value = true
         UIHelper.selectIfNotInSelectedListElseNoop(item, selectedItemList.value, contains = containsForSelectedItems)
     }
-
     val isItemInSelected= { item:SubmoduleDto ->
         containsForSelectedItems(selectedItemList.value, item)
     }
-    // 多选模式相关函数，结束
-
     val lastClickedItemKey = rememberSaveable{mutableStateOf(Cons.init_last_clicked_item_key)}
-
     val getDetail = { item:SubmoduleDto ->
         val sb = StringBuilder()
         sb.appendLine(activityContext.getString(R.string.name)+": "+item.name).appendLine()
@@ -271,12 +232,8 @@ fun SubmoduleListScreen(
             .appendLine(activityContext.getString(R.string.full_path)+": "+item.fullPath).appendLine()
             .appendLine(activityContext.getString(R.string.status)+": "+item.getStatus(activityContext)).appendLine()
             .append(activityContext.getString(R.string.other)+": "+item.getOther())
-
         sb.toString()
-
     }
-
-
     val showDetailsDialog = rememberSaveable { mutableStateOf(false)}
     val detailsString = rememberSaveable { mutableStateOf("")}
     if(showDetailsDialog.value) {
@@ -290,7 +247,6 @@ fun SubmoduleListScreen(
             Msg.requireShow(activityContext.getString(R.string.copied))
         }
     }
-
     val showSetUrlDialog = rememberSaveable { mutableStateOf(false)}
     val urlForSetUrlDialog = rememberSaveable { mutableStateOf( "")}
     val nameForSetUrlDialog = rememberSaveable { mutableStateOf( "")}
@@ -301,7 +257,6 @@ fun SubmoduleListScreen(
                 ScrollableColumn {
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-
                         value = urlForSetUrlDialog.value,
                         singleLine = true,
                         onValueChange = {
@@ -314,10 +269,8 @@ fun SubmoduleListScreen(
                 }
             },
             onCancel = {showSetUrlDialog.value = false}
-
         ) {
             showSetUrlDialog.value = false
-
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.updating)) act@{
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo->
@@ -326,12 +279,9 @@ fun SubmoduleListScreen(
                             Msg.requireShowLongDuration(activityContext.getString(R.string.resolve_submodule_failed))
                             return@act
                         }
-
                         Libgit2Helper.updateSubmoduleUrl(repo, sm, urlForSetUrlDialog.value)
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.success))
-
                 }catch (e:Exception) {
                     Msg.requireShowLongDuration(e.localizedMessage ?: " err")
                 }finally {
@@ -340,8 +290,6 @@ fun SubmoduleListScreen(
             }
         }
     }
-
-
     val showSyncConfigDialog = rememberSaveable { mutableStateOf(false)}
     val syncParentConfig = rememberSaveable { mutableStateOf(false)}
     val syncSubmoduleConfig = rememberSaveable { mutableStateOf(false)}
@@ -360,10 +308,8 @@ fun SubmoduleListScreen(
             },
             onCancel = {showSyncConfigDialog.value = false},
             okBtnEnabled = syncParentConfig.value || syncSubmoduleConfig.value
-
         ) {
             showSyncConfigDialog.value=false
-
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.updating)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo->
@@ -376,18 +322,15 @@ fun SubmoduleListScreen(
                                     }catch (_:Exception) {
                                     }
                                 }
-
                                 if(syncSubmoduleConfig.value) {
                                     try {
                                         sm.sync()
                                     }catch (_:Exception) {
                                     }
                                 }
-
                             }
                         }
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.success))
                 }catch (e:Exception) {
                     Msg.requireShowLongDuration(e.localizedMessage ?: "err")
@@ -395,10 +338,8 @@ fun SubmoduleListScreen(
                     changeStateTriggerRefreshPage(needRefresh)
                 }
             }
-
         }
     }
-
     val showInitRepoDialog = rememberSaveable { mutableStateOf(false)}
     if(showInitRepoDialog.value) {
         ConfirmDialog2(title = activityContext.getString(R.string.init_repo),
@@ -413,24 +354,20 @@ fun SubmoduleListScreen(
             onCancel = {showInitRepoDialog.value = false},
         ) {
             showInitRepoDialog.value=false
-
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.loading)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo ->
                         val repoWorkDirFullPath = Libgit2Helper.getRepoWorkdirNoEndsWithSlash(repo)
-
                         selectedItemList.value.toList().forEachBetter {
                             val sm = Libgit2Helper.openSubmodule(repo, it.name)
                             if(sm!=null) {
                                 try {
                                     Libgit2Helper.submoduleRepoInit(repoWorkDirFullPath, sm)
                                 }catch (_:Exception){
-
                                 }
                             }
                         }
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.done))
                 }catch (e:Exception) {
                     Msg.requireShowLongDuration(e.localizedMessage ?: "err")
@@ -440,7 +377,6 @@ fun SubmoduleListScreen(
             }
         }
     }
-
     val showRestoreDotGitFileDialog = rememberSaveable { mutableStateOf(false)}
     if(showRestoreDotGitFileDialog.value) {
         ConfirmDialog2(
@@ -454,26 +390,20 @@ fun SubmoduleListScreen(
                 }
             },
             onCancel = { showRestoreDotGitFileDialog.value = false },
-
         ) {
             showRestoreDotGitFileDialog.value = false
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.restoring)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo ->
                         val repoWorkDirFullPath = Libgit2Helper.getRepoWorkdirNoEndsWithSlash(repo)
-
                         selectedItemList.value.toList().forEachBetter {
                             try {
                                 Libgit2Helper.SubmoduleDotGitFileMan.restoreDotGitFileForSubmodule(repoWorkDirFullPath, it.relativePathUnderParent)
                             }catch (_:Exception){
-
                             }
-
                         }
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.done))
-
                 }catch (e:Exception) {
                     Msg.requireShowLongDuration(e.localizedMessage ?:"err")
                 }finally {
@@ -482,7 +412,6 @@ fun SubmoduleListScreen(
             }
         }
     }
-
     val showReloadDialog = rememberSaveable { mutableStateOf(false)}
     val forceReload = rememberSaveable { mutableStateOf(false)}
     if(showReloadDialog.value) {
@@ -501,9 +430,7 @@ fun SubmoduleListScreen(
             onCancel = {showReloadDialog.value=false},
         ) {
             showReloadDialog.value=false
-
             val force = forceReload.value
-
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.reloading)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { parentRepo ->
@@ -513,65 +440,51 @@ fun SubmoduleListScreen(
                                 if(sm!=null) {
                                     Libgit2Helper.reloadSubmodule(sm, force)
                                 }
-
                             }catch (e:Exception) {
                                 MyLog.e(TAG, "reload submodule '${it.name}' err: ${e.localizedMessage}")
                             }
                         }
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.done))
                 }finally {
-                    // refresh list for get newest data after reload
                     changeStateTriggerRefreshPage(needRefresh)
                 }
             }
         }
     }
-
     val showResetToTargetDialog = rememberSaveable { mutableStateOf(false)}
     val closeResetDialog = {showResetToTargetDialog.value=false}
     if(showResetToTargetDialog.value) {
         ResetDialog(
-            fullOidOrBranchOrTag = null,  // null to hidden input hash text filed
+            fullOidOrBranchOrTag = null,  
             closeDialog=closeResetDialog,
-
-            repoFullPath = curRepo.value.fullSavePath,  // no use at here
-            repoId=repoId,  // no use at here
-            refreshPage = {_, _, _-> },  // no use at here
-
+            repoFullPath = curRepo.value.fullSavePath,  
+            repoId=repoId,  
+            refreshPage = {_, _, _-> },  
             onOk = { resetType->
                 closeResetDialog()
-
                 doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.resetting)) {
                     try {
                         selectedItemList.value.toList().forEachBetter {
                             if (it.targetHash.isNotBlank()) {
                                 try {
                                     Repository.open(it.fullPath).use { subRepo ->
-                                        // at least sub repo should has a head
-                                        if (subRepo.headUnborn().not()) {  // if head borned
+                                        if (subRepo.headUnborn().not()) {  
                                             Libgit2Helper.resetToRevspec(subRepo, it.targetHash, resetType)
                                         }
                                     }
                                 } catch (_: Exception) {
-
                                 }
                             }
                         }
-
-                        // its done, not means success, may failed, actually.
                         Msg.requireShow(activityContext.getString(R.string.done))
                     }finally {
                         changeStateTriggerRefreshPage(needRefresh)
                     }
-
                 }
             }
         )
     }
-
-
     val showImportToReposDialog = rememberSaveable { mutableStateOf(false)}
     if(showImportToReposDialog.value){
         ConfirmDialog2(
@@ -579,9 +492,7 @@ fun SubmoduleListScreen(
             requireShowTextCompose = true,
             textCompose = {
                 ScrollableColumn {
-//                    Text(stringResource(R.string.will_import_selected_submodules_to_repos))
                     CredentialSelector(credentialList.value, selectedCredentialIdx)
-
                     Spacer(Modifier.height(10.dp))
                     MySelectionContainer {
                         DefaultPaddingText(stringResource(R.string.import_repos_link_credential_note))
@@ -589,56 +500,43 @@ fun SubmoduleListScreen(
                 }
             },
             onCancel = { showImportToReposDialog.value = false },
-
         ) {
             showImportToReposDialog.value = false
-
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.importing)) {
                 val repoNameSuffix = Libgit2Helper.genRepoNameSuffixForSubmodule(curRepo.value.repoName)
                 val parentRepoId = curRepo.value.id
-//                val importList = selectedItemList.value.toList().filter { it.cloned }
-                val importList = selectedItemList.value.toList()  // just import all selected, will fail if must fail
-
+                val importList = selectedItemList.value.toList()  
                 val selectedCredentialId = credentialList.value[selectedCredentialIdx.intValue].id
-
                 val repoDb = AppModel.dbContainer.repoRepository
                 val importRepoResult = ImportRepoResult()
-
                 try {
                     importList.forEachBetter {
+
                         val result = repoDb.importRepos(dir=it.fullPath, isReposParent=false, repoNameSuffix = repoNameSuffix, parentRepoId = parentRepoId, credentialId = selectedCredentialId)
                         importRepoResult.all += result.all
                         importRepoResult.success += result.success
                         importRepoResult.failed += result.failed
                         importRepoResult.existed += result.existed
-                    }
 
+                    }
                     Msg.requireShowLongDuration(replaceStringResList(activityContext.getString(R.string.n_imported), listOf(""+importRepoResult.success)))
                 }catch (e:Exception) {
-                    //出错的时候，importRepoResult的计数不一定准，有可能比实际成功和失败的少，不过不可能多
                     val errMsg = e.localizedMessage
                     Msg.requireShowLongDuration(errMsg ?: "import err")
                     createAndInsertError(curRepo.value.id, "import repos err: $errMsg")
                     MyLog.e(TAG, "import repos from SubmoduleListPage err: importRepoResult=$importRepoResult, err="+e.stackTraceToString())
                 }finally {
-                    // because import doesn't change current page, so need not do anything yet
                 }
             }
-
         }
     }
-
-
     val filterResultNeedRefresh = rememberSaveable { mutableStateOf("") }
-
     val filterKeyword =mutableCustomStateOf(
         keyTag = stateKeyTag,
         keyName = "filterKeyword",
         initValue = TextFieldValue("")
     )
     val filterModeOn = rememberSaveable { mutableStateOf(false)}
-
-    // start: search states
     val lastKeyword = rememberSaveable { mutableStateOf("") }
     val token = rememberSaveable { mutableStateOf("") }
     val searching = rememberSaveable { mutableStateOf(false) }
@@ -647,54 +545,16 @@ fun SubmoduleListScreen(
         token.value = ""
         lastKeyword.value = ""
     }
-    // end: search states
-
-
-//    val showTagFetchPushDialog = rememberSaveable { mutableStateOf(false)}
-//    val showForce = rememberSaveable { mutableStateOf(false)}
-//    val remoteList = StateUtil.getCustomSaveableStateList(
-//        keyTag = stateKeyTag,
-//        keyName = "remoteList"
-//    ) {
-//        listOf<String>()
-//    }
-//    val selectedRemoteList = StateUtil.getCustomSaveableStateList(
-//        keyTag = stateKeyTag,
-//        keyName = "selectedRemoteList"
-//    ) {
-//        listOf<String>()
-//    }
-//
-//    val remoteCheckedList = StateUtil.getCustomSaveableStateList(
-//        keyTag = stateKeyTag,
-//        keyName = "remoteCheckedList"
-//    ) {
-//        listOf<Boolean>()
-//    }
-//
-//    val fetchPushDialogTitle = rememberSaveable { mutableStateOf("")}
-//
-//    val trueFetchFalsePush = rememberSaveable { mutableStateOf(true)}
-//    val requireDel = rememberSaveable { mutableStateOf(false)}
-//    val requireDelRemoteChecked = rememberSaveable { mutableStateOf( false)}
-//
-//    val loadingTextForFetchPushDialog = rememberSaveable { mutableStateOf("")}
-
     val recursiveClone = rememberSaveable { mutableStateOf( false)}
     val showCloneDialog = rememberSaveable { mutableStateOf( false)}
-
-
     val deleteConfigForDeleteDialog =rememberSaveable { mutableStateOf(false)}
     val deleteFilesForDeleteDialog =rememberSaveable { mutableStateOf(false)}
     val showDeleteDialog = rememberSaveable { mutableStateOf(false)}
-
     val initDelDialog = {
         deleteConfigForDeleteDialog.value = false
         deleteFilesForDeleteDialog.value = false
-
         showDeleteDialog.value = true
     }
-
     if(showDeleteDialog.value) {
         ConfirmDialog2(title = activityContext.getString(R.string.delete),
             requireShowTextCompose = true,
@@ -706,9 +566,7 @@ fun SubmoduleListScreen(
                             DefaultPaddingText(stringResource(R.string.submodule_del_config_info_note))
                         }
                     }
-
                     Spacer(Modifier.height(15.dp))
-
                     MyCheckBox(text = stringResource(R.string.del_files), value = deleteFilesForDeleteDialog)
                     if(deleteFilesForDeleteDialog.value) {
                         MySelectionContainer {
@@ -719,7 +577,6 @@ fun SubmoduleListScreen(
             },
             okBtnEnabled = deleteConfigForDeleteDialog.value || deleteFilesForDeleteDialog.value,
             onCancel = {showDeleteDialog.value = false}
-
         ) {
             showDeleteDialog.value=false
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.deleting)) {
@@ -728,7 +585,6 @@ fun SubmoduleListScreen(
                         val repoWorkDirPath = Libgit2Helper.getRepoWorkdirNoEndsWithSlash(repo)
                         selectedItemList.value.toList().forEachBetter { smdto ->
                             try {
-
                                 Libgit2Helper.removeSubmodule(
                                     deleteFiles = deleteFilesForDeleteDialog.value,
                                     deleteConfigs = deleteConfigForDeleteDialog.value,
@@ -737,33 +593,26 @@ fun SubmoduleListScreen(
                                     submoduleName = smdto.name,
                                     submoduleFullPath = smdto.fullPath,
                                 )
-
                             }catch (e:Exception) {
                                 val errPrefix = "del submodule err: delConfig=${deleteConfigForDeleteDialog.value}, delFiles=${deleteFilesForDeleteDialog.value}, err="
                                 val errMsg = e.localizedMessage
                                 Msg.requireShowLongDuration(errMsg ?: "err")
                                 createAndInsertError(curRepo.value.id, errPrefix+errMsg)
-
                                 MyLog.e(TAG, "#DeleteDialog err: delConfig=${deleteConfigForDeleteDialog.value}, delFiles=${deleteFilesForDeleteDialog.value}, err=${e.stackTraceToString()}")
                             }
                         }
-
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.done))
                 }finally {
                     changeStateTriggerRefreshPage(needRefresh)
                 }
-
             }
         }
     }
-
     val initCloneDialog= {
         recursiveClone.value = false
         showCloneDialog.value = true
     }
-
     val depth = rememberSaveable { mutableStateOf("") }
     val showUpdateDialog = rememberSaveable { mutableStateOf(false)}
     val recursiveUpdate = rememberSaveable { mutableStateOf(false)}
@@ -771,22 +620,15 @@ fun SubmoduleListScreen(
         recursiveUpdate.value = false
         showUpdateDialog.value=true
     }
-
     if(showCloneDialog.value) {
         ConfirmDialog2(title = activityContext.getString(R.string.clone),
             requireShowTextCompose = true,
             textCompose = {
                 ScrollableColumn {
-//                    Text(stringResource(R.string.will_clone_selected_submodules_are_you_sure))
-
                     CredentialSelector(credentialList.value, selectedCredentialIdx)
-
                     Spacer(Modifier.height(5.dp))
-
                     DepthTextField(depth)
-
                     Spacer(Modifier.height(5.dp))
-
                     MyCheckBox(text = stringResource(R.string.recursive), value = recursiveClone)
                     if(recursiveClone.value) {
                         MySelectionContainer {
@@ -794,108 +636,45 @@ fun SubmoduleListScreen(
                         }
                     }
                     Spacer(Modifier.height(10.dp))
-
                 }
             },
             onCancel = {showCloneDialog.value = false}
-
         ) {
             showCloneDialog.value=false
-
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.cloning)) {
                 try {
                     val recursive = recursiveClone.value
                     val depth = parseIntOrDefault(depth.value, null) ?: 0;
                     val willCloneList = selectedItemList.value.toList()
-//                val allItems = list.value
-//                val cloningStr = appContext.getString(R.string.cloning)
-
                     val credentialDb = AppModel.dbContainer.credentialRepository
                     val selectedCredential = credentialList.value[selectedCredentialIdx.intValue]
-                    // NONE will query from db then got null, so only need handle match by domain
                     val credential = if(SpecialCredential.MatchByDomain.credentialId == selectedCredential.id) selectedCredential.copy() else credentialDb.getByIdWithDecrypt(selectedCredential.id)
-
-//                val defaultInvalidIdx = -1
-
-                    //not cloned, and not do other job for submodule
-//                    val willCloneList = selectedList.filter{!it.cloned && it.tempStatus.isBlank()}
-
-//                val nameIndexMap = mutableMapOf<String, Int>()
-                    // set status to cloning for selected items
-//                willCloneList.forEach { selectedItem ->
-//                    val curItemIdx = allItems.indexOfFirst { selectedItem.name == it.name }
-//                    doActIfIndexGood(curItemIdx, allItems) { itemWillUpdate ->
-//                        val newItem = itemWillUpdate.copy(tempStatus = cloningStr)
-//                        allItems[curItemIdx] = newItem
-//                        nameIndexMap.put(selectedItem.name, curItemIdx)
-//
-//                        // may cause ConcurrentException
-//                        try {
-//                            val selectedIdx = selectedItemList.value.indexOfFirst { it.name == selectedItem.name }
-//                            if(selectedIdx!=-1) {  //current item selected, update it's info in selectedItemList
-//                                selectedItemList.value[selectedIdx] = newItem
-//                            }
-//                        }catch (_:Exception) {
-//
-//                        }
-//                    }
-//                }
                     Repository.open(curRepo.value.fullSavePath).use { repo->
                         willCloneList.forEachBetter { selectedItem ->
                             try {
-
-                                // clone submodule
                                 Libgit2Helper.cloneSubmodules(repo, recursive, depth, specifiedCredential=credential, submoduleNameList= listOf(selectedItem.name), credentialDb=credentialDb)
-
                             }catch (e:Exception) {
                                 val errPrefix = "clone '${selectedItem.name}' err: "
                                 val errMsg = e.localizedMessage ?: "clone submodule err"
                                 Msg.requireShow(errMsg)
                                 createAndInsertError(curRepo.value.id, errPrefix+errMsg)
                             }
-
-                            // clear status or set err to status
-//                        val curItemIdx = nameIndexMap.getOrDefault(selectedItem.name, defaultInvalidIdx)
-//                        doActIfIndexGood(curItemIdx, allItems) { itemWillUpdate ->
-//                            val newItem = itemWillUpdate.copy(tempStatus = resultMsg, cloned = Libgit2Helper.isValidGitRepo(itemWillUpdate.fullPath))
-//                            allItems[curItemIdx] = newItem
-//
-//                            try {
-//                                // make selectedList info more real-time, but may cause ConcurrentException, most time should be fine
-//                                val selectedIdx = selectedItemList.value.indexOfFirst { it.name == selectedItem.name }
-//                                if(selectedIdx!=-1) {  //current item selected, update it's info in selectedItemList
-//                                    selectedItemList.value[selectedIdx] = newItem
-//                                }
-//                            }catch (_:Exception) {
-//
-//                            }
-//                        }
-
                         }
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.done))
                 }finally {
                     changeStateTriggerRefreshPage(needRefresh)
                 }
-
-
             }
-
         }
     }
-
     if(showUpdateDialog.value) {
         ConfirmDialog2(title = activityContext.getString(R.string.update),
             requireShowTextCompose = true,
             textCompose = {
                 ScrollableColumn {
-
                     CredentialSelector(credentialList.value, selectedCredentialIdx)
-
-
                     Spacer(Modifier.height(5.dp))
-
                     MyCheckBox(text = stringResource(R.string.recursive), value = recursiveUpdate)
                     if(recursiveUpdate.value) {
                         MySelectionContainer {
@@ -903,26 +682,19 @@ fun SubmoduleListScreen(
                         }
                     }
                     Spacer(Modifier.height(10.dp))
-
                 }
             },
             onCancel = { showUpdateDialog.value = false }
-
         ) {
             showUpdateDialog.value = false
-
             val curRepo = curRepo.value
             val recursiveUpdate = recursiveUpdate.value
-
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.updating)) {
                 val selectedItemList = selectedItemList.value.toList()
-
                 try {
                     val selectedCredential = credentialList.value[selectedCredentialIdx.intValue]
-
                     val credentialDb = AppModel.dbContainer.credentialRepository
                     val credential = if(SpecialCredential.MatchByDomain.credentialId == selectedCredential.id) selectedCredential.copy() else credentialDb.getByIdWithDecrypt(selectedCredential.id)
-
                     Repository.open(curRepo.fullSavePath).use { repo ->
                         selectedItemList.forEachBetter {
                             try {
@@ -933,67 +705,19 @@ fun SubmoduleListScreen(
                             }
                         }
                     }
-
                     Msg.requireShow(activityContext.getString(R.string.done))
-
                 }finally {
                     changeStateTriggerRefreshPage(needRefresh)
                 }
             }
         }
     }
-
-
-    // 向下滚动监听，开始
     val pageScrolled = rememberSaveable { mutableStateOf(settings.showNaviButtons) }
-
     val filterListState = rememberLazyListState()
-//    val filterListState = mutableCustomStateOf(
-//        keyTag = stateKeyTag,
-//        keyName = "filterListState",
-//        LazyListState(0,0)
-//    )
     val enableFilterState = rememberSaveable { mutableStateOf(false) }
-//    val firstVisible = remember { derivedStateOf { if(enableFilterState.value) filterListState.value.firstVisibleItemIndex else listState.firstVisibleItemIndex } }
-//    ScrollListener(
-//        nowAt = firstVisible.value,
-//        onScrollUp = {scrollingDown.value = false}
-//    ) { // onScrollDown
-//        scrollingDown.value = true
-//    }
-//
-//    val lastAt = remember { mutableIntStateOf(0) }
-//    val lastIsScrollDown = remember { mutableStateOf(false) }
-//    val forUpdateScrollState = remember {
-//        derivedStateOf {
-//            val nowAt = if(enableFilterState.value) {
-//                filterListState.firstVisibleItemIndex
-//            } else {
-//                listState.firstVisibleItemIndex
-//            }
-//
-//            val scrolledDown = nowAt > lastAt.intValue  // scroll down
-////            val scrolledUp = nowAt < lastAt.intValue
-//
-//            val scrolled = nowAt != lastAt.intValue  // scrolled
-//            lastAt.intValue = nowAt
-//
-//            // only update state when this scroll down and last is not scroll down, or this is scroll up and last is not scroll up
-//            if(scrolled && ((lastIsScrollDown.value && !scrolledDown) || (!lastIsScrollDown.value && scrolledDown))) {
-//                pageScrolled.value = true
-//            }
-//
-//            lastIsScrollDown.value = scrolledDown
-//        }
-//    }.value
-    // 向下滚动监听，结束
-
-
     val showSelectedItemsShortDetailsDialog = rememberSaveable { mutableStateOf(false)}
-//    val selectedItemsShortDetailsStr = rememberSaveable { mutableStateOf("")}
     if(showSelectedItemsShortDetailsDialog.value) {
         SelectedItemDialog(
-//            detailStr = selectedItemsShortDetailsStr.value,
             selectedItems = selectedItemList.value,
             formatter = {it.name},
             switchItemSelected = switchItemSelected,
@@ -1001,25 +725,15 @@ fun SubmoduleListScreen(
             closeDialog = {showSelectedItemsShortDetailsDialog.value = false}
         )
     }
-
     val countNumOnClickForBottomBar = {
-//        val sb = StringBuilder()
-//        selectedItemList.value.forEach {
-//            sb.appendLine(it.name).appendLine()
-//        }
-//        selectedItemsShortDetailsStr.value = sb.removeSuffix("\n").toString()
-
         showSelectedItemsShortDetailsDialog.value = true
     }
-
     val showTitleInfoDialog = rememberSaveable { mutableStateOf(false)}
     if(showTitleInfoDialog.value) {
         RepoInfoDialog(curRepo.value, showTitleInfoDialog)
     }
-
     val filterLastPosition = rememberSaveable { mutableStateOf(0) }
     val lastPosition = rememberSaveable { mutableStateOf(0) }
-
     BackHandler {
         if(multiSelectionMode.value) {
             quitSelectionMode()
@@ -1030,8 +744,6 @@ fun SubmoduleListScreen(
             naviUp()
         }
     }
-
-
     val isInitLoading = rememberSaveable { mutableStateOf(SharedState.defaultLoadingValue) }
     val initLoadingOn = { msg:String ->
         isInitLoading.value = true
@@ -1039,8 +751,6 @@ fun SubmoduleListScreen(
     val initLoadingOff = {
         isInitLoading.value = false
     }
-
-
     Scaffold(
         modifier = Modifier.nestedScroll(homeTopBarScrollBehavior.nestedScrollConnection),
         topBar = {
@@ -1055,8 +765,7 @@ fun SubmoduleListScreen(
                             onDoubleClick = {
                                 defaultTitleDoubleClick(scope, listState, lastPosition)
                             },
-
-                        ){  //onClick
+                        ){  
                             showTitleInfoDialog.value = true
                         }){
                             ScrollableRow  {
@@ -1083,10 +792,8 @@ fun SubmoduleListScreen(
                             tooltipText = stringResource(R.string.close),
                             icon = Icons.Filled.Close,
                             iconContentDesc = stringResource(R.string.close),
-
                         ) {
                             resetSearchVars()
-
                             filterModeOn.value = false
                         }
                     }else {
@@ -1094,11 +801,9 @@ fun SubmoduleListScreen(
                             tooltipText = stringResource(R.string.back),
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
                             iconContentDesc = stringResource(R.string.back),
-
                         ) {
                             naviUp()
                         }
-
                     }
                 },
                 actions = {
@@ -1108,11 +813,9 @@ fun SubmoduleListScreen(
                             icon =  Icons.Filled.FilterAlt,
                             iconContentDesc = stringResource(R.string.filter),
                         ) {
-                            // filter item
                             filterKeyword.value = TextFieldValue("")
                             filterModeOn.value = true
                         }
-
                         LongPressAbleIconBtn(
                             tooltipText = stringResource(R.string.refresh),
                             icon =  Icons.Filled.Refresh,
@@ -1120,7 +823,6 @@ fun SubmoduleListScreen(
                         ) {
                             changeStateTriggerRefreshPage(needRefresh)
                         }
-
                         LongPressAbleIconBtn(
                             tooltipText = stringResource(R.string.create),
                             icon =  Icons.Filled.Add,
@@ -1135,7 +837,6 @@ fun SubmoduleListScreen(
         },
         floatingActionButton = {
             if(pageScrolled.value) {
-
                 GoToTopAndGoToBottomFab(
                     filterModeOn = enableFilterState.value,
                     scope = scope,
@@ -1145,7 +846,6 @@ fun SubmoduleListScreen(
                     listLastPosition = lastPosition,
                     showFab = pageScrolled
                 )
-
             }
         }
     ) { contentPadding ->
@@ -1153,14 +853,10 @@ fun SubmoduleListScreen(
             contentPadding = contentPadding,
             onRefresh = { changeStateTriggerRefreshPage(needRefresh) }
         ) {
-
             if (loading.value) {
-//            LoadingText(text = loadingText.value, contentPadding = contentPadding)
                 LoadingDialog(text = loadingText.value)
             }
-
-
-            if(list.value.isEmpty()) {  //无条目，显示可创建或fetch
+            if(list.value.isEmpty()) {  
                 FullScreenScrollableColumn(contentPadding) {
                     if(isInitLoading.value) {
                         Text(stringResource(R.string.loading))
@@ -1168,7 +864,6 @@ fun SubmoduleListScreen(
                         Row {
                             Text(text = stringResource(R.string.no_submodules_found))
                         }
-
                         CenterPaddingRow {
                             LongPressAbleIconBtn(
                                 icon = Icons.Filled.Add,
@@ -1179,12 +874,9 @@ fun SubmoduleListScreen(
                         }
                     }
                 }
-
-            }else {  //有条目
-                //根据关键字过滤条目
-                val keyword = filterKeyword.value.text  //关键字
+            }else {  
+                val keyword = filterKeyword.value.text  
                 val enableFilter = filterModeActuallyEnabled(filterModeOn.value, keyword)
-
                 val lastNeedRefresh = rememberSaveable { mutableStateOf("") }
                 val list = filterTheList(
                     needRefresh = filterResultNeedRefresh.value,
@@ -1202,21 +894,13 @@ fun SubmoduleListScreen(
                         it.name.contains(keyword, ignoreCase = true)
                                 || it.remoteUrl.contains(keyword, ignoreCase = true)
                                 || it.getStatus(activityContext).contains(keyword, ignoreCase = true)
-//                            || it.fullPath.contains(keyword, ignoreCase = true)  //完整路径肯定有相同前缀，仅相对路径（it.name）不同，所以仅过滤name即可，不需要过滤完整路径
                                 || it.targetHash.contains(keyword, ignoreCase = true)
                                 || it.location.toString().contains(keyword, ignoreCase = true)
                                 || it.getOther().contains(keyword, ignoreCase = true)
                     }
                 )
-
-
                 val listState = if(enableFilter) filterListState else listState
-//            if(enableFilter) {  //更新filter列表state
-//                filterListState.value = listState
-//            }
-                //更新是否启用filter
                 enableFilterState.value = enableFilter
-
                 MyLazyColumn(
                     contentPadding = contentPadding,
                     list = list,
@@ -1225,10 +909,8 @@ fun SubmoduleListScreen(
                     requirePaddingAtBottom = true,
                     forEachCb = {},
                 ){idx, it->
-                    //长按会更新curObjInPage为被长按的条目
                     SubmoduleItem(it, lastClickedItemKey, isItemInSelected, onLongClick = {
-                        if(multiSelectionMode.value) {  //多选模式
-                            //在选择模式下长按条目，执行区域选择（连续选择一个范围）
+                        if(multiSelectionMode.value) {  
                             UIHelper.doSelectSpan(
                                 itemIdxOfItemList = idx,
                                 item = it,
@@ -1237,29 +919,26 @@ fun SubmoduleListScreen(
                                 switchItemSelected = switchItemSelected,
                                 selectIfNotInSelectedListElseNoop = selectItem
                             )
-                        }else {  //非多选模式
-                            //启动多选模式
+                        }else {  
                             switchItemSelected(it)
                         }
                     }
-                    ) {  //onClick
-                        if(multiSelectionMode.value) {  //选择模式
+                    ) {  
+                        if(multiSelectionMode.value) {  
                             UIHelper.selectIfNotInSelectedListElseRemove(it, selectedItemList.value, contains = containsForSelectedItems)
-                        }else {  //非多选模式，点击显示详情
+                        }else {  
                             detailsString.value = getDetail(it)
                             showDetailsDialog.value = true
                         }
                     }
-
                     MyHorizontalDivider()
                 }
-
                 if (multiSelectionMode.value) {
                     val iconList:List<ImageVector> = listOf(
-                        Icons.Filled.Delete,  //删除
-                        Icons.Filled.ReplayCircleFilled,  //do `git submodule update`, actually is checkout submodule to parent's recorded commit
-                        Icons.Filled.DownloadForOffline,  //clone
-                        Icons.Filled.SelectAll,  //全选
+                        Icons.Filled.Delete,  
+                        Icons.Filled.ReplayCircleFilled,  
+                        Icons.Filled.DownloadForOffline,  
+                        Icons.Filled.SelectAll,  
                     )
                     val iconTextList:List<String> = listOf(
                         stringResource(id = R.string.delete),
@@ -1268,48 +947,40 @@ fun SubmoduleListScreen(
                         stringResource(id = R.string.select_all),
                     )
                     val iconEnableList:List<()->Boolean> = listOf(
-                        {selectedItemList.value.isNotEmpty()},  // delete
-                        {selectedItemList.value.isNotEmpty()},  // update
-                        {selectedItemList.value.isNotEmpty()},  // clone
-                        {true} // select all
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {true} 
                     )
-                    val iconOnClickList:List<()->Unit> = listOf(  //index页面的底栏选项
+                    val iconOnClickList:List<()->Unit> = listOf(  
                         delete@{
                             initDelDialog()
                         },
-
                         update@{
                             initUpdateDialog()
                         },
-
                         clone@{
                             initCloneDialog()
                         },
-
                         selectAll@{
-//                        val list = if(enableFilterState.value) filterList.value else list.value
-
                             list.forEachBetter {
                                 selectItem(it)
                             }
-
                             Unit
                         },
                     )
-
                     val moreItemEnableList:List<()->Boolean> = (listOf(
-                        {selectedItemList.value.size == 1},  // copy full path
-                        {selectedItemList.value.isNotEmpty()},  // import to repos
-                        {selectedItemList.value.isNotEmpty()},  // reset to target
-                        {selectedItemList.value.size == 1},  // set url
-                        {selectedItemList.value.isNotEmpty()},  // reload
-                        {selectedItemList.value.isNotEmpty()},  // sync config （同步.gitmodules 里的内容到父仓库或子仓库的配置文件）
-                        {selectedItemList.value.isNotEmpty()},  // init repo
-                        {selectedItemList.value.isNotEmpty()},  // restore .git file
-                        {selectedItemList.value.size == 1},  // edit config
-                        {selectedItemList.value.isNotEmpty()},  // details
+                        {selectedItemList.value.size == 1},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.size == 1},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.isNotEmpty()},  
+                        {selectedItemList.value.size == 1},  
+                        {selectedItemList.value.isNotEmpty()},  
                     ))
-
                     val moreItemTextList = (listOf(
                         stringResource(R.string.copy_full_path),
                         stringResource(R.string.import_to_repos),
@@ -1320,12 +991,10 @@ fun SubmoduleListScreen(
                         stringResource(R.string.init_repo),
                         stringResource(R.string.restore_dot_git_file),
                         stringResource(R.string.edit_config),
-                        stringResource(R.string.details),  //可针对单个或多个条目查看details，多个时，用分割线分割多个条目的信息
+                        stringResource(R.string.details),  
                     ))
-
                     val moreItemOnClickList:List<()->Unit> = (listOf(
-                        copyFullPath@{  // if selected one
-                            // copy full path of a submodule
+                        copyFullPath@{  
                             try {
                                 if(selectedItemList.value.isNotEmpty()) {
                                     clipboardManager.setText(AnnotatedString(selectedItemList.value[0].fullPath))
@@ -1340,12 +1009,13 @@ fun SubmoduleListScreen(
                             }
                         },
                         importToRepos@{
+
                             showImportToReposDialog.value = true
                         },
                         resetToTarget@{
                             showResetToTargetDialog.value = true
                         },
-                        setUrl@{  // if selected one
+                        setUrl@{  
                             try {
                                 if(selectedItemList.value.isNotEmpty()) {
                                     val curItem = selectedItemList.value[0]
@@ -1365,26 +1035,23 @@ fun SubmoduleListScreen(
                             forceReload.value=false
                             showReloadDialog.value = true
                         },
-                        syncConfigs@{  // git submodule init, git submodule sync. this is necessary if user's edit .gitmodules by hand
+                        syncConfigs@{  
                             syncParentConfig.value = true
                             syncSubmoduleConfig.value = true
-
                             showSyncConfigDialog.value = true
                         },
-                        initRepo@{ // libgit2's submodule.repoInit
+                        initRepo@{ 
                             showInitRepoDialog.value = true
                         },
-                        restoreDotGitFile@{ // most time will auto backup and restore when need
+                        restoreDotGitFile@{ 
                             showRestoreDotGitFileDialog.value = true
                         },
-
                         editConfig@{
                             val item = selectedItemList.value.firstOrNull()
                             if(item == null) {
                                 Msg.requireShowLongDuration(activityContext.getString(R.string.no_item_selected))
                                 return@editConfig
                             }
-
                             try {
                                 Repository.open(item.fullPath).use { subRepo ->
                                     val configPath = Libgit2Helper.getRepoConfigFilePath(subRepo)
@@ -1392,7 +1059,6 @@ fun SubmoduleListScreen(
                                         Msg.requireShowLongDuration(activityContext.getString(R.string.file_doesnt_exist))
                                         return@editConfig
                                     }
-
                                     openFileWithInnerSubPageEditor(
                                         context = activityContext,
                                         filePath = configPath,
@@ -1405,24 +1071,18 @@ fun SubmoduleListScreen(
                                 e.printStackTrace()
                                 Msg.requireShowLongDuration("err: "+e.localizedMessage)
                             }
-
                         },
-
                         details@{
                             val sb = StringBuilder()
                             val spliter = Cons.itemDetailSpliter
-
                             selectedItemList.value.forEachBetter {
                                 sb.append(getDetail(it))
                                 sb.append(spliter)
                             }
-
                             detailsString.value = sb.removeSuffix(spliter).toString()
-
                             showDetailsDialog.value = true
                         },
                     ))
-
                     BottomBar(
                         quitSelectionMode=quitSelectionMode,
                         iconList=iconList,
@@ -1442,25 +1102,16 @@ fun SubmoduleListScreen(
                 }
             }
         }
-
-
     }
-
-
-    //compose创建时的副作用
     LaunchedEffect(needRefresh.value) {
         try {
             val refreshId = needRefresh.value
             val pageChanged = {
                 refreshId != needRefresh.value
             }
-
-//            doJobThenOffLoading(loadingOn = loadingOn, loadingOff = loadingOff, loadingText = activityContext.getString(R.string.loading)) {
             doJobThenOffLoading(initLoadingOn, initLoadingOff) {
-                
-                list.value.clear()  //先清一下list，然后可能添加也可能不添加
+                list.value.clear()  
                 credentialList.value.clear()
-
                 if(!repoId.isNullOrBlank()) {
                     val repoDb = AppModel.dbContainer.repoRepository
                     val repoFromDb = repoDb.getById(repoId)
@@ -1471,17 +1122,12 @@ fun SubmoduleListScreen(
                             list.value.addAll(items)
                         }
                     }
-
                     val credentialDb = AppModel.dbContainer.credentialRepository
                     val credentialListFromDb = credentialDb.getAll(includeNone = true, includeMatchByDomain = true)
                     if(credentialListFromDb.isNotEmpty()) {
                         credentialList.value.addAll(credentialListFromDb)
                     }
-
                 }
-
-
-                //更新已选中条目列表，将仍在列表中元素更新为新查询的数据
                 val pageChangedNeedAbort = updateSelectedList(
                     selectedItemList = selectedItemList.value,
                     itemList = list.value,
@@ -1489,18 +1135,11 @@ fun SubmoduleListScreen(
                     match = { oldSelected, item-> oldSelected.name == item.name },
                     pageChanged = pageChanged
                 )
-
-                // 这里本来就在最后，所以是否return没差别，但避免以后往下面加代码忘了return，这里还是return下吧
                 if (pageChangedNeedAbort) return@doJobThenOffLoading
-
-
                 triggerReFilter(filterResultNeedRefresh)
-
             }
         } catch (e: Exception) {
             MyLog.e(TAG, "$TAG#LaunchedEffect() err: "+e.stackTraceToString())
-//            ("LaunchedEffect: job cancelled")
         }
     }
-
 }

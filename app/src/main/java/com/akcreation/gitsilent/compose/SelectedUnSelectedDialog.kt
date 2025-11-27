@@ -57,7 +57,6 @@ fun <T> SelectedUnSelectedDialog(
         onOk = {}
     )
 }
-
 @Composable
 fun <T> SelectedUnSelectedList(
     loading:Boolean,
@@ -68,7 +67,6 @@ fun <T> SelectedUnSelectedList(
     filterKeyWord: CustomStateSaveable<TextFieldValue>,
     selectedItemFormatter:@Composable (T)->Unit,
     unselectedItemFormatter:@Composable (T)->Unit,
-
     filterSelectedItemList: (keyword:String)->List<T>,
     filterUnselectedItemList: (keyword:String)->List<T>,
 ) {
@@ -81,34 +79,24 @@ fun <T> SelectedUnSelectedList(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-
-                //注意：这个过滤没开协程，直接在渲染线程过滤的，目前这个组件用来过滤仓库，我估计用户不会克隆超过100个仓库，性能损耗很小，没必要开协程处理
-                //普通的过滤，加不加清空无所谓，一按返回就清空了，但这个常驻显示，得加个清空按钮
                 FilterTextField(filterKeyWord = filterKeyWord, requireFocus = false)
-
                 Spacer(Modifier.height(10.dp))
-
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-
-                    //根据关键字过滤条目
-                    val k = filterKeyWord.value.text  //关键字
+                    val k = filterKeyWord.value.text  
                     val enableFilter = maybeIsGoodKeyword(k)
                     val filteredSelectedList = if(enableFilter){
                         filterSelectedItemList(k)
                     }else {
                         selectedItemList
                     }
-
                     val filteredUnselectedList = if(enableFilter){
                         filterUnselectedItemList(k)
                     }else {
                         unselectedItemList
                     }
-
                     item {
                         SettingsTitle(selectedTitleText+"(${filteredSelectedList.size})")
                     }
-
                     if(filteredSelectedList.isEmpty()) {
                         item {
                             MySelectionContainer {
@@ -124,11 +112,9 @@ fun <T> SelectedUnSelectedList(
                             }
                         }
                     }
-
                     item {
                         SettingsTitle(unselectedTitleText+"(${filteredUnselectedList.size})")
                     }
-
                     if(filteredUnselectedList.isEmpty()) {
                         item {
                             MySelectionContainer {
@@ -149,4 +135,3 @@ fun <T> SelectedUnSelectedList(
         }
     }
 }
-

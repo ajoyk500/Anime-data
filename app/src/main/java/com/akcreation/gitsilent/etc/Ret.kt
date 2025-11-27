@@ -1,7 +1,8 @@
 package com.akcreation.gitsilent.etc
 
+
 class Ret<T> private constructor(initData:T){
-    object ErrCode {  //小于SuccessCode.default的全是失败代码
+    object ErrCode {  
         val default = 0
         val headIsNull = 1
         val repoStateIsNotNone = 2
@@ -21,8 +22,8 @@ class Ret<T> private constructor(initData:T){
         val newTargetRefIsNull = 16
         val mergeFailedByCreateCommitFaild = 17
         val mergeFailedByGetRepoHeadCommitFaild = 18
-        val mergeFailedByAfterMergeHasConfilts = 19  // merge/rebase/cherrypick 完了，有冲突
-        val mergeFailedByConfigIsFfOnlyButCantFfMustMerge = 20  // 配置文件配置成仅限fast-forward但无法fast-forward必须合并才行(一般服务器上的git远程仓库会配置仅fast-forward（我猜的），让客户端必须解决冲突再推送，但客户端一般不会配置这个)
+        val mergeFailedByAfterMergeHasConfilts = 19  
+        val mergeFailedByConfigIsFfOnlyButCantFfMustMerge = 20  
         val mergeFailedByRepoStateIsNotNone = 21
         val createCommitFailedByGetRepoHeadCommitFaild = 22
         val usernameIsBlank = 23
@@ -49,34 +50,24 @@ class Ret<T> private constructor(initData:T){
         val rebaseFailedByRepoStateIsNotNone = 44
         val alreadyUpToDate = 45
     }
-
-    object SuccessCode {  //大于等于SuccessCode.default的全是成功代码
+    object SuccessCode {  
         val default=1000
         val upToDate=1001
         val openFileWithEditMode=1002
         val openFileWithViewMode=1003
         val fileContentIsEmptyNeedNotCreateSnapshot=1004
-
-        /**
-         * merge or rebase, fast forward success
-         */
         val fastForwardSuccess=1005
     }
-
-
     var code = SuccessCode.default
     var msg = ""
     var data:T = initData
     var exception:Exception?=null
-
     fun hasError():Boolean {
         return code < SuccessCode.default
     }
-
     fun success():Boolean {
         return !hasError()
     }
-
     fun<O> copyWithNewData(newData:O? = null):Ret<O?> {
         return create(
             data = newData,
@@ -85,28 +76,22 @@ class Ret<T> private constructor(initData:T){
             exception = exception
         )
     }
-
     companion object {
         fun <T>createErrorDefaultDataNull(errMsg:String, data:T? =null, errCode:Int=ErrCode.default, exception: Exception?=null):Ret<T?> {
             return create(data, errMsg, errCode, exception)
         }
-
         fun <T>createErrorDefaultDataNull(data:T? =null, errMsg:String, errCode:Int=ErrCode.default, exception: Exception?=null):Ret<T?> {
             return create(data, errMsg, errCode, exception)
         }
-
         fun <T>createSuccessDefaultDataNull(data:T? =null, successMsg:String="", successCode:Int=SuccessCode.default):Ret<T?> {
             return create(data, successMsg, successCode, exception=null)
         }
-
         fun <T>createError(data:T, errMsg:String, errCode:Int=ErrCode.default, exception: Exception?=null):Ret<T> {
             return create(data, errMsg, errCode, exception)
         }
-
         fun <T>createSuccess(data:T, successMsg:String="", successCode:Int=SuccessCode.default):Ret<T> {
             return create(data, successMsg, successCode, exception=null)
         }
-
         fun <T>create(data:T, msg:String, code:Int, exception: Exception?):Ret<T> {
             val r = Ret(data)
             r.data=data
@@ -115,7 +100,5 @@ class Ret<T> private constructor(initData:T){
             r.exception=exception
             return  r
         }
-
     }
-
 }

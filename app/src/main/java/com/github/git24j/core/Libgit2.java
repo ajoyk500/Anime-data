@@ -4,34 +4,19 @@ import java.util.EnumSet;
 
 public class Libgit2 {
     static native void jniShadowFree(long ptr);
-
     public static native void init();
-
     public static native void shutdown();
-
     public static native Version version();
-
     public static native int features();
-
-    /** Wapper of features that returns an enum set. */
     public static EnumSet<GitFeature> featuresSet() {
         return GitFeature.valuesOf(features());
     }
-
-    // git_libgit2_opts() start
-    /* note:
-        all these methods may throws GitException,
-        but I saw in this project other methods, almost no one wrote throws part
-        on method signature, so I don't wrote throws on method signature too.
-        better use try catch when calling below methods.
-    * */
     public static native void optsGitOptSetMwindowSize(long mWindowSize);
     public static native long optsGitOptGetMwindowSize();
     public static native void optsGitOptSetMWindowMappedLimit(long mWindowMappedLimit);
     public static native long optsGitOptGetMWindowMappedLimit();
     public static native void optsGitOptSetMWindowFileLimit(long mWindowFileLimit);
     public static native long optsGitOptGetMWindowFileLimit();
-
     private static native String optsGitOptGetSearchPath(int configLevel);
     private static native void optsGitOptSetSearchPath(int configLevel, String path);
     public static String optsGitOptGetSearchPath(Config.ConfigLevel configLevel) {
@@ -40,12 +25,10 @@ public class Libgit2 {
     public static void optsGitOptSetSearchPath(Config.ConfigLevel configLevel, String path){
         optsGitOptSetSearchPath(configLevel.getValue(), path);
     }
-
     private static native void optsGitOptSetCacheObjectLimit(int type, long size);
     public static void optsGitOptSetCacheObjectLimit(GitObject.Type type, long size){
         optsGitOptSetCacheObjectLimit(type.getBit(),size);
     }
-
     public static native void optsGitOptSetCacheMaxSize(long size);
     public static native void optsGitOptEnableCaching(boolean enable);
     public static native GitCachedMemorySaver optsGitOptGetCachedMemory();
@@ -79,6 +62,4 @@ public class Libgit2 {
     public static native void optsGitOptSetServerConnectTimeout(long timeout);
     public static native long optsGitOptGetServerTimeout();
     public static native void optsGitOptSetServerTimeout(long timeout);
-
-    // git_libgit2_opts() end
 }

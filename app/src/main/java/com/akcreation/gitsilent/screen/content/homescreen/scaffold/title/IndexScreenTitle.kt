@@ -37,9 +37,7 @@ fun IndexScreenTitle(
     changeListPageItemListState: LazyListState,
     lastPosition: MutableState<Int>,
 ) {
-//    val haptic = LocalHapticFeedback.current
     val activityContext = LocalContext.current
-
     val showTitleInfoDialog = rememberSaveable { mutableStateOf(false) }
     if(showTitleInfoDialog.value) {
         RepoInfoDialog(
@@ -50,34 +48,23 @@ fun IndexScreenTitle(
             }
         )
     }
-
-    //设置仓库状态，主要是为了显示merge
     val repoStateText = rememberSaveable(repoState.intValue) { mutableStateOf(Libgit2Helper.getRepoStateText(repoState.intValue, activityContext)) }
-
-
-
     val getTitleColor = {
-//        UIHelper.getChangeListTitleColor(repoState.intValue)
         Color.Unspecified
     }
-
     Column(modifier = Modifier
         .combinedClickable(
             onDoubleClick = {
                 defaultTitleDoubleClick(scope, changeListPageItemListState, lastPosition)
             },
             onLongClick = null
-//            {  //长按显示仓库名
-////                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-//            }
-        ) { // onClick
+        ) { 
             showTitleInfoDialog.value = true
         }
         .widthIn(min = MyStyleKt.Title.clickableTitleMinWidth)
     ) {
         ScrollableRow {
             IconOfRepoState(repoState.intValue)
-
             Text(
                 text = curRepo.value.repoName,
                 maxLines = 1,
@@ -87,7 +74,6 @@ fun IndexScreenTitle(
             )
         }
         ScrollableRow  {
-            //"[Index]|Merging" or "[Index]"
             Text(text = "["+stringResource(id = R.string.index)+"]" + (if(repoStateText.value.isNotBlank()) " | ${repoStateText.value}" else ""),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -95,6 +81,5 @@ fun IndexScreenTitle(
                 color = getTitleColor()
             )
         }
-
     }
 }

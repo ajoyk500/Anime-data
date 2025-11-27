@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.Theme
 
-
 @Composable
 fun MyTriCheckBox(
     text: String,
@@ -29,7 +28,6 @@ fun MyTriCheckBox(
     onValueChange: ()->Unit
 ) {
     val inDarkTheme = Theme.inDarkTheme
-
     Row(
         Modifier
             .fillMaxWidth()
@@ -49,14 +47,11 @@ fun MyTriCheckBox(
             state = state,
             onClick = null
         )
-
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(start = 16.dp),
             color = if(enabled) Color.Unspecified else if(inDarkTheme) MyStyleKt.TextColor.disable_DarkTheme else MyStyleKt.TextColor.disable
         )
-
     }
 }
-

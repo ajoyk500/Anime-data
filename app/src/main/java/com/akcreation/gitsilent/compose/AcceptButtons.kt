@@ -18,12 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.R
 
-
 private val iconShape = RoundedCornerShape(8.dp)
 private val borderWidth = 2.dp
-
-
-
 @Composable
 fun AcceptButtons(
     lineIndex: Int,
@@ -44,11 +40,6 @@ fun AcceptButtons(
         prepareAcceptBlock = prepareAcceptBlock,
     )
 }
-
-
-/**
- * this smaller than iconText, usually will not over-sized
- */
 @Composable
 private fun AcceptButtons_LongPressedIcon(
     lineIndex: Int,
@@ -61,7 +52,6 @@ private fun AcceptButtons_LongPressedIcon(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -74,8 +64,6 @@ private fun AcceptButtons_LongPressedIcon(
         ) {
             prepareAcceptBlock(true, false, lineIndex, lineText)
         }
-
-
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.accept_theirs),
             icon = Icons.Filled.ChevronRight,
@@ -85,8 +73,6 @@ private fun AcceptButtons_LongPressedIcon(
         ) {
             prepareAcceptBlock(false, true, lineIndex, lineText)
         }
-
-
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.accept_both),
             icon = Icons.Filled.Code,
@@ -96,8 +82,6 @@ private fun AcceptButtons_LongPressedIcon(
         ) {
             prepareAcceptBlock(true, true, lineIndex, lineText)
         }
-
-
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.reject_both),
             icon = Icons.Filled.CodeOff,
@@ -107,6 +91,5 @@ private fun AcceptButtons_LongPressedIcon(
         ) {
             prepareAcceptBlock(false, false, lineIndex, lineText)
         }
-
     }
 }

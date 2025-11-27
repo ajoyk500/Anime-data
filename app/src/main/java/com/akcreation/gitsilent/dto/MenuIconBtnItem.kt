@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 data class MenuIconBtnItem (
     val icon:ImageVector,
     val text:String,
-    val desc:String = text, // for accessbility
+    val desc:String = text, 
     val size:Dp = defaultIconSize,
     val pressedCircleSize:Dp = defaultPressedCircleSize,
     val enabled:()->Boolean={true},
@@ -17,6 +17,5 @@ data class MenuIconBtnItem (
     companion object {
         val defaultIconSize = 24.dp
         val defaultPressedCircleSize = 32.dp
-
     }
 }

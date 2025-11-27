@@ -17,7 +17,6 @@ import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.AppModel
 import com.akcreation.gitsilent.utils.doJobThenOffLoading
 
-
 @Composable
 fun UnLinkCredentialAndRemoteDialogForRemoteListPage(
     remoteId:String,
@@ -25,10 +24,8 @@ fun UnLinkCredentialAndRemoteDialogForRemoteListPage(
     onCancel: () -> Unit,
     onOkCallback:()->Unit,
 ) {
-
     val fetchChecked = rememberSaveable { mutableStateOf(true) }
     val pushChecked = rememberSaveable { mutableStateOf(true) }
-
     AlertDialog(
         title = {
             DialogTitle(stringResource(R.string.unlink))
@@ -46,33 +43,28 @@ fun UnLinkCredentialAndRemoteDialogForRemoteListPage(
                 MyCheckBox(text = stringResource(R.string.fetch), value = fetchChecked)
                 MyCheckBox(text = stringResource(R.string.push), value = pushChecked)
             }
-
         },
         onDismissRequest = {
             onCancel()
         },
         confirmButton = {
             TextButton(
-                enabled = fetchChecked.value || pushChecked.value,  //at least checked 1, else dont enable
-
+                enabled = fetchChecked.value || pushChecked.value,  
                 onClick = onOk@{
                     if(!fetchChecked.value && !pushChecked.value) {
                         return@onOk
                     }
-
                     val remoteDb = AppModel.dbContainer.remoteRepository
                     val emptyId = ""
-
                     doJobThenOffLoading {
                         try {
                             if(fetchChecked.value && pushChecked.value) {
                                 remoteDb.updateFetchAndPushCredentialIdByRemoteId(remoteId, emptyId, emptyId)
                             }else if(fetchChecked.value) {
                                 remoteDb.updateCredentialIdByRemoteId(remoteId, emptyId)
-                            }else {  //pushChecked.value is true
+                            }else {  
                                 remoteDb.updatePushCredentialIdByRemoteId(remoteId, emptyId)
                             }
-
                         }finally {
                             onOkCallback()
                         }
@@ -92,6 +84,4 @@ fun UnLinkCredentialAndRemoteDialogForRemoteListPage(
             }
         }
     )
-
 }
-

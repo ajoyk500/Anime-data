@@ -9,21 +9,15 @@ data class StashDto(
     var msg: String = "",
     var stashId: Oid? = null
 ) : ItemKey {
-
     private var shortStashId:String?=null
-
     fun getCachedShortStashId():String {
         if(shortStashId == null) {
             shortStashId = Libgit2Helper.getShortOidStrByFull(stashId.toString())
         }
-
         return shortStashId ?: stashId.toString()
     }
-
     private var cached_OneLineMsg:String? = null
     fun getCachedOneLineMsg(): String = (cached_OneLineMsg ?: Libgit2Helper.zipOneLineMsg(msg).let { cached_OneLineMsg = it; it });
-
-
     override fun getItemKey():String {
         return "$index: $stashId"
     }

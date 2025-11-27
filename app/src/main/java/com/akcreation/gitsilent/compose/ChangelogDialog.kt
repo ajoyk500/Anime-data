@@ -28,14 +28,11 @@ import com.akcreation.gitsilent.screen.content.homescreen.innerpage.developerNam
 import com.akcreation.gitsilent.screen.content.homescreen.innerpage.developerTelegram
 import com.akcreation.gitsilent.utils.ActivityUtil
 
-
 private const val appDescription = """
 GitSilent is an Powerful Android Git client that lets you fully manage Git repositories directly on your phone.
 It includes powerful features like cloning, committing, pushing, pulling, branch management, merging, a diff viewer, automation tasks, and SSH support.
-
 The app is lightweight, built on Material 3 design, and provides a reliable Git GUI with features such as a crash handler, changelog viewer, background sync, and various developer tools.
 """
-
 private val featuresList = listOf(
     "Complete Git operations support",
     "Clone, commit, push, and pull repositories",
@@ -44,22 +41,16 @@ private val featuresList = listOf(
     "SSH and HTTPS authentication",
     "Beautiful Material Design UI"
 )
-
-
 @Composable
 fun ChangelogDialog(
     onClose: () -> Unit,
 ) {
     val activityContext = LocalContext.current
-
     CopyableDialog2(
-        // hide ok btn
         okCompose = {},
         onOk = {},
-
         cancelBtnText = stringResource(R.string.ok),
         onCancel = onClose,
-
         title = stringResource(R.string.app_name),
         requireShowTextCompose = true,
         textCompose = {
@@ -71,7 +62,6 @@ fun ChangelogDialog(
                     .padding(vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // App Icon
                 Surface(
                     modifier = Modifier
                         .size(60.dp)
@@ -81,10 +71,7 @@ fun ChangelogDialog(
                 ) {
                     AppIcon()
                 }
-
                 Spacer(Modifier.height(16.dp))
-
-                // Developer Section
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.Start
@@ -95,27 +82,20 @@ fun ChangelogDialog(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
-
                     Spacer(Modifier.height(6.dp))
-
                     Text(
                         text = "Made by: $developerName",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-
                     Spacer(Modifier.height(2.dp))
-
                     MultiLineClickableText(
                         text = "Telegram: $developerTelegram"
                     ) {
                         ActivityUtil.openUrl(activityContext, developerTelegram)
                     }
                 }
-
                 Spacer(Modifier.height(12.dp))
-
-                // Description Section
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.Start
@@ -126,9 +106,7 @@ fun ChangelogDialog(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
-
                     Spacer(Modifier.height(6.dp))
-
                     Text(
                         text = appDescription.trim(),
                         style = MaterialTheme.typography.bodyMedium,
@@ -136,10 +114,7 @@ fun ChangelogDialog(
                         lineHeight = 18.sp
                     )
                 }
-
                 Spacer(Modifier.height(12.dp))
-
-                // Features Section
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.Start
@@ -150,9 +125,7 @@ fun ChangelogDialog(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
-
                     Spacer(Modifier.height(6.dp))
-
                     featuresList.forEach { feature ->
                         Text(
                             text = "• $feature",
@@ -162,7 +135,6 @@ fun ChangelogDialog(
                         )
                     }
                 }
-
                 Spacer(Modifier.height(12.dp))
             }
         }

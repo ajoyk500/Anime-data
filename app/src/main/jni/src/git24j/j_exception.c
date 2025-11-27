@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <git2.h>
 #include <jni.h>
-
 jint j_throw_last_error(JNIEnv *env)
 {
     const git_error *error = git_error_last();
@@ -15,7 +14,6 @@ jint j_throw_last_error(JNIEnv *env)
     }
     return j_throw_jni_error(env, error->message);
 }
-
 jint j_throw_jni_error(JNIEnv *env, const char *message)
 {
     assert(message);
@@ -25,12 +23,10 @@ jint j_throw_jni_error(JNIEnv *env, const char *message)
     {
         return j_throw_java_error(env, J_NO_CLASS_ERROR, message);
     }
-
     jint ret = (*env)->ThrowNew(env, clz, message);
     (*env)->DeleteLocalRef(env, clz);
     return ret;
 }
-
 jint j_throw_java_error(JNIEnv *env, const char *exceptionName, const char *message)
 {
     assert(exceptionName);

@@ -32,7 +32,6 @@ import com.akcreation.gitsilent.utils.state.mutableCustomStateOf
 import com.github.git24j.core.Repository
 
 private const val TAG = "SetBranchForRemoteDialog"
-
 @Composable
 fun SetBranchForRemoteDialog(
     stateKeyTag:String,
@@ -43,16 +42,10 @@ fun SetBranchForRemoteDialog(
     onOk: (remoteName:String, isAll: Boolean, branchCsvStr: String) -> Unit
 ) {
     val stateKeyTag = Cache.getComponentKey(stateKeyTag, TAG)
-
     val activityContext = LocalContext.current
     val selectedOption = mutableCustomStateOf(stateKeyTag, "selectedOption") { if(isAllInitValue) BranchMode.ALL else BranchMode.CUSTOM }
-
-//    val branchList = StateUtil.getCustomSaveableStateList(keyTag = stateKeyTag, keyName = "branchList") {
-//        listOf<String>()
-//    }
     val branchCsvStr = rememberSaveable { mutableStateOf("")}
     val strListSeparator = Cons.comma
-
     AlertDialog(
         title = {
             DialogTitle(stringResource(R.string.set_branch_mode))
@@ -65,28 +58,21 @@ fun SetBranchForRemoteDialog(
                         fontWeight = FontWeight.ExtraBold
                     )
                 }
-
                 Spacer(modifier = Modifier.height(10.dp))
-
                 SelectionRow {
                     Text(text = stringResource(R.string.branch_mode_note))
                 }
-
                 Spacer(modifier = Modifier.height(20.dp))
-
                 SingleSelection(
                     itemList = BranchMode.entries,
                     selected = {idx, item -> selectedOption.value == item},
                     text = {idx, item -> activityContext.getString(if(item == BranchMode.ALL) R.string.all else R.string.custom) },
                     onClick = {idx, item -> selectedOption.value = item}
                 )
-
                 if(selectedOption.value == BranchMode.CUSTOM) {
                     Spacer(Modifier.height(5.dp))
-
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-
                         value = branchCsvStr.value,
                         onValueChange = {
                             branchCsvStr.value = it
@@ -116,8 +102,6 @@ fun SetBranchForRemoteDialog(
             }
         }
     )
-
-
     LaunchedEffect(Unit) {
         doJobThenOffLoading {
             try {
@@ -127,22 +111,14 @@ fun SetBranchForRemoteDialog(
                         Msg.requireShowLongDuration(activityContext.getString(R.string.err_resolve_remote_failed))
                         return@doJobThenOffLoading
                     }
-
                     val (isAllRealValue, branchNameList) = Libgit2Helper.getRemoteFetchBranchList(remote)
-
-                    //更新状态变量
                     selectedOption.value = if(isAllRealValue) BranchMode.ALL else BranchMode.CUSTOM
-
                     if (isAllRealValue) {
                         branchCsvStr.value = ""
                     } else {
                         branchCsvStr.value = StrListUtil.listToCsvStr(branchNameList)
                     }
-
-//                    branchList.value.clear()
-//                    branchList.value.addAll(refspecList)
                 }
-
             } catch (e: Exception) {
                 Msg.requireShowLongDuration("err: " + e.localizedMessage)
                 createAndInsertError(curRepo.id, "err: ${e.localizedMessage}")

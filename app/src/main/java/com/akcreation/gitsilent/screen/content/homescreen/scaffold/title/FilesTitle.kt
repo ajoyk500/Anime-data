@@ -51,12 +51,10 @@ import kotlinx.coroutines.sync.withLock
 import java.io.File
 
 private const val TAG = "FilesTitle"
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FilesTitle(
     stateKeyTag: String,
-
     currentPath: ()->String,
     goToPath:(String)->Unit,
     allRepoParentDir: File,
@@ -73,35 +71,28 @@ fun FilesTitle(
     searching:Boolean
 ) {
     val stateKeyTag = Cache.getComponentKey(stateKeyTag, TAG)
-
     val haptic = LocalHapticFeedback.current
     val activityContext = LocalContext.current
     val inDarkTheme = Theme.inDarkTheme
-
     if(filesPageSimpleFilterOn) {
         FilterTextField(filterKeyWord = filesPageSimpleFilterKeyWord, loading = searching)
-    } else {  //filesPageGetFilterMode()==0 , 搜索模式关闭
+    } else {  
         val dropDownMenuExpandState = rememberSaveable { mutableStateOf(false) }
         val storages = mutableCustomStateOf(stateKeyTag, "storages") { NameAndPathList() }
-
         val switchDropDownMenu = {
-            if(dropDownMenuExpandState.value) {  // need close
+            if(dropDownMenuExpandState.value) {  
                 dropDownMenuExpandState.value = false
-            } else {  // need open
+            } else {  
                 doJobThenOffLoading {
                     NameAndPath.getListForFilesManager(activityContext, storages.value.list, storages.value.updateLock)
                 }
-
                 dropDownMenuExpandState.value = true
             }
         }
-
         val enableAction = true
         val getTitleColor = {
             UIHelper.getTitleColor(enabled = enableAction)
         }
-
-
         val indexForDeleteStoragePathDialog = rememberSaveable { mutableStateOf(-1) }
         val pathForDeleteStoragePathDialog = rememberSaveable { mutableStateOf("") }
         val showDeleteStoragePathListDialog = rememberSaveable { mutableStateOf(false) }
@@ -114,26 +105,18 @@ fun FilesTitle(
                         if(storagePathsBegan.not() && it.type != NameAndPathType.FIRST_REPOS_STORAGE_PATH) {
                             continue
                         }
-
                         storagePathsBegan = true
-
-
                         if(it.type != NameAndPathType.FIRST_REPOS_STORAGE_PATH && it.type != NameAndPathType.REPOS_STORAGE_PATH) {
                             break
                         }
-
                         if(it.path == path) {
                             index = idx
                             break
                         }
-
                     }
-
                     if(index < 0) {
-                        // should happen
                         Msg.requireShow("invalid index")
                     }else {
-                        // show delete dialog
                         indexForDeleteStoragePathDialog.value = index
                         pathForDeleteStoragePathDialog.value = path
                         showDeleteStoragePathListDialog.value = true
@@ -141,21 +124,16 @@ fun FilesTitle(
                 }
             }
         }
-
         if(showDeleteStoragePathListDialog.value) {
             val storagePathList = storages.value.list
             val targetPath = storagePathList.getOrNull(indexForDeleteStoragePathDialog.value)?.path ?: ""
-
             val closeDialog = { showDeleteStoragePathListDialog.value = false }
-
             val deleteStoragePath = { index:Int ->
-                // remove from current page's state
                 val target = storagePathList.getOrNull(index)
                 val listMaybeChanged = target?.path != pathForDeleteStoragePathDialog.value
                 if(listMaybeChanged) {
                     Msg.requireShow("delete failed, list changed")
                 }else {
-                    // if remove first storage path, move spliter to next storage path item of it
                     if(target.type == NameAndPathType.FIRST_REPOS_STORAGE_PATH) {
                         val idxAfterTarget = index+1
                         val itemAfterTarget = storagePathList.getOrNull(idxAfterTarget)
@@ -163,11 +141,8 @@ fun FilesTitle(
                             storagePathList.set(idxAfterTarget, itemAfterTarget.copy(type = NameAndPathType.FIRST_REPOS_STORAGE_PATH))
                         }
                     }
-
                     storagePathList.removeAt(index)
-
                     val newList = mutableListOf<String>()
-                    // filter storage paths
                     for(it in storagePathList) {
                         if(it.type == NameAndPathType.REPOS_STORAGE_PATH
                             || it.type == NameAndPathType.FIRST_REPOS_STORAGE_PATH
@@ -175,8 +150,6 @@ fun FilesTitle(
                             newList.add(it.path)
                         }
                     }
-
-                    // remove from config
                     StoragePathsMan.save(
                         StoragePathsMan.get().apply {
                             storagePaths.apply {
@@ -187,7 +160,6 @@ fun FilesTitle(
                     )
                 }
             }
-
             ConfirmDialog2(
                 title = stringResource(R.string.delete),
                 requireShowTextCompose = true,
@@ -201,7 +173,6 @@ fun FilesTitle(
                 onCancel = closeDialog
             ) {
                 closeDialog()
-
                 val targetIndex = indexForDeleteStoragePathDialog.value
                 doJobThenOffLoading {
                     storages.value.updateLock.withLock {
@@ -210,12 +181,9 @@ fun FilesTitle(
                 }
             }
         }
-
-
         TitleDropDownMenu(
             dropDownMenuExpandState = dropDownMenuExpandState,
             dropDownMenuItemContentPadding = PaddingValues(0.dp),
-            // never have any item be selected, it just need display the list
             curSelectedItem = NameAndPath(),
             itemList = storages.value.list,
             titleClickEnabled = true,
@@ -226,11 +194,9 @@ fun FilesTitle(
                 ) {
                     Text(
                         text = getFilesScreenTitle(currentPath(), activityContext),
-//                    style=MyStyleKt.clickableText.style,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontSize = MyStyleKt.Title.firstLineFontSize,
-                        //如果是在合并（或者有冲突），仓库名变成红色，否则变成默认颜色
                         color = getTitleColor()
                     )
                 }
@@ -265,10 +231,8 @@ fun FilesTitle(
                     SettingsTitle(stringResource(R.string.repos))
                     basePadding = firstItemBasePadding
                 }
-
                 val text1 = element.name
                 val text2 = FsUtils.getPathWithInternalOrExternalPrefix(fullPath = element.path)
-
                 if(element.type == NameAndPathType.FIRST_REPOS_STORAGE_PATH || element.type == NameAndPathType.REPOS_STORAGE_PATH) {
                     DropDownMenuItemText(
                         text1 = text1,
@@ -293,51 +257,13 @@ fun FilesTitle(
                 goToPath(it.path)
             },
         )
-
-//        Column(
-//            modifier = Modifier
-//            .combinedClickable(
-//                onDoubleClick = {
-//                    defaultTitleDoubleClickRequest(requestFromParent)
-//                },
-//                onLongClick = {
-////                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-//
-//                    //长按标题回到仓库根目录
-//                    goToPath(allRepoParentDir.canonicalPath)
-//                }
-//            ) {  //onClick
-//                requestFromParent.value = PageRequest.requireShowPathDetails
-//            },
-//        ) {
-//            ScrollableRow {
-//                Text(
-//                    text = getFilesScreenTitle(currentPath(), activityContext),
-//                    maxLines = 1,
-//                    overflow = TextOverflow.Ellipsis,
-//                    fontSize = MyStyleKt.Title.firstLineFontSize,
-//                )
-//            }
-//
-//            ScrollableRow {
-//                Text(
-//                    text = replaceStringResList(stringResource(R.string.folder_n_file_m), listOf(""+curPathItemDto.folderCount, ""+curPathItemDto.fileCount)),
-//                    fontSize = MyStyleKt.Title.secondLineFontSize
-//                )
-//            }
-//        }
-
     }
-
-    // this code maybe invalid for now?
     LaunchedEffect(filesPageGetFilterMode()) {
         try {
             if(filesPageGetFilterMode() == 1) {
                 filterKeywordFocusRequester.requestFocus()
             }
-
         }catch (_:Exception) {
-            //顶多聚焦失败，没啥好记的
         }
     }
 }

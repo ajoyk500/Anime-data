@@ -1,25 +1,11 @@
 package com.akcreation.gitsilent.dto
 
-class DomainCredentialDto {
-    /**
-     * domain credential id
-     */
-    var domainCredId:String=""
 
-    /**
-     * domain
-     */
+class DomainCredentialDto {
+    var domainCredId:String=""
     var domain:String=""
-    /**
-     * credential name
-     */
     var credName:String?=""
     var sshCredName:String?=""
-
-    /**
-     * credential Id
-     */
     var credId:String?=""
     var sshCredId:String?=""
-
 }

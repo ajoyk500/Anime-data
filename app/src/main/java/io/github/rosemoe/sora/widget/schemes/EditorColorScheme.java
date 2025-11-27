@@ -1,74 +1,15 @@
-/*
- *    sora-editor - the awesome code editor for Android
- *    https://github.com/Rosemoe/sora-editor
- *    Copyright (C) 2020-2024  Rosemoe
- *
- *     This library is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU Lesser General Public
- *     License as published by the Free Software Foundation; either
- *     version 2.1 of the License, or (at your option) any later version.
- *
- *     This library is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public
- *     License along with this library; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *     USA
- *
- *     Please contact Rosemoe by email 2073412493@qq.com if you need
- *     additional information or have any questions
- */
+
 package io.github.rosemoe.sora.widget.schemes;
 
 import android.graphics.Color;
 import android.util.SparseIntArray;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * This class manages the colors of editor.
- * You can use color IDs that are not in pre-defined id pool for custom languages. We recommend
- *  adding a base offset for your custom color IDs. For example, first custom color ID is 256. This
- *   leaves enough space for editor's future built-in colors.
- * <p>
- * This is also the default color scheme of editor.
- * Be careful to change this class, because this can cause its
- * subclasses behave differently and some subclasses did not apply
- * their default colors to some color ids. So change to this can cause
- * sub themes to change as well.
- * <p>
- * Typically, you can use this class to set color of editor directly
- * with {@link #setColor(int, int)} in a thread with looper.
- * <p>
- * However, we also accept you to extend this class to customize
- * your own ColorScheme to use different default colors.
- * Subclasses are expected to override {@link #applyDefault()}
- * to define colors, though other methods are not final.
- * After overriding this method, you will have to call super class's
- * applyDefault() and then a series of {@link #setColor(int, int)} calls
- * to apply your colors.
- * <p>
- * Note that new colors can be added in newer version of editor,
- * it is dangerous not to call super.applyDefault(), which can cause
- * newer editor works wrongly.
- * <p>
- * For more pre-defined color schemes, please turn to package io.github.rosemoe.editor.widget.schemes
- * <p>
- * Thanks to liyujiang-gzu (GitHub @liyujiang-gzu) for contribution to color schemes
- *
- * @author Rose
- */
 public class EditorColorScheme {
-
-    //----------------Issue colors----------------
     public static final int PROBLEM_TYPO = 37;
     public static final int PROBLEM_WARNING = 36;
     public static final int PROBLEM_ERROR = 35;
-    //-----------------Highlight colors-----------
     public static final int ATTRIBUTE_VALUE = 34;
     public static final int ATTRIBUTE_NAME = 33;
     public static final int HTML_TAG = 32;
@@ -80,15 +21,8 @@ public class EditorColorScheme {
     public static final int OPERATOR = 23;
     public static final int COMMENT = 22;
     public static final int KEYWORD = 21;
-    //-------------View colors---------------------
     public static final int STICKY_SCROLL_DIVIDER = 62;
-    /**
-     * Color for text strikethrough. If value is 0, text color of that region will be used.
-     */
     public static final int STRIKETHROUGH = 57;
-    /**
-     * Alias for {@link #STRIKETHROUGH}
-     */
     public static final int STRIKE_THROUGH = STRIKETHROUGH;
     public static final int DIAGNOSTIC_TOOLTIP_ACTION = 56;
     public static final int DIAGNOSTIC_TOOLTIP_DETAILED_MSG = 55;
@@ -103,10 +37,6 @@ public class EditorColorScheme {
     public static final int SNIPPET_BACKGROUND_INACTIVE = 46;
     public static final int SIDE_BLOCK_LINE = 38;
     public static final int NON_PRINTABLE_CHAR = 31;
-
-    /**
-     * Use zero if the text color should not be changed
-     */
     public static final int TEXT_SELECTED = 30;
     public static final int MATCHED_TEXT_BACKGROUND = 29;
     public static final int COMPLETION_WND_CORNER = 20;
@@ -114,12 +44,7 @@ public class EditorColorScheme {
     public static final int COMPLETION_WND_TEXT_PRIMARY = 42;
     public static final int COMPLETION_WND_TEXT_SECONDARY = 43;
     public static final int COMPLETION_WND_ITEM_CURRENT = 44;
-
-    /**
-     * No longer supported
-     */
     public static final int LINE_BLOCK_LABEL = 18;
-
     public static final int HIGHLIGHTED_DELIMITERS_BACKGROUND = 41;
     public static final int HIGHLIGHTED_DELIMITERS_UNDERLINE = 40;
     public static final int HIGHLIGHTED_DELIMITERS_FOREGROUND = 39;
@@ -141,78 +66,36 @@ public class EditorColorScheme {
     public static final int LINE_NUMBER_CURRENT = 45;
     public static final int LINE_NUMBER = 2;
     public static final int LINE_DIVIDER = 1;
-
     public static final int SIGNATURE_TEXT_NORMAL = 58;
     public static final int SIGNATURE_TEXT_HIGHLIGHTED_PARAMETER = 59;
-
     public static final int STATIC_SPAN_BACKGROUND = 63;
     public static final int STATIC_SPAN_FOREGROUND = 64;
-
     public static final int SIGNATURE_BACKGROUND = 60;
-
     public static final int TEXT_ACTION_WINDOW_BACKGROUND = 65;
     public static final int TEXT_ACTION_WINDOW_ICON_COLOR = 66;
-
-    /**
-     * Min pre-defined color id
-     */
     protected static final int START_COLOR_ID = 1;
-
-    /**
-     * Max pre-defined color id
-     */
     protected static final int END_COLOR_ID = 66;
-
-
-    /**
-     * Real color saver
-     */
     protected final SparseIntArray colors;
-
-
     private final boolean dark;
-
     private final static int PRIMARY_TEXT_COLOR_DEFAULT_LIGHT = 0xff424242;
     private final static int PRIMARY_TEXT_COLOR_DEFAULT_DARK = 0xfff5f5f5;
     private final static int BACKGROUND_COLOR_LIGHT = 0xfffefefe;
     private final static int BACKGROUND_COLOR_DARK = 0xff212121;
     private final static int SECONDARY_TEXT_COLOR_LIGHT = 0xff616161;
     private final static int SECONDARY_TEXT_COLOR_DARK = 0xffeeeeee;
-
-
-
-    /**
-     * Create a default color scheme
-     */
     public EditorColorScheme() {
         this(false);
     }
-
-    /**
-     * For subclass
-     *
-     * @param isDark Whether this is a dark theme
-     */
     protected EditorColorScheme(boolean isDark) {
         colors = new SparseIntArray();
         this.dark = isDark;
         applyDefault();
     }
-
-    /**
-     * Apply default colors
-     */
     public void applyDefault() {
         for (int i = START_COLOR_ID; i <= END_COLOR_ID; i++) {
             applyDefault(i);
         }
     }
-
-    /**
-     * Apply default color for the given type
-     *
-     * @param type The type
-     */
     private void applyDefault(int type) {
         int color = colors.get(type);
         switch (type) {
@@ -368,74 +251,31 @@ public class EditorColorScheme {
         }
         setColor(type, color);
     }
-
-    /**
-     * Apply a new color for the given type
-     *
-     * @param type  The type
-     * @param color New color
-     */
     public void setColor(int type, int color) {
-        //Do not change if the old value is the same as new value
-        //due to avoid unnecessary invalidate() calls
         int old = getColor(type);
         if (old == color) {
             return;
         }
-
         colors.put(type, color);
-
     }
-
-    /**
-     * Get color by type
-     *
-     * @param type The type
-     * @return The color for type
-     */
     public int getColor(int type) {
         return colors.get(type);
     }
-
-    /**
-     * Check whether this color scheme is dark
-     */
     public boolean isDark() {
         return dark;
     }
-
     private static EditorColorScheme globalDefault = new EditorColorScheme();
-
-    /**
-     * Get global default color scheme.
-     */
     @NonNull
     public static EditorColorScheme getDefault() {
         return globalDefault;
     }
-
-    /**
-     * Set global default color scheme. Newly created editor will use the new default color scheme.
-     *
-     * @param colorScheme new global color scheme, or null for restoring to built-in default
-     */
     public static void setDefault(@Nullable EditorColorScheme colorScheme) {
         setDefault(colorScheme, false);
     }
-
-    /**
-     * Set global default color scheme and optionally update existing editors that are using default
-     * color scheme.
-     *
-     * @param colorScheme   new global color scheme, or null for restoring to built-in default
-     * @param updateEditors update existing editors that are using default color scheme
-     */
     public static void setDefault(@Nullable EditorColorScheme colorScheme, boolean updateEditors) {
         if (colorScheme == null) {
             colorScheme = new EditorColorScheme();
         }
-
         globalDefault = colorScheme;
     }
-
 }

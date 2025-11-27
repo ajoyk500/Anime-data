@@ -7,7 +7,6 @@ import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.compose.LongPressAbleIconBtn
 import com.akcreation.gitsilent.R
 
-
 @Composable
 fun SubscriptionActions(
     refreshPage: () -> Unit,
@@ -19,6 +18,4 @@ fun SubscriptionActions(
     ) {
         refreshPage()
     }
-
 }
-

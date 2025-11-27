@@ -40,7 +40,6 @@ import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.listItemPadding
 import com.akcreation.gitsilent.utils.time.TimeZoneUtil
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TagItem(
@@ -52,19 +51,12 @@ fun TagItem(
     onLongClick:(TagDto)->Unit,
     onClick:(TagDto)->Unit
 ) {
-
     val clipboardManager = LocalClipboardManager.current
     val activityContext = LocalContext.current
-
-//    val haptic = LocalHapticFeedback.current
-
     val defaultFontWeight = remember { MyStyleKt.TextItem.defaultFontWeight() }
-
     Column(
-        //0.9f 占父元素宽度的百分之90
         modifier = Modifier
             .fillMaxWidth()
-//            .defaultMinSize(minHeight = 100.dp)
             .combinedClickable(
                 enabled = true,
                 onClick = {
@@ -73,88 +65,59 @@ fun TagItem(
                 },
                 onLongClick = {
                     lastClickedItemKey.value = thisObj.name
-
-                    //震动反馈
-//                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-
                     onLongClick(thisObj)
                 },
             )
             .then(
-                //如果条目被选中，切换高亮颜色
                 if (isItemInSelected(thisObj)) Modifier.background(
                     MaterialTheme.colorScheme.primaryContainer
-
-                    //then 里传 Modifier不会有任何副作用，还是当前的Modifier(即调用者自己：this)，相当于什么都没改，后面可继续链式调用其他方法
                 ) else if(thisObj.name == lastClickedItemKey.value){
                     Modifier.background(UIHelper.getLastClickedColor())
                 }  else Modifier
             )
-            //padding要放到 combinedClickable后面，不然点按区域也会padding；
-            // padding要放到背景颜色后面，不然padding的区域不会着色
             .listItemPadding()
-
-
-
-
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
-
         ){
             InLineIcon(
                 icon = Icons.AutoMirrored.Filled.Label,
                 tooltipText = stringResource(R.string.tag)
             )
-
-//            Text(text = stringResource(R.string.name) +": ")
-
             ScrollableRow {
                 Text(text = thisObj.shortName,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = defaultFontWeight
-
                 )
             }
         }
-
         Row (
             verticalAlignment = Alignment.CenterVertically,
-
         ){
-
             InLineIcon(
                 icon = Icons.Filled.Commit,
                 tooltipText = stringResource(R.string.target)
             )
-
-//            Text(text = stringResource(R.string.target) +": ")
-
             Text(text = thisObj.getCachedTargetShortOidStr(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
             )
-
             InLineCopyIcon {
                 clipboardManager.setText(AnnotatedString(thisObj.targetFullOidStr))
                 Msg.requireShow(activityContext.getString(R.string.copied))
             }
         }
-
         val pointedCommit = thisObj.pointedCommitDto
         if(pointedCommit != null) {
             Row (
                 verticalAlignment = Alignment.CenterVertically,
-
             ){
                 InLineIcon(
                     icon = Icons.Outlined.Person,
                     tooltipText = stringResource(R.string.author)
                 )
-
-
                 ScrollableRow {
                     Text(text = pointedCommit.getFormattedAuthorInfo(),
                         maxLines = 1,
@@ -163,17 +126,13 @@ fun TagItem(
                     )
                 }
             }
-
             Row (
                 verticalAlignment = Alignment.CenterVertically,
-
             ){
                 InLineIcon(
                     icon = Icons.Outlined.CalendarMonth,
                     tooltipText = stringResource(R.string.date)
                 )
-
-
                 ScrollableRow {
                     Text(text = pointedCommit.dateTime,
                         maxLines = 1,
@@ -182,8 +141,6 @@ fun TagItem(
                     )
                 }
             }
-
-
             Row (
                 verticalAlignment = Alignment.CenterVertically,
             ){
@@ -191,26 +148,18 @@ fun TagItem(
                     icon = Icons.AutoMirrored.Outlined.Message,
                     tooltipText = stringResource(R.string.msg)
                 )
-
                 SingleLineClickableText(text = pointedCommit.getCachedOneLineMsg()) {
                     showItemMsg(pointedCommit.msg)
                 }
             }
-
         }
-
-
         Row (
             verticalAlignment = Alignment.CenterVertically,
-
         ){
             InLineIcon(
                 icon = Icons.Filled.Category,
                 tooltipText = stringResource(R.string.type)
             )
-
-//            Text(text = stringResource(R.string.type) +": ")
-
             ScrollableRow {
                 Text(text = thisObj.getType(activityContext, false),
                     maxLines = 1,
@@ -219,65 +168,45 @@ fun TagItem(
                 )
             }
         }
-
-
-
-        //如果是本地分支，检查是否是当前活跃的分支。（远程分支就不需要检查了，因为远程分支一checkout就变成detached了，根本不可能是current活跃分支
         if(thisObj.isAnnotated) {
             Row (
                 verticalAlignment = Alignment.CenterVertically,
             ){
-
-
                 InLineIcon(
                     icon = Icons.Filled.Person,
                     tooltipText = stringResource(R.string.tagger)
                 )
-
-//                Text(text = stringResource(R.string.tagger) +": ")
-
                 ScrollableRow {
                     Text(text = thisObj.getFormattedTaggerNameAndEmail(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = defaultFontWeight
-
                     )
                 }
             }
             Row (
                 verticalAlignment = Alignment.CenterVertically,
             ){
-
-
                 InLineIcon(
                     icon = Icons.Filled.CalendarMonth,
                     tooltipText = stringResource(R.string.date)
                 )
-
-//                Text(text = stringResource(R.string.date) +": ")
-
                 ScrollableRow {
                     Text(
                         text = if (shouldShowTimeZoneInfo) TimeZoneUtil.appendUtcTimeZoneText(thisObj.getFormattedDate(), thisObj.originTimeOffsetInMinutes) else thisObj.getFormattedDate(),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = defaultFontWeight
-
                     )
                 }
             }
             Row (
                 verticalAlignment = Alignment.CenterVertically,
             ){
-
                 InLineIcon(
                     icon = Icons.AutoMirrored.Filled.Message,
                     tooltipText = stringResource(R.string.msg)
                 )
-
-//                Text(text = stringResource(R.string.msg) +": ")
-
                 SingleLineClickableText(text = thisObj.getCachedOneLineMsg()) {
                     showItemMsg(thisObj.msg)
                 }

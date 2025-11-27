@@ -38,11 +38,8 @@ fun CreateRemoteDialog(
     onFinally:()->Unit,
 ) {
     val activityContext = LocalContext.current
-
     val onOk:()->Unit = onOk ?: { Msg.requireShow(activityContext.getString(R.string.success)) }
-
     val close = {show.value = false}
-
     AlertDialog(
         title = {
             DialogTitle(stringResource(R.string.create))
@@ -51,7 +48,6 @@ fun CreateRemoteDialog(
             ScrollableColumn {
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-
                     value = remoteName.value,
                     singleLine = true,
                     onValueChange = {
@@ -60,14 +56,11 @@ fun CreateRemoteDialog(
                     label = {
                         Text(stringResource(R.string.name))
                     },
-//                    placeholder = {}
                 )
                 Row(modifier = Modifier.padding(5.dp)) {
-
                 }
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-
                     value = remoteUrl.value,
                     singleLine = true,
                     onValueChange = {
@@ -76,10 +69,8 @@ fun CreateRemoteDialog(
                     label = {
                         Text(stringResource(R.string.url))
                     },
-//                    placeholder = {}
                 )
             }
-
         },
         onDismissRequest = {
             close()
@@ -89,7 +80,6 @@ fun CreateRemoteDialog(
             TextButton(
                 onClick = {
                     close()
-
                     doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.creating)) {
                         try {
                             val remoteName = remoteName.value
@@ -97,20 +87,14 @@ fun CreateRemoteDialog(
                             val repoId = curRepo.id
                             val repoPath = curRepo.fullSavePath
                             Repository.open(repoPath).use { repo->
-                                //在git创建
                                 val ret = Libgit2Helper.createRemote(repo, remoteName, remoteUrl)
-
                                 val remoteDb = AppModel.dbContainer.remoteRepository
-                                val exists=ret.msg.startsWith("remote") && ret.msg.endsWith("already exists")  // remote 'xxxx' already exists
-                                //如果在git仓库创建remote成功，或者提示remote已经存在(避免remote存在但db无记录的问题，这个问题类似源数据和缓存出现分歧的状况)，则尝试插入，插入时检查，若repoId+remoteName不存在则插入，否则什么都不做
+                                val exists=ret.msg.startsWith("remote") && ret.msg.endsWith("already exists")  
                                 if(ret.success() || exists) {
-                                    val remoteUrl = if(exists){  //若remote存在，读取配置文件中的url，否则使用用户输入的url
+                                    val remoteUrl = if(exists){  
                                         val r = Remote.lookup(repo, remoteName)
                                         r?.url() ?: ""
                                     } else remoteUrl
-
-                                    //需确保insert前检查 repoId和remoteName是否存在，若存在就不插入
-                                    //在数据库创建
                                     remoteDb.insert(
                                         RemoteEntity(
                                             remoteName = remoteName,
@@ -118,11 +102,9 @@ fun CreateRemoteDialog(
                                             repoId = repoId
                                         )
                                     )
-
                                 }else{
                                     throw ret.exception ?: Exception(ret.msg)
                                 }
-
                                 if(exists){
                                     Msg.requireShowLongDuration(ret.msg)
                                 }else {
@@ -152,6 +134,4 @@ fun CreateRemoteDialog(
             }
         }
     )
-
-
 }

@@ -30,16 +30,12 @@ fun EditorMenus(
 ) {
     val hasLinesSelected = selectedLinesCount > 0
     val inDarkTheme = Theme.inDarkTheme
-
     val elementCommonWeight = 0.2f
     val elementCommonPadding=4.dp
-
     val disableColor = UIHelper.getDisableBtnColor(inDarkTheme)
-//    val defaultColor = LocalContentColor.current  //在这获取到的颜色和在xxxIcon组件里获取到的不一样
     val getColor = { enabled:Boolean ->
         if(enabled) null else disableColor
     }
-
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
@@ -50,7 +46,6 @@ fun EditorMenus(
                 label = {
                     if(hasLinesSelected) {
                         Text(text = stringResource(R.string.delete),
-                            //                               color = getColor(hasLinesSelected)
                         )
                     }else{
                         Text(text = stringResource(R.string.delete),
@@ -69,9 +64,7 @@ fun EditorMenus(
                 label = {
                         if(hasLinesSelected) {
                             Text(text = stringResource(R.string.copy),
-    //                               color = getColor(hasLinesSelected)
                               )
-
                         }else{
                             Text(text = stringResource(R.string.copy),
                                color = disableColor
@@ -115,7 +108,6 @@ fun EditorMenus(
         }
     }
 }
-
 @Preview
 @Composable
 private fun EditorMenus_Preview() {

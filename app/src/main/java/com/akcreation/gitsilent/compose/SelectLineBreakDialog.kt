@@ -3,7 +3,6 @@ package com.akcreation.gitsilent.compose
 import androidx.compose.runtime.Composable
 import com.akcreation.gitsilent.constants.LineBreak
 
-
 @Composable
 fun SelectLineBreakDialog(
     current: LineBreak,

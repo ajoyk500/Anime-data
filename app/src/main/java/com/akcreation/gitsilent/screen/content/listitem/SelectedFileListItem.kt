@@ -37,7 +37,6 @@ fun <T> SelectedFileItemsDialog(
 ) {
     val trailIconSize = remember { MyStyleKt.trailIconSize }
     val splitSpacerWidth = remember { MyStyleKt.trailIconSplitSpacerWidth }
-
     SelectedItemDialog3(
         title = title,
         selectedItems = list,
@@ -64,10 +63,8 @@ fun <T> SelectedFileItemsDialog(
                                 imageVector = if(itemIsDir(it)) Icons.Outlined.Folder else Icons.AutoMirrored.Outlined.InsertDriveFile,
                                 contentDescription = if(itemIsDir(it)) stringResource(R.string.folder) else stringResource(R.string.file)
                             )
-
                             Spacer(modifier = Modifier.width(splitSpacerWidth))
                         }
-
                         SizeIcon(
                             size = trailIconSize,
                             modifier = Modifier.clickable {
@@ -86,5 +83,4 @@ fun <T> SelectedFileItemsDialog(
         clearAll = clearAll,
         closeDialog = closeDialog,
     )
-
 }

@@ -17,10 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
-
-/**
- * condition为true显示图标和文字，否则显示 else content
- */
 @Composable
 fun CenterIconButton(
     icon:ImageVector,
@@ -28,8 +24,8 @@ fun CenterIconButton(
     iconDesc:String? = text.ifBlank { null },
     mainColor: Color? = null,
     attachContent: @Composable () -> Unit = {},
-    condition: Boolean = true,  //显示图标还是其他内容
-    elseContent: @Composable ()->Unit = {},  // condition为false显示此内容
+    condition: Boolean = true,  
+    elseContent: @Composable ()->Unit = {},  
     enabled:Boolean = true,
     onClick:(()->Unit)? = null
 ) {
@@ -38,7 +34,6 @@ fun CenterIconButton(
             modifier = if(onClick != null) {
                 Modifier.clickable(
                     enabled = enabled,
-                    //interactionSource和indication的作用是隐藏按下时的背景半透明那个按压效果，很难看，所以隐藏
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
@@ -47,7 +42,6 @@ fun CenterIconButton(
             }else {
                 Modifier
             },
-
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -59,21 +53,15 @@ fun CenterIconButton(
                     tint = mainColor ?: LocalContentColor.current,
                 )
             }
-
             Row {
                 Text(
                     text = text,
                     color = mainColor ?: Color.Unspecified,
-//                    style = MyStyleKt.ClickableText.getStyle(),
-//                    color = MyStyleKt.ClickableText.getColor(),
-//                    fontSize = MyStyleKt.TextSize.default
                 )
             }
-
             attachContent()
         }
     }else {
         elseContent()
     }
-
 }

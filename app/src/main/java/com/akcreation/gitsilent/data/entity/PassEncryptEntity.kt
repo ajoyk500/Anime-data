@@ -4,13 +4,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.akcreation.gitsilent.utils.encrypt.PassEncryptHelper
 
-@Deprecated("废弃了，这个类不用了，改把版本号加到每个凭据后面了，解密的时候根据凭据使用的加密器版本解密")
+@Deprecated("[CHINESE]，[CHINESE]，[CHINESE]，[CHINESE]")
 @Entity(tableName = "passEncrypt")
 data class PassEncryptEntity (
     @PrimaryKey
     var id: Int= 1,
-
     var ver: Int= PassEncryptHelper.passEncryptCurrentVer,
-    var reserve1:String="",  //保留字段1
-    var reserve2:String="",  //保留字段2
+    var reserve1:String="",  
+    var reserve2:String="",  
 )

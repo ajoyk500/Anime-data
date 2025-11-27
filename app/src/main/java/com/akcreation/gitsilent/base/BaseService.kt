@@ -1,6 +1,5 @@
 package com.akcreation.gitsilent.base
 
-
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -11,7 +10,6 @@ open class BaseService : Service() {
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
-
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ContextUtil.getLocalizedContext(newBase))
     }

@@ -26,7 +26,6 @@ import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 
 internal object MarkdownRender {
-
     fun create(
         context: Context,
         imageLoader: ImageLoader?,
@@ -51,7 +50,6 @@ internal object MarkdownRender {
                 }
             }
             .build()
-
         return Markwon.builderNoCore(context)
             .usePlugin(
                 MardownCorePlugin(
@@ -73,15 +71,12 @@ internal object MarkdownRender {
             }
             .usePlugin(SyntaxHighlightPlugin())
             .usePlugin(object : AbstractMarkwonPlugin() {
-
                 override fun beforeSetText(textView: TextView, markdown: Spanned) {
                     beforeSetMarkdown?.invoke(textView, markdown)
                 }
-
                 override fun afterSetText(textView: TextView) {
                     afterSetMarkdown?.invoke(textView)
                 }
-
                 override fun configureTheme(builder: MarkwonTheme.Builder) {
                     if (headingBreakColor == Color.Transparent) {
                         builder.headingBreakColor(1)
@@ -90,16 +85,9 @@ internal object MarkdownRender {
                     }
                     builder.bulletWidth(style.fontSize.value.toInt())
                 }
-
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
-                    // Setting [MarkwonConfiguration.Builder.linkResolver] overrides
-                    // Markwon's default behaviour - see Markwon's [LinkResolverDef]
-                    // and how it's used in [MarkwonConfiguration.Builder].
-                    // Only use it if the client explicitly wants to handle link clicks.
                     val defaultLinkResolver = LinkResolverDef()
                     builder.linkResolver { view, link ->
-                        // handle individual clicks on Textview link
-                        // if user's handler return false, will use default handler
                         if(onLinkClicked(link).not()) {
                             defaultLinkResolver.resolve(view, link)
                         }

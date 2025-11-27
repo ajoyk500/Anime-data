@@ -15,11 +15,10 @@ import androidx.compose.ui.unit.Dp
 import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 
-
 @Composable
 fun InLineIcon(
     icon: ImageVector,
-    tooltipText: String,  //若为empty，不显示长按提示文本
+    tooltipText: String,  
     iconContentDesc: String? = tooltipText,
     iconModifier: Modifier = Modifier.size(MyStyleKt.defaultInLineIconSize),
     pressedCircleSize: Dp = MyStyleKt.defaultInLineIconsPressedCircleSize,
@@ -38,8 +37,6 @@ fun InLineIcon(
         onClick = onClick,
     )
 }
-
-
 @Composable
 fun InLineCopyIcon(
     onClick: () -> Unit
@@ -51,7 +48,6 @@ fun InLineCopyIcon(
         onClick()
     }
 }
-
 @Composable
 fun InLineHistoryIcon(
     tooltipText: String = stringResource(R.string.commit_history),
@@ -64,7 +60,6 @@ fun InLineHistoryIcon(
         onClick()
     }
 }
-
 @Composable
 fun InLineFolderIcon(
     tooltipText: String = stringResource(R.string.show_in_files),

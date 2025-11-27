@@ -30,7 +30,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.R
 
-
 @Composable
 fun PasswordTextFiled(
     password: MutableState<String>,
@@ -44,16 +43,11 @@ fun PasswordTextFiled(
     paddingValues:PaddingValues = PaddingValues(10.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-
     canSwitchPasswordVisible: Boolean = true,
-
-    // press keyboard enter callback
     enterPressedCallback: (()->Unit)? = null,
 ) {
-
     val getErrMsg = { errMsg?.value ?: "" }
     val hasErr = { getErrMsg().isNotEmpty() }
-
     TextField(
         enabled = enabled,
         modifier = Modifier
@@ -90,12 +84,9 @@ fun PasswordTextFiled(
         },
         label = { Text(label) },
         placeholder = { Text(placeholder) },
-
-
         isError = hasErr(),
         supportingText = {
             if(hasErr()) {
-                //错误信息拷贝不了，不用加选择拷贝容器，如果click错误信息，会触发聚焦输入框
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = getErrMsg(),
@@ -109,7 +100,6 @@ fun PasswordTextFiled(
         trailingIcon = {
             if(canSwitchPasswordVisible) {
                 IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
-                    // contentDescription is for accessibility
                     Icon(
                         imageVector = if (passwordVisible.value) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
                         contentDescription = if (passwordVisible.value) "password visible now" else "password invisible now"
@@ -117,6 +107,5 @@ fun PasswordTextFiled(
                 }
             }
         }
-
     )
 }

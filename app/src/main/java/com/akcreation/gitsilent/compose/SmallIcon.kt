@@ -27,8 +27,6 @@ fun SmallIcon(
         contentDescription = contentDescription,
     )
 }
-
-
 @Composable
 fun ReadOnlyIcon() {
     SmallIcon(
@@ -36,8 +34,6 @@ fun ReadOnlyIcon() {
         contentDescription = stringResource(R.string.read_only),
     )
 }
-
-
 @Composable
 fun IconOfRepoState(repoState:Int) {
     if(repoState == Repository.StateT.MERGE.bit) {

@@ -1,15 +1,12 @@
 package com.akcreation.gitsilent.constants
 
-object LangCode {
-    const val auto = ""  // auto detected
 
-    // order by a-z
-    const val ar= "ar"  // Arabic
-    const val bn= "bn"  // Bangla ， 孟加拉
+object LangCode {
+    const val auto = ""  
+    const val ar= "ar"  
+    const val bn= "bn"  
     const val en= "en"
     const val ru= "ru"
-    const val tr = "tr"  // turkish，土耳其语
+    const val tr = "tr"  
     const val zh_cn = "zh-rCN"
-
-
 }

@@ -36,7 +36,6 @@ fun TextView.applyFontWeight(fontWeight: FontWeight) {
         setTypeface(typeface, weight)
     }
 }
-
 fun TextView.applyFontStyle(fontStyle: FontStyle) {
     val type = when (fontStyle) {
         FontStyle.Italic -> Typeface.ITALIC
@@ -45,7 +44,6 @@ fun TextView.applyFontStyle(fontStyle: FontStyle) {
     }
     setTypeface(typeface, type)
 }
-
 fun TextView.applyFontFamily(textStyle: TextStyle) {
     typeface = createFontFamilyResolver(context).resolveAsTypeface(
         fontFamily = textStyle.fontFamily,
@@ -54,25 +52,20 @@ fun TextView.applyFontFamily(textStyle: TextStyle) {
         fontSynthesis = textStyle.fontSynthesis ?: FontSynthesis.All,
     ).value
 }
-
 fun TextView.applyFontResource(@FontRes font: Int) {
     typeface = ResourcesCompat.getFont(context, font)
 }
-
 fun TextView.applyTextColor(argbColor: Int) {
     setTextColor(argbColor)
 }
-
 fun TextView.applyFontSize(textStyle: TextStyle) {
     setTextSize(TypedValue.COMPLEX_UNIT_SP, textStyle.fontSize.value)
 }
-
 fun TextView.applyTextDecoration(textStyle: TextStyle) {
     if (textStyle.textDecoration == TextDecoration.LineThrough) {
         paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
     }
 }
-
 fun TextView.applyLineHeight(textStyle: TextStyle) {
     if (textStyle.lineHeight.isSp) {
         TextViewCompat.setLineHeight(
@@ -85,7 +78,6 @@ fun TextView.applyLineHeight(textStyle: TextStyle) {
         )
     }
 }
-
 fun TextView.applyTextAlign(align: TextAlign) {
     gravity = when (align) {
         TextAlign.Left, TextAlign.Start -> Gravity.START
@@ -93,12 +85,10 @@ fun TextView.applyTextAlign(align: TextAlign) {
         TextAlign.Center -> Gravity.CENTER_HORIZONTAL
         else -> Gravity.START
     }
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && align == TextAlign.Justify) {
         justificationMode = LineBreaker.JUSTIFICATION_MODE_INTER_WORD
     }
 }
-
 fun TextView.enableTextOverflow() {
     doOnNextLayout {
         if (maxLines != -1 && lineCount > maxLines) {
@@ -109,10 +99,8 @@ fun TextView.enableTextOverflow() {
                 val spannableBuilder = SpannableStringBuilder()
                     .append(spannedDropLast3Chars)
                     .append("…")
-
                 text = spannableBuilder
             }
         }
     }
 }
-

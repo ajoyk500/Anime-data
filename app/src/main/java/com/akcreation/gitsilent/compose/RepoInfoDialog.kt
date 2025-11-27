@@ -28,18 +28,15 @@ fun RepoInfoDialog(
     appendContent:@Composable (()->Unit)? = null
 ) {
     val context = LocalContext.current
-
     InfoDialog(showTitleInfoDialog) {
         if(prependContent != null) {
             prependContent()
             RepoInfoDialogItemSpacer()
         }
-
         Row {
             Text(stringResource(id = R.string.repo) + ": " + curRepo.repoName)
         }
         RepoInfoDialogItemSpacer()
-
         if (dbIntToBool(curRepo.isDetached)) {
             Row {
                 Text(stringResource(R.string.branch) + ": " + Cons.gitDetachedHead)
@@ -48,47 +45,34 @@ fun RepoInfoDialog(
             Row {
                 Text(stringResource(R.string.branch) + ": " + (curRepo.branch))
             }
-
             if (curRepo.upstreamBranch.isNotBlank()) {
                 RepoInfoDialogItemSpacer()
-
                 Row {
                     Text(stringResource(R.string.upstream) + ": " + (curRepo.upstreamBranch))
                 }
             }
         }
-
         RepoInfoDialogItemSpacer()
         Row {
             Text(stringResource(R.string.repo_state) + ": " + curRepo.getRepoStateStr(context))
         }
-
         if(appendContent != null) {
             RepoInfoDialogItemSpacer()
             appendContent()
         }
-
     }
 }
-
 @Composable
 fun RepoInfoDialogItemSpacer() {
     Spacer(Modifier.height(10.dp))
 }
-
 @Composable
 fun ShortCommitInfo(title:String, name:String, commitDto:CommitDto, msgMaxLines:Int=6) {
     if(title.isNotBlank()) {
         Row { InDialogTitle(title) }
     }
-
     RepoInfoDialogItemSpacer()
-
-    // name用来显示条目名字，例如用户在比较引用 origin/a 和 main 的差异，这两个就是name，name一般是用户输入的，比如在diff弹窗输入的引用名或hash，
-    // 如果不加这个参数，解析之后会变成commit hash，用户可能不知道在比较什么
     Row { Text(stringResource(R.string.name)+": "+name) }
-
-
     if(commitDto.oidStr.let { it != Cons.git_AllZeroOidStr && it != Cons.git_LocalWorktreeCommitHash && it != Cons.git_IndexCommitHash }) {
         RepoInfoDialogItemSpacer()
         Row { Text(stringResource(R.string.hash)+": "+commitDto.oidStr) }
@@ -102,7 +86,6 @@ fun ShortCommitInfo(title:String, name:String, commitDto:CommitDto, msgMaxLines:
         Row { Text(stringResource(R.string.msg)+": "+commitDto.msg, maxLines = msgMaxLines, overflow = TextOverflow.Ellipsis) }
     }
 }
-
 @Composable
 fun CompareInfo(leftName:String, leftCommitDto: CommitDto, rightName:String, rightCommitDto: CommitDto) {
     Row {
@@ -110,24 +93,15 @@ fun CompareInfo(leftName:String, leftCommitDto: CommitDto, rightName:String, rig
             stringResource(R.string.comparing_label) + ": " +Libgit2Helper.getLeftToRightDiffCommitsText(leftName, rightName, false)
         )
     }
-
     RepoInfoDialogItemSpacer()
-
     MyHorizontalDivider()
-
     RepoInfoDialogItemSpacer()
     ShortCommitInfo(stringResource(R.string.left), leftName, leftCommitDto)
     RepoInfoDialogItemSpacer()
-
     MyHorizontalDivider()
-
     RepoInfoDialogItemSpacer()
     ShortCommitInfo(stringResource(R.string.right), rightName, rightCommitDto)
 }
-
-/**
- * 弹窗内部的标题文本，一般比普通文本大些
- */
 @Composable
 fun InDialogTitle(text:String) {
     Text(text, fontSize = 17.sp, fontWeight = FontWeight.Bold)

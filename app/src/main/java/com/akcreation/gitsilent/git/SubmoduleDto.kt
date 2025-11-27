@@ -15,26 +15,19 @@ data class SubmoduleDto (
     val relativePathUnderParent:String,
     val fullPath:String,
     val cloned:Boolean,
-    val targetHash:String,  //target commit hash recorded by parent repo
-
+    val targetHash:String,  
     val location:Set<Submodule.StatusT>,
-
-    var tempStatus:String = "",  // cloning... etc
-
+    var tempStatus:String = "",  
 ) {
     private var otherText:String? = null;
     private var cachedShortTargetHash:String? = null;
-
     fun getShortTargetHashCached(): String = cachedShortTargetHash ?: Libgit2Helper.getShortOidStrByFull(targetHash).let { cachedShortTargetHash = it; it }
-
     private fun getClonedText(activityContext:Context):String{
         return activityContext.getString(if(cloned) R.string.cloned else R.string.not_cloned)
     }
-
     fun getStatus(activityContext:Context):String {
         return tempStatus.ifBlank { getClonedText(activityContext) }
     }
-
     fun getStatusColor(): Color {
         return if(tempStatus.isNotBlank()) {
             MyStyleKt.TextColor.danger()
@@ -44,8 +37,6 @@ data class SubmoduleDto (
             Color.Unspecified
         }
     }
-
-
     fun isRepoClonedAndShallow():Boolean {
         return try {
             Repository.open(fullPath).use { Libgit2Helper.isRepoShallow(it) }
@@ -53,19 +44,13 @@ data class SubmoduleDto (
             false
         }
     }
-
-
     fun hasOther():Boolean {
         return isRepoClonedAndShallow()
     }
-
     fun getOther(): String {
         if(otherText == null) {
-            // for better filterable, these text should not localize
             otherText = if(isRepoClonedAndShallow()) Cons.isShallowStr else Cons.notShallowStr
         }
-
         return otherText ?: ""
     }
-
 }

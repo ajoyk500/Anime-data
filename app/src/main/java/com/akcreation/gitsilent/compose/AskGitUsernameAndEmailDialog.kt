@@ -24,7 +24,6 @@ import com.akcreation.gitsilent.utils.Libgit2Helper
 import com.akcreation.gitsilent.utils.doJobThenOffLoading
 import com.github.git24j.core.Repository
 
-
 @Composable
 fun AskGitUsernameAndEmailDialog(
     title: String,
@@ -37,9 +36,7 @@ fun AskGitUsernameAndEmailDialog(
     onCancel: () -> Unit,
     enableOk: () -> Boolean,
 ) {
-
     val activityContext = LocalContext.current
-
     AlertDialog(
         title = {
             DialogTitle(title)
@@ -54,13 +51,9 @@ fun AskGitUsernameAndEmailDialog(
                         Text(text = text, fontWeight = FontWeight.Light)
                     }
                 }
-
-
                 Spacer(Modifier.height(15.dp))
-
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-
                     value = username.value,
                     singleLine = true,
                     onValueChange = {
@@ -74,11 +67,9 @@ fun AskGitUsernameAndEmailDialog(
                     }
                 )
                 Row(modifier = Modifier.padding(5.dp)) {
-
                 }
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-
                     value = email.value,
                     singleLine = true,
                     onValueChange = {
@@ -92,7 +83,6 @@ fun AskGitUsernameAndEmailDialog(
                     }
                 )
             }
-
         },
         onDismissRequest = {
             onCancel()
@@ -117,21 +107,17 @@ fun AskGitUsernameAndEmailDialog(
             }
         }
     )
-
     LaunchedEffect(Unit) {
-        //从配置文件读取设置
         doJobThenOffLoading(
             loadingOn = {},
             loadingOff = {},
             loadingText=activityContext.getString(R.string.loading)
         ) {
-            //如果是全局就读取全局的email和username，否则读取仓库的
             if (isForGlobal) {
                 val (u, e) = Libgit2Helper.getGitUsernameAndEmailFromGlobalConfig()
                 username.value = u
                 email.value = e
-
-            } else if (repos.size == 1) {  //若只选中了一个仓库，回显此仓库的用户名和邮箱
+            } else if (repos.size == 1) {  
                 Repository.open(repos.first().fullSavePath).use { repo ->
                     val (u, e) = Libgit2Helper.getGitUserNameAndEmailFromRepo(repo)
                     username.value = u
@@ -141,4 +127,3 @@ fun AskGitUsernameAndEmailDialog(
         }
     }
 }
-

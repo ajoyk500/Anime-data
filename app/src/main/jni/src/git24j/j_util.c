@@ -4,7 +4,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-
 void j_save_c_pointer(JNIEnv *env, void *ptr, jobject object, const char *setterName)
 {
     assert(object && "receiving object must not be null");
@@ -13,17 +12,14 @@ void j_save_c_pointer(JNIEnv *env, void *ptr, jobject object, const char *setter
     {
         j_throw_jni_error(env, "cannot save native pointer because the receiver is not identifiable");
     }
-
     jmethodID method = NULL;
     if ((method = (*env)->GetMethodID(env, clz, setterName, "(J)V")) == NULL)
     {
         j_throw_jni_error(env, "cannot find setter to save native pointer.");
     }
-
     (*env)->CallVoidMethod(env, object, method, (jlong)ptr);
     (*env)->DeleteLocalRef(env, clz);
 }
-
 void git_strarray_of_jobject_array(JNIEnv *env, jobjectArray jstrarr, git_strarray *out)
 {
     if (jstrarr == NULL)
@@ -43,7 +39,6 @@ void git_strarray_of_jobject_array(JNIEnv *env, jobjectArray jstrarr, git_strarr
         (*env)->ReleaseStringUTFChars(env, jstr, cstr);
     }
 }
-
 char *new_substr(const char *str, size_t len)
 {
     char *buf = (char *)malloc(sizeof(char) * (len + 1));

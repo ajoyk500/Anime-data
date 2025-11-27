@@ -27,7 +27,6 @@ import com.akcreation.gitsilent.utils.pref.PrefMan
 import com.akcreation.gitsilent.utils.pref.PrefUtil
 
 private const val TAG = "Theme"
-
 object Theme {
     val Orange = Color(0xFFFF5722)
     val darkLightBlue = Color(0xDF456464)
@@ -35,59 +34,37 @@ object Theme {
     val mdRed = Color(0xFFAD2A2A)
     val Gray1 = Color(0xFF8C8C8C)
     val Gray2 = Color(0xFF7C7C7C)
-
-
     const val auto = 0
     const val light = 1
     const val dark = 2
-
-//    val invalidThemeValue: Int = -1
-    const val defaultThemeValue: Int = auto // default is auto
-
-    // this value will update when theme ready
+    const val defaultThemeValue: Int = auto 
     var inDarkTheme = false
-
-    // inDarkTheme的state版，方便触发页面重新渲染
     val inDarkThemeState = mutableStateOf(false)
-
     val themeList = listOf(
-        auto,  // auto, 实际就是跟随系统
-        light,  // light
-        dark,  // dark
+        auto,  
+        light,  
+        dark,  
     )
-
-    /**
-     * 存储当前Activity的主题的状态变量，弄状态变量是为了实现切换主题后不需要重启即可生效
-     */
     var theme:MutableState<Int> = mutableStateOf(defaultThemeValue)
-
     const val defaultDynamicColorsValue = true
     val dynamicColor = mutableStateOf(defaultDynamicColorsValue)
-
     fun init(themeValue: Int, dynamicColorEnabled: Boolean) {
         theme.value = getALegalThemeValue(themeValue)
         dynamicColor.value = dynamicColorEnabled
     }
-
     fun updateThemeValue(context: Context, newValue:Int) {
         val themeValue = getALegalThemeValue(newValue)
-        // `Theme.inDarkTheme` will update after state changed, so need not update it at here
         theme.value = themeValue
         PrefMan.set(context, PrefMan.Key.theme, ""+themeValue)
     }
-
     fun getALegalThemeValue(themeValue:Int) = if(themeList.contains(themeValue)) themeValue else defaultThemeValue;
-
     fun updateDynamicColor(context:Context, newValue:Boolean) {
         dynamicColor.value = newValue
         PrefUtil.setDynamicColorsScheme(context, newValue)
     }
-
-
     fun getThemeTextByCode(themeCode:Int?, appContext: Context):String {
         if(themeCode == auto) {
             return appContext.getString(R.string.auto)
-//            return appContext.getString(R.string.follow_system)
         }else if(themeCode == light) {
             return appContext.getString(R.string.light)
         }else if(themeCode == dark) {
@@ -95,32 +72,12 @@ object Theme {
         }else {
             return appContext.getString(R.string.unknown)
         }
-
     }
 }
-
 private val DarkColorScheme = darkColorScheme(
-//    primary = Purple80,
-//    secondary = PurpleGrey80,
-//    tertiary = Pink80
 )
-
 private val LightColorScheme = lightColorScheme(
-//    primary = Purple40,
-//    secondary = PurpleGrey40,
-//    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
-
 @Composable
 fun InitContent(context: Context, content: @Composable ()->Unit) {
     Theme.init(
@@ -131,16 +88,13 @@ fun InitContent(context: Context, content: @Composable ()->Unit) {
         content()
     }
 }
-
 @Composable
 fun PuppyGitAndroidTheme(
     theme:Int = Theme.theme.value,
-    // Dynamic color is available on Android 12+, but maybe will cause app color weird, e.g. difficult to distinguish
     dynamicColor: Boolean = Theme.dynamicColor.value,
     content: @Composable () -> Unit
 ) {
     val darkTheme = if(theme == Theme.auto) isSystemInDarkTheme() else (theme == Theme.dark)
-
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -154,25 +108,18 @@ fun PuppyGitAndroidTheme(
                 getDynamicColor(false, context)
             }
         }
-
         darkTheme -> {
             Theme.inDarkTheme = true;
             Theme.inDarkThemeState.value = true
             DarkColorScheme
         }
-
         else -> {
             Theme.inDarkTheme = false;
             Theme.inDarkThemeState.value = false
             LightColorScheme
         }
     }
-
-    // update text mate theme to avoid forget set it before syntax highlight analyze,
-    //   then set theme before analyze or not, will all be fine
     TextMateUtil.updateTheme(Theme.inDarkTheme)
-
-    // actually idk code at below for what purpose, it is bundled when I created the project
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -184,31 +131,18 @@ fun PuppyGitAndroidTheme(
             }
         }
     }
-
-    //test
-//    Theme.inDarkTheme=true
-    //test
-
     MaterialTheme(
-        //test
-//        colorScheme = DarkColorScheme,
-        //test
         colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
 }
-
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 private fun getDynamicColor(inDarkTheme: Boolean, context: Context): ColorScheme {
     return (if(inDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)).let {
         if(isNeutralColorScheme(it)) {
             MyLog.d(TAG, "Neutral (gray) color scheme detected, will use secondary replaced primary colors")
-
-            // default primary color of neutral color scheme(gray)
-            //   maybe will cause difficult to distinguish,
-            //   so use secondary color instead of it
             it.copy(
                 primary = it.secondary,
                 primaryContainer = it.secondaryContainer,
@@ -217,11 +151,8 @@ private fun getDynamicColor(inDarkTheme: Boolean, context: Context): ColorScheme
             )
         }else {
             MyLog.d(TAG, "Not Neutral (gray) color scheme, will use default primary colors")
-
             it
         }
     }
 }
-
-// rgb same = gray = Neutral color scheme
 fun isNeutralColorScheme(colorScheme: ColorScheme) = colorScheme.primary.let { it.red == it.green && it.red == it.blue }

@@ -18,11 +18,9 @@ fun ItemListIsEmpty() {
         modifier = Modifier
             .height(50.dp)
             .fillMaxWidth(),
-
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(stringResource(R.string.item_list_is_empty))
     }
 }
-

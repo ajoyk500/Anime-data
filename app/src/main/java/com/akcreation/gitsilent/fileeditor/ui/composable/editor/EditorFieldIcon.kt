@@ -18,21 +18,17 @@ fun FieldIcon(
     isSelected: Boolean,
     modifier: Modifier = Modifier
 ) {
-//    val inDarkTheme = Theme.inDarkTheme
-
     Box(modifier = modifier) {
         when {
             isMultipleSelection && isSelected -> {
                 CheckCircleIcon(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.primary)
             }
             isSelected -> {
-//                这个菜单图标在行号下面，当没选中行时，应该尽量降低存在感，DarkMode下要比行号暗（但不要暗到看不见），正常模式下要比行号亮（但不要刺眼）
                 MenuIcon(modifier = Modifier.align(Alignment.Center), color = Color.Gray)
             }
         }
     }
 }
-
 @Preview
 @Composable
 private fun FieldIcon_Preview() {
@@ -44,18 +40,14 @@ private fun FieldIcon_Preview() {
         }
     }
 }
-
-
 @Composable
 fun FieldIcon(
     focused: Boolean,
     modifier: Modifier = Modifier
 ) {
     val inDarkTheme = Theme.inDarkTheme
-
     Box(modifier = modifier) {
         if (focused){
-            // 这个菜单图标在行号下面，当没选中行时，应该尽量降低存在感，DarkMode下要比行号暗（但不要暗到看不见），正常模式下要比行号亮（但不要刺眼）
             MenuIcon(modifier = Modifier.align(Alignment.Center), color = Color.Gray)
         }
     }

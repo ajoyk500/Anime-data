@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.Theme
 
-
 @Composable
 fun MyCheckBox2(
     text: String,
@@ -28,7 +27,6 @@ fun MyCheckBox2(
     onValueChange: (newValue:Boolean)->Unit
 ) {
     val inDarkTheme = Theme.inDarkTheme
-
     Row(
         Modifier
             .fillMaxWidth()
@@ -36,7 +34,7 @@ fun MyCheckBox2(
             .toggleable(
                 enabled = enabled,
                 value = value,
-                onValueChange = { onValueChange(it) },  //话说这个it是不是新值，所以不反转原始值直接 value = it，不就行了？
+                onValueChange = { onValueChange(it) },  
                 role = Role.Checkbox
             )
             .padding(horizontal = MyStyleKt.defaultHorizontalPadding),
@@ -45,16 +43,13 @@ fun MyCheckBox2(
         Checkbox(
             enabled=enabled,
             checked = value,
-            onCheckedChange = null // null recommended for accessibility with screenreaders
+            onCheckedChange = null 
         )
-
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(start = 16.dp),
             color = if(enabled) Color.Unspecified else if(inDarkTheme) MyStyleKt.TextColor.disable_DarkTheme else MyStyleKt.TextColor.disable
         )
-
     }
 }
-

@@ -24,30 +24,24 @@ import com.akcreation.gitsilent.utils.forEachIndexedBetter
 import com.akcreation.gitsilent.utils.state.mutableCustomStateOf
 
 private const val TAG = "CommitMsgTemplateDialog"
-
 @Composable
 fun CommitMsgTemplateDialog(
     stateKeyTag:String,
     closeDialog: ()->Unit,
 ) {
     val stateKeyTag = Cache.getComponentKey(stateKeyTag, TAG)
-
     val settings = remember { SettingsUtil.getSettingsSnapshot() }
     val template = mutableCustomStateOf(stateKeyTag, "template") { TextFieldValue(text = settings.commitMsgTemplate, selection = TextRange(settings.commitMsgTemplate.length)) }
-
     val autoType = {text:String ->
         runCatching {
             template.apply {
                 value = value.copy(
-                    //在光标处插入text
                     text = value.text.replaceRange(value.selection.min, value.selection.max, text),
-                    //将光标移动到刚插入的text后面
                     selection = TextRange(value.selection.min + text.length)
                 )
             }
         }
     }
-
     ConfirmDialog3(
         requireShowTitleCompose = true,
         titleCompose = {},
@@ -63,27 +57,20 @@ fun CommitMsgTemplateDialog(
                     onValueChange = {
                         template.value = it
                     },
-
                 )
-
                 Spacer(Modifier.height(15.dp))
-
                 MySelectionContainer {
                     Column {
                         CommitMsgTemplateUtil.apply {
                             val phListLastIndex = phList.size-1
-
                             phList.forEachIndexedBetter {idx, it ->
                                 PlaceHolder(it) {
                                     autoType(it.pattern)
                                 }
-
-                                //加点间距
                                 if(idx != phListLastIndex) {
                                     Spacer(Modifier.height(10.dp))
                                 }
                             }
-
                         }
                     }
                 }
@@ -92,7 +79,6 @@ fun CommitMsgTemplateDialog(
         onCancel = closeDialog
     ) {
         closeDialog()
-
         doJobThenOffLoading {
             SettingsUtil.update {
                 it.commitMsgTemplate = template.value.text
@@ -100,7 +86,6 @@ fun CommitMsgTemplateDialog(
         }
     }
 }
-
 @Composable
 private fun PlaceHolder(
     ph: PlaceHolder,
@@ -110,7 +95,6 @@ private fun PlaceHolder(
         SingleLineClickableText(ph.pattern) {
             onClick(ph)
         }
-
         Text(": e.g. ${ph.example}", fontWeight = FontWeight.Light)
     }
 }

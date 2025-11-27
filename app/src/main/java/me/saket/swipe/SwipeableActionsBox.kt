@@ -29,16 +29,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-/**
- * A composable that can be swiped left or right for revealing actions.
- *
- * @param swipeThreshold Minimum drag distance before any [SwipeAction] is
- * activated and can be swiped.
- *
- * @param backgroundUntilSwipeThreshold Color drawn behind the content until
- * [swipeThreshold] is reached. When the threshold is passed, this color is
- * replaced by the currently visible [SwipeAction]'s background.
- */
 @Composable
 fun SwipeableActionsBox(
   modifier: Modifier = Modifier,
@@ -59,7 +49,6 @@ fun SwipeableActionsBox(
       )
     }
   }
-
   val backgroundColor = when {
     state.swipedAction != null -> state.swipedAction!!.value.background
     !state.hasCrossedSwipeThreshold() -> backgroundUntilSwipeThreshold
@@ -67,13 +56,10 @@ fun SwipeableActionsBox(
     else -> Color.Transparent
   }
   val animatedBackgroundColor: Color = if (state.layoutWidth == 0) {
-    // Use the current color immediately because paparazzi can only capture the 1st frame.
-    // https://github.com/cashapp/paparazzi/issues/1261
     backgroundColor
   } else {
     animateColorAsState(backgroundColor).value
   }
-
   val scope = rememberCoroutineScope()
   Box(
     modifier = Modifier
@@ -94,7 +80,6 @@ fun SwipeableActionsBox(
       ),
     content = content
   )
-
   (state.swipedAction ?: state.visibleAction)?.let { action ->
     if(action.value.enableAnimation) {
       ActionIconBox(
@@ -106,16 +91,13 @@ fun SwipeableActionsBox(
       )
     }
   }
-
   val hapticFeedback = LocalHapticFeedback.current
-  // I am not sure, but the `swipedAction == null` should means drag going ahead, if non-null meas going back, so, going ahead will vibrate, going back will not.
   if (state.swipedAction == null && state.visibleAction?.value?.enableVibration == true && state.hasCrossedSwipeThreshold()) {
     LaunchedEffect(state.visibleAction) {
       hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
     }
   }
 }
-
 @Composable
 private fun ActionIconBox(
   action: SwipeActionMeta,
@@ -129,7 +111,6 @@ private fun ActionIconBox(
       .layout { measurable, constraints ->
         val placeable = measurable.measure(constraints)
         layout(width = placeable.width, height = placeable.height) {
-          // Align icon with the left/right edge of the content being swiped.
           val iconOffset = if (action.isOnRightSide) constraints.maxWidth + offset else offset - placeable.width
           placeable.place(x = iconOffset.roundToInt(), y = 0)
         }
@@ -141,7 +122,6 @@ private fun ActionIconBox(
     content()
   }
 }
-
 private fun Modifier.drawOverContent(onDraw: DrawScope.() -> Unit): Modifier {
   return drawWithContent {
     drawContent()

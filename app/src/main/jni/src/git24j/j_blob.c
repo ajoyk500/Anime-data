@@ -2,8 +2,6 @@
 #include "j_mappers.h"
 #include "j_util.h"
 extern j_constants_t *jniConstants;
-
-/** int git_blob_lookup(git_blob **blob, git_repository *repo, const git_oid *id); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniLookup)(JNIEnv *env, jclass obj, jobject outBlob, jlong repoPtr, jobject oid)
 {
     git_blob *c_blob;
@@ -13,8 +11,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniLookup)(JNIEnv *env, jclass obj, jo
     (*env)->CallVoidMethod(env, outBlob, jniConstants->midAtomicLongSet, (jlong)c_blob);
     return e;
 }
-
-/** int git_blob_lookup_prefix(git_blob **blob, git_repository *repo, const git_oid *id, size_t len); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniLookupPrefix)(JNIEnv *env, jclass obj, jobject outBlob, jlong repoPtr, jstring shortId)
 {
     git_blob *c_blob = 0;
@@ -25,44 +21,31 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniLookupPrefix)(JNIEnv *env, jclass o
     {
         return e;
     }
-
     int r = git_blob_lookup_prefix(&c_blob, (git_repository *)repoPtr, &c_oid, short_id_len);
     (*env)->CallVoidMethod(env, outBlob, jniConstants->midAtomicLongSet, (jlong)c_blob);
     return r;
 }
-
-/** void git_blob_free(git_blob *blob); */
 JNIEXPORT void JNICALL J_MAKE_METHOD(Blob_jniFree)(JNIEnv *env, jclass obj, jlong blobPtr)
 {
     git_blob_free((git_blob *)blobPtr);
 }
-
-/** const git_oid * git_blob_id(const git_blob *blob); */
 JNIEXPORT jbyteArray JNICALL J_MAKE_METHOD(Blob_jniId)(JNIEnv *env, jclass obj, jlong blobPtr)
 {
     const git_oid *c_oid = git_blob_id((git_blob *)blobPtr);
     return j_git_oid_to_bytearray(env, c_oid);
 }
-
-/** git_repository * git_blob_owner(const git_blob *blob); */
 JNIEXPORT jlong JNICALL J_MAKE_METHOD(Blob_jniOwner)(JNIEnv *env, jclass obj, jlong blobPtr)
 {
     return (jlong)git_blob_owner((git_blob *)blobPtr);
 }
-
-/** const void * git_blob_rawcontent(const git_blob *blob); */
 JNIEXPORT jlong JNICALL J_MAKE_METHOD(Blob_jniRawContent)(JNIEnv *env, jclass obj, jlong blobPtr)
 {
     return (jlong)git_blob_rawcontent((git_blob *)blobPtr);
 }
-
-/** git_off_t git_blob_rawsize(const git_blob *blob); */
 JNIEXPORT jlong JNICALL J_MAKE_METHOD(Blob_jniRawSize)(JNIEnv *env, jclass obj, jlong blobPtr)
 {
     return (jlong)git_blob_rawsize((git_blob *)blobPtr);
 }
-
-/** int git_blob_create_from_workdir(git_oid *id, git_repository *repo, const char *relative_path); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromWorkdir)(JNIEnv *env, jclass obj, jobject outId, jlong repoPtr, jstring relativePath)
 {
     git_oid c_oid;
@@ -72,8 +55,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromWorkdir)(JNIEnv *env, jcl
     j_git_oid_to_java(env, &c_oid, outId);
     return e;
 }
-
-/** int git_blob_create_from_disk(git_oid *id, git_repository *repo, const char *path); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromDisk)(JNIEnv *env, jclass obj, jobject outId, jlong repoPtr, jstring path)
 {
     git_oid c_oid;
@@ -83,8 +64,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromDisk)(JNIEnv *env, jclass
     j_git_oid_to_java(env, &c_oid, outId);
     return e;
 }
-
-/** int git_blob_create_from_stream(git_writestream **out, git_repository *repo, const char *hintpath); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromStream)(JNIEnv *env, jclass obj, jobject outStream, jlong repoPtr, jstring hintPath)
 {
     char *hint_path = j_copy_of_jstring(env, hintPath, true);
@@ -94,8 +73,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromStream)(JNIEnv *env, jcla
     free(hint_path);
     return e;
 }
-
-/** int git_blob_create_from_stream_commit(git_oid *out, git_writestream *stream); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromStreamCommit)(JNIEnv *env, jclass obj, jobject outId, jlong streamPtr)
 {
     git_oid c_oid;
@@ -103,8 +80,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromStreamCommit)(JNIEnv *env
     j_git_oid_to_java(env, &c_oid, outId);
     return e;
 }
-
-/** int git_blob_create_from_buffer(git_oid *id, git_repository *repo, const void *buffer, size_t len); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromBuffer)(JNIEnv *env, jclass obj, jobject outId, jlong repoPtr, jbyteArray buf)
 {
     git_oid c_oid;
@@ -115,14 +90,10 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniCreateFromBuffer)(JNIEnv *env, jcla
     j_git_oid_to_java(env, &c_oid, outId);
     return e;
 }
-
-/** int git_blob_is_binary(const git_blob *blob); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniIsBinary)(JNIEnv *env, jclass obj, jlong blobPtr)
 {
     return git_blob_is_binary((git_blob *)blobPtr);
 }
-
-/** int git_blob_dup(git_blob **out, git_blob *source); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniDup)(JNIEnv *env, jclass obj, jobject outDest, jlong srcPtr)
 {
     git_blob *out = 0;
@@ -130,8 +101,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniDup)(JNIEnv *env, jclass obj, jobje
     (*env)->CallVoidMethod(env, outDest, jniConstants->midAtomicLongSet, (jlong)out);
     return e;
 }
-
-/** int git_blob_filtered_content(git_buf *out, git_blob *blob, const char *as_path, int check_for_binary_data); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Blob_jniFilteredContent)(JNIEnv *env, jclass obj, jobject out, jlong blobPtr, jstring as_path, jint check_for_binary_data)
 {
     git_buf c_out = {0};

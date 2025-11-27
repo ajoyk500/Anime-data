@@ -19,7 +19,6 @@ fun FileDetailListActions(
     if(filterModeOn) {
         return
     }
-
     LongPressAbleIconBtn(
         tooltipText = stringResource(R.string.filter),
         icon = Icons.Filled.FilterAlt,

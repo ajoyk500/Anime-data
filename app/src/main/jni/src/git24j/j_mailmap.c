@@ -5,14 +5,10 @@
 #include <stdio.h>
 #include <string.h>
 extern j_constants_t *jniConstants;
-
-/** GIT_EXTERN(void) git_mailmap_free(git_mailmap *mm); */
 JNIEXPORT void JNICALL J_MAKE_METHOD(Mailmap_jniFree)(JNIEnv *env, jclass obj, jlong mmPtr)
 {
     git_mailmap_free((git_mailmap *)mmPtr);
 }
-
-/** GIT_EXTERN(int) git_mailmap_add_entry(git_mailmap *mm, const char *real_name, const char *real_email, const char *replace_name, const char *replace_email); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniAddEntry)(JNIEnv *env, jclass obj, jlong mmPtr, jstring realName, jstring realEmail, jstring replaceName, jstring replaceEmail)
 {
     char *real_name = j_copy_of_jstring(env, realName, true);
@@ -26,7 +22,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniAddEntry)(JNIEnv *env, jclass ob
     free(real_name);
     return e;
 }
-/** GIT_EXTERN(int) git_mailmap_from_buffer(git_mailmap **out, const char *buf, size_t len); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniFromBuffer)(JNIEnv *env, jclass obj, jobject outPtr, jstring buf)
 {
     char *c_buf = j_copy_of_jstring(env, buf, true);
@@ -37,8 +32,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniFromBuffer)(JNIEnv *env, jclass 
     free(c_buf);
     return e;
 }
-
-/** GIT_EXTERN(int) git_mailmap_from_repository(git_mailmap **out, git_repository *repo); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniFromRepository)(JNIEnv *env, jclass obj, jobject outPtr, jlong repoPtr)
 {
     git_mailmap *c_out = 0;
@@ -46,13 +39,10 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniFromRepository)(JNIEnv *env, jcl
     (*env)->CallVoidMethod(env, outPtr, jniConstants->midAtomicLongSet, (jlong)c_out);
     return e;
 }
-
-/** GIT_EXTERN(int) git_mailmap_resolve( const char **real_name, const char **real_email, const git_mailmap *mm, const char *name, const char *email); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniResolve)(JNIEnv *env, jclass obj, jobject outRealName, jobject outRealEmail, jlong mmPtr, jstring name, jstring email)
 {
     assert(outRealName && "receiving object must not be null");
     jclass clz = (*env)->GetObjectClass(env, outRealName);
-    /* jclass clz = (*env)->FindClass(env, "Ljava/util/concurrent/atomic/AtomicReference;"); */
     assert(clz && "Mailmap::jniResolve: could not identify the class of receivers");
     char *c_name = j_copy_of_jstring(env, name, true);
     char *c_email = j_copy_of_jstring(env, email, true);
@@ -69,8 +59,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniResolve)(JNIEnv *env, jclass obj
     free(c_name);
     return e;
 }
-
-/** int git_mailmap_resolve_signature(git_signature **out, const git_mailmap *mm, const git_signature *sig); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Mailmap_jniResolveSignature)(JNIEnv *env, jclass obj, jobject out, jlong mmPtr, jlong sigPtr)
 {
     git_signature *c_out = 0;

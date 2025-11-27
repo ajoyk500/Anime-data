@@ -18,20 +18,15 @@ import com.akcreation.gitsilent.screen.functions.navToFileChooser
 import com.akcreation.gitsilent.screen.shared.FileChooserType
 import com.akcreation.gitsilent.style.MyStyleKt
 
-
-/**
- * App Internal File Chooser, no-depend system file chooser, also no saf support
- */
 @Composable
 fun InternalFileChooser(
-    activityContext: Context,  //这个最好从外部传，在弹窗内获取的Context，无法转换为Activity，除非递归查找
+    activityContext: Context,  
     path:MutableState<String>,
-    chooserType: FileChooserType = FileChooserType.SINGLE_DIR,  //默认选dir，如果想选文件，可传对应类型
+    chooserType: FileChooserType = FileChooserType.SINGLE_DIR,  
     pathTextFieldLabel:String=stringResource(R.string.path),
     pathTextFieldPlaceHolder:String=stringResource(R.string.eg_storage_emulate_0_repos),
 ) {
     GrantManageStoragePermissionClickableText(activityContext)
-
     TextField(
         modifier = Modifier.fillMaxWidth().padding(horizontal = MyStyleKt.defaultHorizontalPadding),
         value = path.value,
@@ -50,11 +45,9 @@ fun InternalFileChooser(
                 onClick = {
                     navToFileChooser(chooserType)
                 }
-
             ) {
                 Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = stringResource(R.string.three_dots_icon_for_choose_folder))
             }
         }
     )
-
 }

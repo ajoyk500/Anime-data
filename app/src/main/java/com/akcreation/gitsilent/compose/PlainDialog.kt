@@ -32,7 +32,6 @@ private fun PlainDialog(
         }
     }
 }
-
 @Composable
 fun PlainDialogWithPadding(
     contentPadding: PaddingValues = MyStyleKt.defaultItemPaddingValues,

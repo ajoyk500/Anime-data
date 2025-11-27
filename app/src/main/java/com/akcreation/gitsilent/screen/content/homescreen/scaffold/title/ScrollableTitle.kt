@@ -13,56 +13,40 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.akcreation.gitsilent.compose.ScrollableRow
 import com.akcreation.gitsilent.screen.functions.defaultTitleDoubleClick
 
-
-/**
- * 默认双击标题回到列表顶部的title
- */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScrollableTitle(
     text:String,
     listState: ScrollState,
     lastPosition:MutableState<Int>,
-
 ) {
     val scope = rememberCoroutineScope()
-
     ScrollableRow {
         Text(
             text = text,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.combinedClickable(onDoubleClick = {
-                // double click go to top
                 defaultTitleDoubleClick(scope, listState, lastPosition)
-
             }) {  }
         )
     }
 }
-
-/**
- * 默认双击标题回到列表顶部的title
- */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScrollableTitle(
     text:String,
     listState: LazyListState,
     lastPosition:MutableState<Int>,
-
 ) {
     val scope = rememberCoroutineScope()
-
     ScrollableRow {
         Text(
             text = text,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.combinedClickable(onDoubleClick = {
-                // double click go to top
                 defaultTitleDoubleClick(scope, listState, lastPosition)
-
             }) {  }
         )
     }

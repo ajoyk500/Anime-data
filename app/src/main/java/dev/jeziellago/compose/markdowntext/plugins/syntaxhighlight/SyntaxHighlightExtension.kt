@@ -17,7 +17,6 @@ class SyntaxHighlightExtension private constructor() : ParserExtension,
             ),
         )
     }
-
     override fun extend(rendererBuilder: TextContentRenderer.Builder) {
         rendererBuilder.nodeRendererFactory { context ->
             SyntaxHighlightNodeRenderer(
@@ -25,7 +24,6 @@ class SyntaxHighlightExtension private constructor() : ParserExtension,
             )
         }
     }
-
     companion object {
         fun create(): Extension {
             return SyntaxHighlightExtension()

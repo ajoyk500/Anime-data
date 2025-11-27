@@ -5,11 +5,7 @@
 #include <assert.h>
 #include <git2.h>
 #include <stdio.h>
-
 extern j_constants_t *jniConstants;
-
-/** -------- Wrapper Body ---------- */
-/** int git_graph_ahead_behind(size_t *ahead, size_t *behind, git_repository *repo, const git_oid *local, const git_oid *upstream); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Graph_jniAheadBehind)(JNIEnv *env, jclass obj, jobject ahead, jobject behind, jlong repoPtr, jobject local, jobject upstream)
 {
     size_t c_ahead;
@@ -23,8 +19,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Graph_jniAheadBehind)(JNIEnv *env, jclass o
     (*env)->CallVoidMethod(env, behind, jniConstants->midAtomicIntSet, c_behind);
     return r;
 }
-
-/** int git_graph_descendant_of(git_repository *repo, const git_oid *commit, const git_oid *ancestor); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Graph_jniDescendantOf)(JNIEnv *env, jclass obj, jlong repoPtr, jobject commit, jobject ancestor)
 {
     git_oid c_commit;

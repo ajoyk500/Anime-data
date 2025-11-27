@@ -11,7 +11,6 @@ data class ApiBean (
     val pull:String = "/pull",
     val push:String = "/push",
     val sync:String = "/sync",
-    //少加点参数，少写少错
     val pull_example:String = "",
     val push_example:String = "",
     val sync_example:String = "",

@@ -49,22 +49,17 @@ import com.akcreation.gitsilent.utils.doJobThenOffLoading
 import com.akcreation.gitsilent.utils.encrypt.MasterPassUtil
 
 private const val TAG = "RequireMasterPasswordScreen"
-
 @Composable
 fun RequireMasterPasswordScreen(
     requireMasterPassword:MutableState<Boolean>
 ) {
     val activityContext = LocalContext.current
     val errMsg = rememberSaveable { mutableStateOf("") }
-
     val password = rememberSaveable { mutableStateOf("") }
     val passwordVisible = rememberSaveable { mutableStateOf(false) }
     val showClearMasterPasswordDialog = rememberSaveable { mutableStateOf(false) }
-
     val focusRequest = remember {FocusRequester()}
-
     val settings = remember { SettingsUtil.getSettingsSnapshot() }
-
     if(showClearMasterPasswordDialog.value) {
         ClearMasterPasswordDialog(
             onCancel = {showClearMasterPasswordDialog.value = false},
@@ -74,53 +69,39 @@ fun RequireMasterPasswordScreen(
             }
         )
     }
-
     val initLoadingText = stringResource(R.string.loading)
     val loading = rememberSaveable { mutableStateOf(false) }
     val loadingText = rememberSaveable { mutableStateOf(initLoadingText) }
-
     val loadingOn = { text:String->
         loadingText.value = text
         loading.value = true
     }
-
     val loadingOff = {
         loading.value = false
         loadingText.value = initLoadingText
     }
-
     val inputPassCallback = {
         val pass = password.value
-
         doJobThenOffLoading(loadingOn, loadingOff, loadingText.value) {
             try {
                 loadingText.value = activityContext.getString(R.string.verifying)
                 val verified = HashUtil.verify(pass, settings.masterPasswordHash)
                 if(verified) {
                     loadingText.value = activityContext.getString(R.string.checking_creds_migration)
-                    //一般不会迁移失败，这里不try...catch了，就算迁移失败，用户还能清主密码，不包了
                     AppModel.dbContainer.credentialRepository.migrateEncryptVerIfNeed(pass)
-
                     loadingText.value = activityContext.getString(R.string.updating_master_password)
                     AppModel.masterPassword.value = pass
-
-                    //一般启动时不需要用户重新输入密码，如果需要，说明存的不对，所以这里重新存一下
                     MasterPassUtil.save(AppModel.realAppContext, pass)
-
-                    //完了！可以进入app了
                     requireMasterPassword.value = false
                 }else {
                     errMsg.value = activityContext.getString(R.string.wrong_password)
                 }
-
             }catch (e:Exception) {
                 errMsg.value = e.localizedMessage ?: (activityContext.getString(R.string.wrong_password) + ", (err msg is null)")
             }
         }
-
         Unit
     }
-
     Scaffold { contentPadding ->
         Column(
             modifier = Modifier
@@ -131,26 +112,15 @@ fun RequireMasterPasswordScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//        Spacer(modifier = Modifier.height(30.dp))
-
             AppIcon()
-
             Spacer(modifier = Modifier.height(30.dp))
-
-//        Row { Text(stringResource(R.string.master_password), fontSize = 30.sp) }
-//        Spacer(modifier = Modifier.height(60.dp))
-
-
             PasswordTextFiled(
                 password = password,
                 passwordVisible = passwordVisible,
                 label = stringResource(R.string.master_password),
                 placeholder = stringResource(R.string.input_your_master_password),
                 focusRequest = focusRequest,
-
-                // 左右padding外部column加了，所以这里只需加垂直padding
                 paddingValues = PaddingValues(vertical = 10.dp),
-
                 errMsg = errMsg,
                 enabled = loading.value.not(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Go),
@@ -159,8 +129,6 @@ fun RequireMasterPasswordScreen(
                 }),
                 enterPressedCallback = inputPassCallback
             )
-
-
             ClickableText(
                 text = stringResource(R.string.i_forgot_my_master_password),
                 color = if(loading.value) UIHelper.getDisableTextColor() else MyStyleKt.ClickableText.getColor(),
@@ -170,9 +138,7 @@ fun RequireMasterPasswordScreen(
                     onClick = { showClearMasterPasswordDialog.value = true }
                 ),
             )
-
             Spacer(Modifier.height(20.dp))
-            // ok btn
             Button(
                 enabled = loading.value.not(),
                 onClick = {
@@ -181,19 +147,14 @@ fun RequireMasterPasswordScreen(
             ) {
                 Text(stringResource(R.string.confirm))
             }
-
             Spacer(Modifier.height(20.dp))
-
             if(loading.value) {
                 MySelectionContainer {
                     Text(loadingText.value, fontWeight = FontWeight.Light, color = MyStyleKt.TextColor.getHighlighting())
                 }
             }
-
-//        Spacer(Modifier.height(100.dp))
         }
     }
-
     LaunchedEffect(Unit) {
         try {
             focusRequest.requestFocus()
@@ -201,5 +162,4 @@ fun RequireMasterPasswordScreen(
             MyLog.d(TAG, "request focus failed: ${e.stackTraceToString()}")
         }
     }
-
 }

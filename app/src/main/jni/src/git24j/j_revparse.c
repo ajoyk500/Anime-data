@@ -4,7 +4,6 @@
 #include "j_util.h"
 #include <assert.h>
 extern j_constants_t *jniConstants;
-
 void j_save_revspec_c_value(JNIEnv *env, git_revspec *rev_spec, jobject revSpec)
 {
     assert(revSpec && "receiving object must not be null");
@@ -14,7 +13,6 @@ void j_save_revspec_c_value(JNIEnv *env, git_revspec *rev_spec, jobject revSpec)
     {
         j_call_setter_long(env, clz, revSpec, "setFrom", (jlong)(rev_spec->from));
     }
-
     if (rev_spec->to)
     {
         j_call_setter_long(env, clz, revSpec, "setTo", (jlong)(rev_spec->to));
@@ -22,7 +20,6 @@ void j_save_revspec_c_value(JNIEnv *env, git_revspec *rev_spec, jobject revSpec)
     j_call_setter_int(env, clz, revSpec, "setFlags", (jlong)(rev_spec->flags));
     (*env)->DeleteLocalRef(env, clz);
 }
-
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Revparse_jniLookup)(JNIEnv *env, jclass obj, jobject revspec, jlong repoPtr, jstring spec)
 {
     git_revspec c_revspec;
@@ -32,7 +29,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Revparse_jniLookup)(JNIEnv *env, jclass obj
     free(c_spec);
     return error;
 }
-
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Revparse_jniSingle)(JNIEnv *env, jclass obj, jobject outObj, jlong repoPtr, jstring spec)
 {
     git_object *c_out = 0;
@@ -42,7 +38,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Revparse_jniSingle)(JNIEnv *env, jclass obj
     free(c_spec);
     return error;
 }
-
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Revparse_jniExt)(JNIEnv *env, jclass obj, jobject outObj, jobject outRef, jlong repoPtr, jstring spec)
 {
     git_object *c_out_obj = 0;

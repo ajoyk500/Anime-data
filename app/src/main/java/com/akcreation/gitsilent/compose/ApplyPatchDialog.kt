@@ -21,8 +21,6 @@ import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 import com.github.git24j.core.Repository
 import java.io.File
 
-
-
 @Composable
 fun ApplyPatchDialog(
     errMsg: String,
@@ -36,7 +34,6 @@ fun ApplyPatchDialog(
     onFinallyCallback:()->Unit,
     onOkCallback:()->Unit,
 ) {
-
     ConfirmDialog2(
         okBtnEnabled = loadingRepoList.not() && repoList.isNotEmpty() && selectedRepo.value.id.isNotBlank(),
         title = stringResource(R.string.apply_patch),
@@ -44,7 +41,7 @@ fun ApplyPatchDialog(
         textCompose = {
             ScrollableColumn {
                 val hasErr = errMsg.isNotEmpty()
-                if(hasErr || loadingRepoList || repoList.isEmpty()) {  //正在加载仓库列表，或者加载完了，但仓库列表为空
+                if(hasErr || loadingRepoList || repoList.isEmpty()) {  
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
@@ -58,13 +55,11 @@ fun ApplyPatchDialog(
                             }
                         }
                     }
-                } else {  //加载仓库列表完毕，并且列表非空
+                } else {  
                     MySelectionContainer {
                         DefaultPaddingText(text = stringResource(R.string.select_target_repo)+":")
                     }
-
                     Spacer(modifier = Modifier.height(5.dp))
-
                     SingleSelectList(
                         optionsList = repoList,
                         menuItemSelected = {idx, value -> value.id == selectedRepo.value.id},
@@ -73,44 +68,29 @@ fun ApplyPatchDialog(
                         selectedOptionIndex = null,
                         selectedOptionValue = selectedRepo.value
                     )
-
                     Spacer(modifier = Modifier.height(10.dp))
-
                     MyCheckBox(stringResource(R.string.check_only), checkOnly)
                     if(checkOnly.value) {
                         MySelectionContainer {
                             DefaultPaddingText(stringResource(R.string.apply_patch_check_note))
                         }
                     }
-
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         },
         okBtnText = stringResource(R.string.apply),
         onCancel = { onCancel() }
-    ) {  // onOK
-
+    ) {  
         doJobThenOffLoading {
             try {
                 Repository.open(selectedRepo.value.fullSavePath).use { repo ->
-                    /*
-                     *(
-                            inputFile:File,
-                            repo:Repository,
-                            applyOptions: Apply.Options?=null,
-                            location:Apply.LocationT = Apply.LocationT.WORKDIR,  // default same as `git apply`
-                            checkWorkdirCleanBeforeApply: Boolean = true,
-                            checkIndexCleanBeforeApply: Boolean = false
-                        )
-                     */
                     val inputFile = File(patchFileFullPath)
                     val ret = Libgit2Helper.applyPatchFromFile(
                         inputFile,
                         repo,
                         checkOnlyDontRealApply = checkOnly.value
                     )
-
                     if(ret.hasError()) {
                         if(ret.exception!=null) {
                             throw ret.exception!!
@@ -119,8 +99,6 @@ fun ApplyPatchDialog(
                         }
                     }
                 }
-
-
                 onOkCallback()
             }catch (e:Exception){
                 onErrCallback(e, selectedRepo.value.id)

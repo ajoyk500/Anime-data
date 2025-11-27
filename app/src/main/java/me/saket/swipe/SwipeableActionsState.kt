@@ -22,29 +22,16 @@ import kotlin.math.abs
 fun rememberSwipeableActionsState(): SwipeableActionsState {
   return remember { SwipeableActionsState() }
 }
-
-/**
- * The state of a [SwipeableActionsBox].
- */
 @Stable
 class SwipeableActionsState internal constructor() {
-  /**
-   * The current position (in pixels) of a [SwipeableActionsBox].
-   */
   val offset: State<Float> get() = offsetState
   internal var offsetState = mutableStateOf(0f)
-
-  /**
-   * Whether [SwipeableActionsBox] is currently animating to reset its offset after it was swiped.
-   */
   val isResettingOnRelease: Boolean by derivedStateOf {
     swipedAction != null
   }
-
   internal var layoutWidth: Int by mutableIntStateOf(0)
   internal var swipeThresholdPx: Float by mutableFloatStateOf(0f)
   internal val ripple = SwipeRippleState()
-
   internal var actions: ActionFinder by mutableStateOf(
     ActionFinder(left = emptyList(), right = emptyList())
   )
@@ -52,45 +39,35 @@ class SwipeableActionsState internal constructor() {
     actions.actionAt(offsetState.value, totalWidth = layoutWidth)
   }
   internal var swipedAction: SwipeActionMeta? by mutableStateOf(null)
-
   internal val draggableState = DraggableState { delta ->
     val targetOffset = offsetState.value + delta
-
     val canSwipeTowardsRight = actions.left.isNotEmpty()
     val canSwipeTowardsLeft = actions.right.isNotEmpty()
-
     val isAllowed = isResettingOnRelease
       || targetOffset == 0f
       || (targetOffset > 0f && canSwipeTowardsRight)
       || (targetOffset < 0f && canSwipeTowardsLeft)
-
     offsetState.value += if (isAllowed) delta else (delta / 10)
   }
-
   internal fun hasCrossedSwipeThreshold(): Boolean {
     return abs(offsetState.value) > swipeThresholdPx
   }
-
   internal suspend fun handleOnDragStopped() = coroutineScope {
     val animationEnabled = visibleAction?.value?.enableAnimation == true
     val actEnabled = visibleAction?.value?.enableAct == true
-
     launch {
       if (actEnabled && hasCrossedSwipeThreshold()) {
         visibleAction?.let { action ->
           swipedAction = action
           action.value.onSwipe()
-
           if(animationEnabled) {
             ripple.animate(action = action)
           }
         }
       }
     }
-
     launch {
       if(animationEnabled) {
-        // here call drag is for keep the position correct when animating, if no animate then no need call drag
         draggableState.drag(MutatePriority.PreventUserInput) {
           Animatable(offsetState.value).animateTo(
             targetValue = 0f,
@@ -99,10 +76,9 @@ class SwipeableActionsState internal constructor() {
             dragBy(value - offsetState.value)
           }
         }
-      }else {  // no animation, reset offset to 0 when drag stopped
+      }else {  
         offsetState.value = 0f
       }
-
       swipedAction = null
     }
   }

@@ -23,9 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.style.MyStyleKt
 
 private val minHeight = 40.dp
-
 private fun getHorizontalPaddingForIcons(headIconIsNull: Boolean, trailIconIsNull: Boolean) = PaddingValues(start = if(headIconIsNull) 0.dp else 5.dp, end = if(trailIconIsNull) 0.dp else 5.dp)
-
 @Composable
 fun TwoLineTextsAndIcons(
     text1:String,
@@ -47,12 +45,9 @@ fun TwoLineTextsAndIcons(
 ) {
     val headIconIsNull = headIcons == null
     val trailIconIsNull = trailIcons == null
-
     Box(
         modifier = modifier
-            // base margin
             .padding(basePadding)
-            // avoid icon too closer with screen border
             .padding(getHorizontalPaddingForIcons(headIconIsNull, trailIconIsNull))
             .fillMaxWidth()
             .heightIn(min = minHeight)
@@ -61,15 +56,11 @@ fun TwoLineTextsAndIcons(
         if(!headIconIsNull) {
             headIcons(Modifier.align(Alignment.CenterStart))
         }
-
         Column(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                // avoid text and icon too close
                 .padding(getHorizontalPaddingForIcons(headIconIsNull, trailIconIsNull))
-
                 .padding(start = headIconWidth, end = trailIconWidth)
-//                .fillMaxWidth()  // no need fill max width
             ,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -78,7 +69,6 @@ fun TwoLineTextsAndIcons(
             ) {
                 Text(text = text1, fontSize = text1FontSize, fontWeight = text1FontWeight, color = text1Color)
             }
-
             if(text2.isNotEmpty()) {
                 SelectionRow(
                     modifier = if(text2Scrollable) Modifier.horizontalScroll(rememberScrollState()) else Modifier
@@ -87,15 +77,11 @@ fun TwoLineTextsAndIcons(
                 }
             }
         }
-
         if(!trailIconIsNull) {
             trailIcons(Modifier.align(Alignment.CenterEnd))
         }
-
     }
 }
-
-
 @Composable
 fun OneLineTextsAndIcons(
     text1:String,
@@ -124,9 +110,6 @@ fun OneLineTextsAndIcons(
         trailIcons = trailIcons,
     )
 }
-
-
-
 @Composable
 fun TwoLineSettingsItem(
     text1: String,
@@ -141,7 +124,6 @@ fun TwoLineSettingsItem(
     trailIconWidth: Dp = 0.dp,
     trailIconOnClick: ()->Unit = {},
 ) {
-
     @Composable
     fun TrailIcon(modifier: Modifier) {
         if(trailIcon != null) {
@@ -154,8 +136,6 @@ fun TwoLineSettingsItem(
             }
         }
     }
-
-
     if(text2.isBlank()) {
         OneLineTextsAndIcons(
             text1 = text1,
@@ -177,7 +157,6 @@ fun TwoLineSettingsItem(
             text2FontSize = text2FontSize,
             text2FontWeight = FontWeight.Light,
             text2Scrollable = text2Scrollable,
-
             basePadding = basePadding,
             trailIconWidth = trailIconWidth,
             trailIcons = { modifier ->

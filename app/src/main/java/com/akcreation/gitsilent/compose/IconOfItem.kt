@@ -33,40 +33,24 @@ private val thumbnailModifierSize = 50.dp
 private val defaultIconModifier = Modifier.size(iconModifierSize)
 private val defaultThumbnailModifier = Modifier.size(thumbnailModifierSize)
 private val contentScale = ContentScale.Crop
-
-
 @Composable
 fun IconOfItem(
     fileName:String,
     filePath:String,
     context: Context,
     contentDescription:String?,
-
-    //非图片类型，才会使用图标颜色
     iconColor: Color = LocalContentColor.current,
-
-    //若为null，将根据mime类型获取对应图标
     defaultIconWhenLoadFailed: ImageVector? = null,
     iconModifier: Modifier = defaultIconModifier,
     thumbnailModifier: Modifier = defaultThumbnailModifier,
-
 ) {
     val file = remember(filePath) { File(filePath) }
-
     val filePath = remember(file.canonicalPath) { file.canonicalPath }
-
-    //如果是图片，显示缩略图，否则显示图标
-    // guessFromFile()会判断是否是文件夹，guessFromFileName()则不会，为了能为文件夹正常显示图标，这里应用用guessFromFile()
     val mime = MimeType.guessFromFile(file)
-
-    //图片类型
     if(mime.type == "image" && file.let{ it.exists() && it.isFile }) {
         ShowThumbnailForImage(context, filePath, contentDescription, mime.iconRes, iconColor, thumbnailModifier)
-
         return
     }
-
-    //视频类型
     if(mime.type == "video" && file.let{ it.exists() && it.isFile }) {
         ShowThumbnailOrFallback(
             filePath,
@@ -76,10 +60,8 @@ fun IconOfItem(
             thumbnailModifier,
             loadThumbnail = { getVideoThumbnail(filePath) }
         )
-
         return
     }
-
     if(mime == MimeType.APK) {
         ShowThumbnailOrFallback(
             filePath,
@@ -89,16 +71,10 @@ fun IconOfItem(
             thumbnailModifier,
             loadThumbnail = { apkIconOrNull(context, filePath, iconSizeInPx) }
         )
-
         return
     }
-
-
-
     ShowIcon(defaultIconWhenLoadFailed ?: mime.iconRes, contentDescription, iconColor, iconModifier)
-
 }
-
 @Composable
 private fun ShowThumbnailForImage(
     context:Context,
@@ -108,9 +84,7 @@ private fun ShowThumbnailForImage(
     fallbackIconColor: Color,
     modifier: Modifier
 ) {
-    // 这个要在lazy column里用，所以最好别用rememberSaveable
     val loadErr = remember { mutableStateOf(false) }
-
     if(loadErr.value) {
         ShowIcon(fallbackIcon, contentDescription, fallbackIconColor, modifier)
     }else {
@@ -121,9 +95,9 @@ private fun ShowThumbnailForImage(
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
             contentDescription = contentDescription,
-            contentScale = contentScale,  //超过容器宽高则居中裁剪
-            placeholder = rememberVectorPainter(fallbackIcon),  // show while loading
-            modifier = modifier,  //.clip(RectangleShape)，想弄成正方形，但没卵用，算了
+            contentScale = contentScale,  
+            placeholder = rememberVectorPainter(fallbackIcon),  
+            modifier = modifier,  
             onError = {
                 loadErr.value = true
             },
@@ -136,8 +110,6 @@ private fun ShowThumbnailForImage(
         )
     }
 }
-
-
 @Composable
 private fun ShowThumbnailOrFallback(
     filePath: String,
@@ -148,7 +120,6 @@ private fun ShowThumbnailOrFallback(
     loadThumbnail: suspend ()-> ImageBitmap?,
 ) {
     val thumbnail = remember { mutableStateOf<ImageBitmap?>(ThumbCache.getThumb(filePath)) }
-
     thumbnail.value.let {
         if(it == null) {
             ShowIcon(fallbackIcon, contentDescription, fallbackIconColor, modifier)
@@ -161,7 +132,6 @@ private fun ShowThumbnailOrFallback(
             )
         }
     }
-
     DisposableEffect (Unit) {
         val job = if(thumbnail.value == null) {
             doJobThenOffLoading {
@@ -169,17 +139,14 @@ private fun ShowThumbnailOrFallback(
                     if(it != null) {
                         ThumbCache.cacheIt(filePath, it)
                     }
-
                     it
                 }
             }
         }else {
             null
         }
-
         onDispose {
             runCatching { job?.cancel() }
         }
     }
 }
-

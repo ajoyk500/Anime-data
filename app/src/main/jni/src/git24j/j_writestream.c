@@ -1,8 +1,6 @@
 #include "j_writestream.h"
 #include "j_mappers.h"
 #include "j_util.h"
-
-/** int (*)(git_writestream *, const char *, size_t); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(WriteStream_jniWrite)(JNIEnv *env, jclass obj, jlong wsPtr, jbyteArray content)
 {
     int out_len;
@@ -12,13 +10,11 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(WriteStream_jniWrite)(JNIEnv *env, jclass o
     free(c_bytes);
     return e;
 }
-
 JNIEXPORT void JNICALL J_MAKE_METHOD(WriteStream_jniFree)(JNIEnv *env, jclass obj, jlong wsPtr)
 {
     git_writestream *c_ws = (git_writestream *)wsPtr;
     c_ws->free(c_ws);
 }
-
 JNIEXPORT jint JNICALL J_MAKE_METHOD(WriteStream_jniClose)(JNIEnv *env, jclass obj, jlong wsPtr)
 {
     git_writestream *c_ws = (git_writestream *)wsPtr;

@@ -19,10 +19,8 @@ import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.utils.ActivityUtil
 import com.akcreation.gitsilent.utils.requestStoragePermissionIfNeed
 
-
 private const val TAG = "GrantManageStoragePermissionClickableText"
 private val color = MyStyleKt.TextColor.danger()
-
 @Composable
 fun GrantManageStoragePermissionClickableText(activityContext: Context) {
     Row(
@@ -30,21 +28,15 @@ fun GrantManageStoragePermissionClickableText(activityContext: Context) {
             .padding(bottom = 15.dp)
             .padding(horizontal = MyStyleKt.defaultHorizontalPadding)
             .clickable {
-                // grant permission for read/write external storage
                 ActivityUtil.getManageStoragePermissionOrShowFailedMsg(activityContext)
             }
         ,
-
-        //若软换行，图标会居中，不好看，所以禁用
-//        verticalAlignment = Alignment.CenterVertically
     ) {
-        //这个如果放文字后面，软换行后，图标会被顶没，所以放文字前面
         InLineIcon(
             icon = Icons.AutoMirrored.Filled.OpenInNew,
             tooltipText = "",
             iconColor = color
         )
-
         Text(
             text = stringResource(R.string.please_grant_permission_before_you_add_a_storage_path),
             overflow = TextOverflow.Visible,
@@ -52,8 +44,6 @@ fun GrantManageStoragePermissionClickableText(activityContext: Context) {
             color = color,
         )
     }
-
-
     LaunchedEffect(Unit) {
         requestStoragePermissionIfNeed(activityContext, TAG)
     }

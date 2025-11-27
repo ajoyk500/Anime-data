@@ -9,12 +9,5 @@ import com.akcreation.gitsilent.style.MyStyleKt
 
 @Composable
 fun SpacerRow(paddingValues: PaddingValues = PaddingValues(MyStyleKt.BottomBar.outsideContentPadding)) {
-//    Row(
-//        modifier = Modifier.padding(paddingValues).fillMaxSize(),
-//        horizontalArrangement = Arrangement.Center,
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//    }
-
     Spacer(Modifier.padding(paddingValues))
 }

@@ -5,13 +5,11 @@ import com.akcreation.gitsilent.utils.FsUtils.contentUriPathPrefix
 import com.akcreation.gitsilent.utils.FsUtils.fileUriPathPrefix
 
 enum class PathType {
-   INVALID,  // empty or blank or other invalid path
-   CONTENT_URI, // starts with "content://"
-   FILE_URI,  // starts with "file://", very rare use now in android
-   ABSOLUTE  // stars with "/"
-
+   INVALID,  
+   CONTENT_URI, 
+   FILE_URI,  
+   ABSOLUTE  
    ;
-
    companion object {
       fun getType(path:String): PathType {
          return if(path.startsWith(absolutePathPrefix)) {
@@ -26,4 +24,3 @@ enum class PathType {
       }
    }
 }
-

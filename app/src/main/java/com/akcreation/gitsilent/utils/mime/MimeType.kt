@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2020 Hai Zhang <dreaming.in.code.zh@gmail.com>
- * All Rights Reserved.
- */
 
 package com.akcreation.gitsilent.utils.mime
 
@@ -14,7 +10,6 @@ import kotlinx.parcelize.Parcelize
 value class MimeType(val value: String) : Parcelable {
     val type: String
         get() = value.substring(0, value.indexOf(separator))
-
     val subtype: String
         get() {
             val indexOfSlash = value.indexOf(separator)
@@ -23,7 +18,6 @@ value class MimeType(val value: String) : Parcelable {
                 indexOfSlash + 1, if (indexOfSemicolon != -1) indexOfSemicolon else value.length
             )
         }
-
     val suffix: String?
         get() {
             val indexOfPlus = value.indexOf('+')
@@ -38,21 +32,17 @@ value class MimeType(val value: String) : Parcelable {
                 indexOfPlus + 1, if (indexOfSemicolon != -1) indexOfSemicolon else value.length
             )
         }
-
     val parameters: String?
         get() {
             val indexOfSemicolon = value.indexOf(';')
             return if (indexOfSemicolon != -1) value.substring(indexOfSemicolon + 1) else null
         }
-
     fun match(mimeType: MimeType): Boolean =
         type.let { it == "*" || mimeType.type == it }
             && subtype.let { it == "*" || mimeType.subtype == it }
             && parameters.let { it == null || mimeType.parameters == it }
-
     companion object {
         val separator = '/'
-
         val ANY = "*/*".asMimeType()
         val APK = "application/vnd.android.package-archive".asMimeType()
         val DIRECTORY = DocumentsContract.Document.MIME_TYPE_DIR.asMimeType()
@@ -62,19 +52,15 @@ value class MimeType(val value: String) : Parcelable {
         val PDF = "application/pdf".asMimeType()
         val TEXT_PLAIN = "text/plain".asMimeType()
         val GENERIC = "application/octet-stream".asMimeType()
-
         fun of(type: String, subtype: String, parameters: String?): MimeType =
             "$type/$subtype${if (parameters != null) ";$parameters" else ""}".asMimeType()
     }
 }
-
 fun String.asMimeTypeOrNull(): MimeType? = if (isValidMimeType) MimeType(this) else null
-
 fun String.asMimeType(): MimeType {
     require(isValidMimeType)
     return MimeType(this)
 }
-
 private val String.isValidMimeType: Boolean
     get() {
         val indexOfSlash = indexOf(MimeType.separator)

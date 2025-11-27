@@ -24,23 +24,17 @@ fun CredentialSelector(
     selectedCredentialIdx:MutableIntState,
     title:String = stringResource(R.string.select_credential),
 ) {
-
     val activityContext = LocalContext.current
-
     val note = rememberSaveable { mutableStateOf("") }
-
     MySelectionContainer {
         DefaultPaddingText("$title: ")
     }
-
     Spacer(Modifier.height(5.dp))
-
     SingleSelectList(
         optionsList = credentialList,
         selectedOptionIndex = selectedCredentialIdx,
         menuItemFormatter = {_,value-> value?.name?:"" }
     )
-
     doActIfIndexGood(selectedCredentialIdx.intValue, credentialList) {
         if(SpecialCredential.NONE.equals_to(it)) {
             note.value = activityContext.getString(R.string.no_credential_will_be_used)
@@ -50,14 +44,11 @@ fun CredentialSelector(
             note.value = ""
         }
     }
-
     if(note.value.isNotBlank()) {
         Spacer(Modifier.height(5.dp))
         MySelectionContainer {
             DefaultPaddingText(note.value, color = MyStyleKt.TextColor.getHighlighting())
         }
     }
-
     Spacer(Modifier.height(15.dp))
-
 }

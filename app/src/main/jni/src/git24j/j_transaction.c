@@ -5,21 +5,14 @@
 #include <assert.h>
 #include <git2.h>
 #include <stdio.h>
-
 extern j_constants_t *jniConstants;
-
-/** -------- Wrapper Body ---------- */
-/** int git_transaction_new(git_transaction **out, git_repository *repo); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniNew)(JNIEnv *env, jclass obj, jobject out, jlong repoPtr)
 {
     git_transaction *c_out = 0;
     int r = git_transaction_new(&c_out, (git_repository *)repoPtr);
     (*env)->CallVoidMethod(env, out, jniConstants->midAtomicLongSet, (jlong)c_out);
-    /* git_transaction_free(c_out); */
     return r;
 }
-
-/** int git_transaction_lock_ref(git_transaction *tx, const char *refname); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniLockRef)(JNIEnv *env, jclass obj, jlong txPtr, jstring refname)
 {
     char *c_refname = j_copy_of_jstring(env, refname, true);
@@ -27,8 +20,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniLockRef)(JNIEnv *env, jclass
     free(c_refname);
     return r;
 }
-
-/** int git_transaction_set_target(git_transaction *tx, const char *refname, const git_oid *target, const git_signature *sig, const char *msg); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniSetTarget)(JNIEnv *env, jclass obj, jlong txPtr, jstring refname, jobject target, jlong sigPtr, jstring msg)
 {
     char *c_refname = j_copy_of_jstring(env, refname, true);
@@ -40,8 +31,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniSetTarget)(JNIEnv *env, jcla
     free(c_msg);
     return r;
 }
-
-/** int git_transaction_set_symbolic_target(git_transaction *tx, const char *refname, const char *target, const git_signature *sig, const char *msg); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniSetSymbolicTarget)(JNIEnv *env, jclass obj, jlong txPtr, jstring refname, jstring target, jlong sigPtr, jstring msg)
 {
     char *c_refname = j_copy_of_jstring(env, refname, true);
@@ -53,8 +42,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniSetSymbolicTarget)(JNIEnv *e
     free(c_msg);
     return r;
 }
-
-/** int git_transaction_set_reflog(git_transaction *tx, const char *refname, const git_reflog *reflog); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniSetReflog)(JNIEnv *env, jclass obj, jlong txPtr, jstring refname, jlong reflogPtr)
 {
     char *c_refname = j_copy_of_jstring(env, refname, true);
@@ -62,8 +49,6 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniSetReflog)(JNIEnv *env, jcla
     free(c_refname);
     return r;
 }
-
-/** int git_transaction_remove(git_transaction *tx, const char *refname); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniRemove)(JNIEnv *env, jclass obj, jlong txPtr, jstring refname)
 {
     char *c_refname = j_copy_of_jstring(env, refname, true);
@@ -71,15 +56,11 @@ JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniRemove)(JNIEnv *env, jclass 
     free(c_refname);
     return r;
 }
-
-/** int git_transaction_commit(git_transaction *tx); */
 JNIEXPORT jint JNICALL J_MAKE_METHOD(Transaction_jniCommit)(JNIEnv *env, jclass obj, jlong txPtr)
 {
     int r = git_transaction_commit((git_transaction *)txPtr);
     return r;
 }
-
-/** void git_transaction_free(git_transaction *tx); */
 JNIEXPORT void JNICALL J_MAKE_METHOD(Transaction_jniFree)(JNIEnv *env, jclass obj, jlong txPtr)
 {
     git_transaction_free((git_transaction *)txPtr);

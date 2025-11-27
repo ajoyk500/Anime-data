@@ -17,7 +17,6 @@ public interface IBitEnum {
         }
         return res;
     }
-
     static <T extends Enum<T> & IBitEnum> EnumSet<T> parse(int flags, Class<T> clz) {
         List<T> matched = new ArrayList<>();
         for (T x : clz.getEnumConstants()) {
@@ -35,12 +34,9 @@ public interface IBitEnum {
         }
         return matched.isEmpty() ? EnumSet.noneOf(clz) : EnumSet.copyOf(matched);
     }
-
-    /** Parse bit enums from candidates */
     @Nullable
     static <T extends Enum<T> & IBitEnum> EnumSet<T> parse(int flags, EnumSet<T> candidates) {
         List<T> matched = new ArrayList<>();
-
         for (T x : candidates) {
             int b = x.getBit();
             if (b == 0 && flags == 0) {
@@ -56,7 +52,6 @@ public interface IBitEnum {
         }
         return matched.isEmpty() ? null : EnumSet.copyOf(matched);
     }
-
     static <T extends Enum<T> & IBitEnum> T valueOf(int bit, Class<T> clz, T defaultVal) {
         for (T x : clz.getEnumConstants()) {
             if (x.getBit() == bit) {
@@ -65,19 +60,9 @@ public interface IBitEnum {
         }
         return defaultVal;
     }
-
-    /**
-     * Get enum item from int value
-     *
-     * @param bit bit value
-     * @param clz class to parse
-     * @param <T>
-     * @return enum item
-     */
     @CheckForNull
     static <T extends Enum<T> & IBitEnum> T valueOf(int bit, Class<T> clz) {
         return IBitEnum.valueOf(bit, clz, null);
     }
-
     int getBit();
 }

@@ -25,13 +25,9 @@ import com.akcreation.gitsilent.utils.MyLog
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 
 private const val TAG = "SetPageSizeDialog"
-
-
 private const val invalidPageSize = -1
-private const val minPageSize = 1  // make sure it bigger than `invalidPageSize`
-
+private const val minPageSize = 1  
 fun isInvalidPageSize(size:Int) = size < minPageSize
-
 @Composable
 fun SetPageSizeDialog(
     pageSizeBuf: CustomStateSaveable<TextFieldValue>,
@@ -40,12 +36,9 @@ fun SetPageSizeDialog(
     trueCommitHistoryFalseFileHistory: Boolean,
     closeDialog:()->Unit,
 ) {
-
     val activityContext = LocalContext.current
     val scope = rememberCoroutineScope()
-
     val focusRequester = remember { FocusRequester() }
-
     ConfirmDialog2(
         title = stringResource(R.string.page_size),
         requireShowTextCompose = true,
@@ -53,9 +46,7 @@ fun SetPageSizeDialog(
             ScrollableColumn {
                 TextField(
                     modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-
                     value = pageSizeBuf.value,
                     singleLine = true,
                     onValueChange = {
@@ -65,16 +56,13 @@ fun SetPageSizeDialog(
                         Text(stringResource(R.string.page_size))
                     },
                 )
-
                 Spacer(Modifier.height(10.dp))
-
                 MyCheckBox(text= stringResource(R.string.save), rememberPageSize)
             }
         },
         onCancel = closeDialog
     ) {
         closeDialog()
-
         try {
             val newPageSize = try {
                 pageSizeBuf.value.text.trim().toInt()
@@ -82,11 +70,8 @@ fun SetPageSizeDialog(
                 Msg.requireShow(activityContext.getString(R.string.invalid_number))
                 invalidPageSize
             }
-
             if(!isInvalidPageSize(newPageSize)) {
                 pageSize.value = newPageSize
-//                pageSizeBuf.value = TextFieldValue(newPageSize.toString())
-
                 if(rememberPageSize.value) {
                     SettingsUtil.update {
                         if(trueCommitHistoryFalseFileHistory) {
@@ -97,11 +82,9 @@ fun SetPageSizeDialog(
                     }
                 }
             }
-
         }catch (e:Exception) {
             MyLog.e(TAG, "#SetPageSizeDialog err: ${e.localizedMessage}")
         }
     }
-
     Focuser(focusRequester, scope)
 }

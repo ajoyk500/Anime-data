@@ -21,8 +21,6 @@ fun FullScreenScrollableColumn(
     Column(
         modifier = Modifier
             .baseVerticalScrollablePageModifier(contentPadding, rememberScrollState())
-
-            // avoid text reached screen border
             .padding(MyStyleKt.defaultItemPadding)
         ,
         verticalArrangement = verticalArrangement,

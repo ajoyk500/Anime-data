@@ -41,7 +41,6 @@ fun FileHistoryRestoreDialog(
                     Text(
                         replaceStringResList(stringResource(R.string.target_ph), listOf(targetCommitOidStr))
                     )
-
                     if(commitMsg.isNotBlank()) {
                         Spacer(Modifier.height(15.dp))
                         Text(commitMsg)
@@ -56,13 +55,9 @@ fun FileHistoryRestoreDialog(
         doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.restoring)) {
             try {
                 Repository.open(curRepo.value.fullSavePath).use { repo ->
-                    //fun checkoutFiles(repo: Repository, targetCommitHash:String, pathSpecs: List<String>, force: Boolean, checkoutOptions: Checkout.Options?=null): Ret<Unit?> {
                     Libgit2Helper.checkoutFiles(repo, targetCommitOidStr, pathSpecs = listOf(fileRelativePath), force = true)
-
                 }
-
                 Msg.requireShow(activityContext.getString(R.string.success))
-
                 onSuccess()
             } catch (e: Exception) {
                 val errMsg = e.localizedMessage ?: "unknown err"
@@ -72,4 +67,3 @@ fun FileHistoryRestoreDialog(
         }
     }
 }
-

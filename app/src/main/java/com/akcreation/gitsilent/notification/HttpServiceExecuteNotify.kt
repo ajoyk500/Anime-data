@@ -10,12 +10,9 @@ class HttpServiceExecuteNotify private constructor(
     channelName = "Http Service Execute",
     channelDesc = "Show Http Service Execute Notifications"
 ){
-
     companion object {
         fun create(notifyId:Int):NotifyBase {
             return HttpServiceExecuteNotify(notifyId)
         }
-
     }
-
 }

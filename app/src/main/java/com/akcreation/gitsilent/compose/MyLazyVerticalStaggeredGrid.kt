@@ -20,7 +20,6 @@ fun MyLazyVerticalStaggeredGrid(
     content: LazyStaggeredGridScope.() -> Unit
 ) {
     val layoutDirection = LocalLayoutDirection.current
-
     LazyVerticalStaggeredGrid (
         modifier = modifier,
         contentPadding = PaddingValues(

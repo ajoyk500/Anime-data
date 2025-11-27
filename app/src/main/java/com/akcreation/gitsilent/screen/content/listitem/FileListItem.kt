@@ -38,16 +38,10 @@ import com.akcreation.gitsilent.ui.theme.Theme
 import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.getParentPathEndsWithSeparator
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FileListItem(
-    /**
-     * 若不为空字符串，将针对所有条目以此path为基础显示其相对路径，否则不显示。
-     * 应用场景：在递归搜索时使用此变量
-    */
     fullPathOfTopNoEndSlash:String,
-
     item: FileItemDto,
     lastPathByPressBack:MutableState<String>,
     menuKeyTextList: List<String>,
@@ -58,25 +52,20 @@ fun FileListItem(
     itemOnClick:(FileItemDto)->Unit,
 ){
     val activityContext = LocalContext.current
-
     val inDarkTheme = Theme.inDarkTheme
     val alpha = 0.6f
     val iconColor = if(item.isHidden) LocalContentColor.current.copy(alpha = alpha) else LocalContentColor.current
     val fontColor = if(item.isHidden) {if(inDarkTheme) Color.White.copy(alpha = alpha) else Color.Black.copy(alpha = alpha)} else Color.Unspecified
-
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {
                     lastPathByPressBack.value = item.fullPath
-
                     itemOnClick(item)
                 },
                 onLongClick = {
                     lastPathByPressBack.value = item.fullPath
-
                     itemOnLongClick(item)
                 }
             )
@@ -85,7 +74,7 @@ fun FileListItem(
                     Modifier.background(
                         MaterialTheme.colorScheme.primaryContainer
                     )
-                }else if(lastPathByPressBack.value == item.fullPath){  // show light background for last clicked path
+                }else if(lastPathByPressBack.value == item.fullPath){  
                     Modifier.background(
                         UIHelper.getLastClickedColor()
                     )
@@ -96,22 +85,10 @@ fun FileListItem(
         horizontalArrangement = Arrangement.Start
     ) {
         ListItemRow{
-            //在左侧加个复选框，会影响布局，有缺陷，别用了
-//                                    if(isFileSelectionMode.value) {
-//                                        IconToggleButton(checked = JSONObject(selFilePathListJsonObjStr.value).has(item.name), onCheckedChange = {
-//                                            addIfAbsentElseRemove(item)
-//                                        }) {
-//                                            Icon(imageVector = Icons.Outlined.CheckCircle, contentDescription = stringResource(R.string.file_checked_indicator_icon))
-//                                        }
-//                                    }
-
             ListItemToggleButton(
-
-//                enabled = fromTo!=Cons.gitDiffFromTreeToTree,  //diff提交时，禁用点击图标启动长按模式，按钮会变灰色，太难看了，弃用
                 checked = isItemInSelected(item),
                 onCheckedChange = {
                     lastPathByPressBack.value = item.fullPath
-
                     iconOnClick()
                 },
             ) {
@@ -123,9 +100,7 @@ fun FileListItem(
                     iconColor = iconColor,
                 )
             }
-
             ListItemSpacer()
-
             Column {
                 Row {
                     Text(
@@ -134,33 +109,24 @@ fun FileListItem(
                             color = fontColor
                     )
                 }
-
                 Row{
                     Text(item.getShortDesc(), fontSize = 12.sp, color = fontColor)
                 }
-
                 if(fullPathOfTopNoEndSlash.isNotBlank()) {
-                    //末尾必须分别移除path和/，若合并移除"path/"，当path和当前路径相同时会漏
                     val relativePath = item.fullPath.removePrefix(fullPathOfTopNoEndSlash).removePrefix(Cons.slash)
                         .let { getParentPathEndsWithSeparator(it, trueWhenNoParentReturnEmpty = true) }
-
                     if(relativePath.isNotEmpty()) {
                         Row {
                             Text(text = relativePath, fontSize = 12.sp, color = fontColor)
                         }
                     }
                 }
-
             }
-
         }
-        //每个条目都有自己的菜单项，这样有点费资源哈，不过实现起来最简单，如果只用一个菜单项也行，但难点在于把菜单项定位到点菜单按钮的地方
         val dropDownMenuExpandState = rememberSaveable { mutableStateOf(false) }
-
         ListItemTrailingIconRow{
             IconButton(onClick = {
                 lastPathByPressBack.value = item.fullPath
-
                 dropDownMenuExpandState.value = true
             }) {
                 Icon(
@@ -173,26 +139,18 @@ fun FileListItem(
                 onDismissRequest = { dropDownMenuExpandState.value = false }
             ) {
                 for ((idx,v) in menuKeyTextList.withIndex()) {
-                    //忽略空白选项，这样未启用的feature就可直接用空白替代了，方便
                     if(v.isBlank()) {
                         continue
                     }
-
                     DropdownMenuItem(
                         text = { Text(v) },
                         onClick = {
-                            //调用onClick()
                             menuKeyActList[idx](item)
-                            //关闭菜单
                             dropDownMenuExpandState.value = false
                         }
                     )
-
                 }
             }
         }
-
     }
 }
-
-

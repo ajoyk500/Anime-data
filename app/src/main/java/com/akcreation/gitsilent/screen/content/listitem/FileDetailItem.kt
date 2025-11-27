@@ -21,13 +21,8 @@ import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.Theme
 import com.akcreation.gitsilent.utils.FsUtils
 
-
-//private val bgColorInDarkTheme = Color(0xFF343434)
 private val contentTextColorInDarkTheme = Color(0xFFA8A8A8)
-//private val bgColorInLightTheme = Color(0xFFDEDEDE)
 private val contentTextColorInLightTheme = Color(0xFF595959)
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FileDetailItem(
@@ -40,12 +35,9 @@ fun FileDetailItem(
     onClick:(FileDetail)->Unit,
 ){
     val inDarkTheme = Theme.inDarkTheme
-
     MyToggleCard(
         modifier = Modifier
             .padding(margin)
-//            .background(if(selected) MaterialTheme.colorScheme.primaryContainer else if(inDarkTheme) bgColorInDarkTheme else bgColorInLightTheme)
-//            .background(if(selected) MaterialTheme.colorScheme.primaryContainer else UIHelper.defaultCardColor())
             .combinedClickable(
                 onLongClick = { onLongClick(idx, item) },
             ) {
@@ -53,12 +45,9 @@ fun FileDetailItem(
             }
             .width(width)
         ,
-
         selected = selected,
     ) {
-//        val fontColor = UIHelper.getFontColor()
         val fontColor = Color.Unspecified
-
         Column(
             modifier = Modifier.padding(5.dp)
         ) {
@@ -69,9 +58,7 @@ fun FileDetailItem(
                 Text(item.cachedAppRelatedPath(), fontSize = MyStyleKt.Title.secondLineFontSize, color = fontColor, fontWeight = FontWeight.Light)
             }
         }
-
         MyHorizontalDivider()
-
         Row(
             modifier = Modifier.padding(5.dp)
         ) {

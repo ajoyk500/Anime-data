@@ -25,38 +25,22 @@ import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.Theme
 import com.akcreation.gitsilent.utils.UIHelper
 
-
-// private const val TAG = "LoadMore"
-
 @Composable
 fun LoadMore(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(30.dp),
     text:String= stringResource(R.string.load_more),
-//    loadToEndText:String= stringResource(R.string.load_to_end),
     loadToEndText:String= stringResource(R.string.load_all),
     enableLoadMore:Boolean=true,
     enableAndShowLoadToEnd:Boolean=true,
     loadToEndOnClick:()->Unit={},
-//    pageSize:MutableState<Int>,
-//    rememberPageSize:MutableState<Boolean>,
-//    showSetPageSizeDialog:MutableState<Boolean>,
-//    pageSizeForDialog:MutableState<String>,
     initSetPageSizeDialog:()->Unit,
-    btnUpsideText:String?=null, // text at upside of buttons, usually show count of items etc...
+    btnUpsideText:String?=null, 
     onClick:()->Unit
 ) {
     val inDarkTheme = Theme.inDarkTheme
-
-//    val appContext = AppModel.appContext
-
-
     val buttonHeight = 50
-
-    // 文字的padding，避免太靠近卡片内部边缘
     val textLineModifier = Modifier.padding(horizontal = 10.dp)
-
-
     Column(modifier= Modifier
         .fillMaxWidth()
         .padding(paddingValues)
@@ -77,20 +61,17 @@ fun LoadMore(
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             MyCard(
-                //0.9f 占父元素宽度的百分之90
                 modifier = Modifier
-                    .clickable(enabled = enableLoadMore) {  //如果有更多，则启用点击加载更多，否则禁用
+                    .clickable(enabled = enableLoadMore) {  
                         onClick()
                     }
                 ,
-
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(buttonHeight.dp)
                     ,
-
                 ) {
                     Row (
                         modifier = textLineModifier.align(Alignment.Center),
@@ -101,8 +82,6 @@ fun LoadMore(
                             color = if(enableLoadMore) MyStyleKt.TextColor.enable else if(inDarkTheme) MyStyleKt.TextColor.disable_DarkTheme else MyStyleKt.TextColor.disable
                         )
                     }
-
-
                     Row(
                         modifier = Modifier.align(Alignment.CenterEnd).padding(end = 10.dp),
                     ) {
@@ -115,22 +94,13 @@ fun LoadMore(
                         }
                     }
                 }
-
             }
-
-
-
-
         }
-
         if(enableAndShowLoadToEnd) {
             Spacer(modifier = Modifier.height(20.dp))
-
-
             MyCard(
-                //0.9f 占父元素宽度的百分之90
                 modifier = Modifier
-                    .clickable{  //如果有更多，则启用点击加载更多，否则禁用
+                    .clickable{  
                         loadToEndOnClick()
                     }
                 ,
@@ -147,13 +117,8 @@ fun LoadMore(
                         color = MyStyleKt.TextColor.enable
                     )
                 }
-
             }
-
         }
-
         Spacer(modifier = Modifier.height(95.dp))
-
     }
-
 }

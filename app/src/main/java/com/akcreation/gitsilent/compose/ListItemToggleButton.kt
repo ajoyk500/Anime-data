@@ -19,4 +19,3 @@ fun ListItemToggleButton(
         content()
     }
 }
-

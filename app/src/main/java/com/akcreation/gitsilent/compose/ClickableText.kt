@@ -26,8 +26,6 @@ fun SingleLineClickableText(
         },
     )
 }
-
-
 @Composable
 fun MultiLineClickableText(
     text:String,
@@ -42,11 +40,6 @@ fun MultiLineClickableText(
         },
     )
 }
-
-/**
- * 这个主要是为了统一可点击文字的style，不过为了兼容旧代码，没onclick事件，
- * 可以手动传modifier.clickable{}，或者，如果不需要改modifier参数，可用其他重载的带onClick()的实现
- */
 @Composable
 fun ClickableText(
     text:String,
@@ -69,7 +62,6 @@ fun ClickableText(
         modifier = modifier,
     )
 }
-
 @Composable
 fun ClickableText(
     text:String,

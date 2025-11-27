@@ -26,9 +26,7 @@ fun SetTabSizeDialog(
     onOk: (newTabSize: String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-
     val focusRequester = remember { FocusRequester() }
-
     ConfirmDialog2(
         title = stringResource(R.string.tab_size),
         requireShowTextCompose = true,
@@ -38,9 +36,7 @@ fun SetTabSizeDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
-
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-
                     value = tabSizeBuf.value,
                     singleLine = true,
                     onValueChange = {
@@ -50,19 +46,15 @@ fun SetTabSizeDialog(
                         Text(stringResource(R.string.tab_size))
                     },
                 )
-
                 Spacer(Modifier.height(10.dp))
-
                 MySelectionContainer {
                     Text(stringResource(R.string.set_tab_size_note))
                 }
-
             }
         },
         onCancel = onCancel
     ) {
         onOk(tabSizeBuf.value.text)
     }
-
     Focuser(focusRequester, scope)
 }
