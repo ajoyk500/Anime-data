@@ -35,6 +35,12 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.abs
 import kotlin.math.sign
 
+/**
+ * Workaround for [269627294](https://issuetracker.google.com/issues/269627294).
+ *
+ * Copy of Compose UI's draggable modifier, but with an additional check to only accept horizontal swipes
+ * made within 22.5°. This prevents accidental swipes while scrolling a vertical list.
+ */
 internal fun Modifier.horizontalDraggable(
   state: DraggableState,
   enabled: Boolean = true,
@@ -48,6 +54,7 @@ internal fun Modifier.horizontalDraggable(
   onDragStarted = onDragStarted,
   onDragStopped = { velocity -> onDragStopped(velocity.x) },
 )
+
 internal data class DraggableElement(
   private val state: DraggableState,
   private val enabled: Boolean,
@@ -55,6 +62,7 @@ internal data class DraggableElement(
   private val onDragStarted: suspend CoroutineScope.(startedPosition: Offset) -> Unit,
   private val onDragStopped: suspend CoroutineScope.(velocity: Velocity) -> Unit,
 ) : ModifierNodeElement<DraggableNode>() {
+
   override fun create(): DraggableNode = DraggableNode(
     state,
     enabled,
@@ -62,6 +70,7 @@ internal data class DraggableElement(
     onDragStarted,
     onDragStopped,
   )
+
   override fun update(node: DraggableNode) {
     node.update(
       state = state,
@@ -71,6 +80,7 @@ internal data class DraggableElement(
       onDragStopped = onDragStopped,
     )
   }
+
   override fun InspectorInfo.inspectableProperties() {
     name = "draggable"
     properties["enabled"] = enabled
@@ -80,6 +90,7 @@ internal data class DraggableElement(
     properties["state"] = state
   }
 }
+
 internal class DraggableNode(
   private var state: DraggableState,
   private var enabled: Boolean,
@@ -87,13 +98,16 @@ internal class DraggableNode(
   private var onDragStarted: suspend CoroutineScope.(startedPosition: Offset) -> Unit,
   private var onDragStopped: suspend CoroutineScope.(velocity: Velocity) -> Unit,
 ) : DelegatingNode(), PointerInputModifierNode {
+
   private val velocityTracker = VelocityTracker()
   private val channel = Channel<DragEvent>(capacity = Channel.UNLIMITED)
+
   @Suppress("NAME_SHADOWING")
   private val pointerInputNode = SuspendingPointerInputModifierNode {
     if (!enabled) {
       return@SuspendingPointerInputModifierNode
     }
+
     coroutineScope {
       launch(start = CoroutineStart.UNDISPATCHED) {
         while (isActive) {
@@ -119,11 +133,13 @@ internal class DraggableNode(
           }
         }
       }
+
       awaitEachGesture {
         val awaited = awaitDownAndSlop(
           startDragImmediately = startDragImmediately,
           velocityTracker = velocityTracker,
         )
+
         if (awaited != null) {
           var isDragSuccessful = false
           try {
@@ -151,9 +167,11 @@ internal class DraggableNode(
       }
     }
   }
+
   init {
     delegate(pointerInputNode)
   }
+
   override fun onPointerEvent(
     pointerEvent: PointerEvent,
     pass: PointerEventPass,
@@ -161,9 +179,11 @@ internal class DraggableNode(
   ) {
     pointerInputNode.onPointerEvent(pointerEvent, pass, bounds)
   }
+
   override fun onCancelPointerInput() {
     pointerInputNode.onCancelPointerInput()
   }
+
   fun update(
     state: DraggableState,
     enabled: Boolean,
@@ -188,6 +208,7 @@ internal class DraggableNode(
     }
   }
 }
+
 private suspend fun AwaitPointerEventScope.awaitDownAndSlop(
   startDragImmediately: () -> Boolean,
   velocityTracker: VelocityTracker,
@@ -196,6 +217,7 @@ private suspend fun AwaitPointerEventScope.awaitDownAndSlop(
   return if (startDragImmediately()) {
     initialDown.consume()
     velocityTracker.addPointerInputChange(initialDown)
+    // since we start immediately we don't wait for slop and the initial delta is 0
     initialDown to Offset.Zero
   } else {
     val down = awaitFirstDown(requireUnconsumed = false)
@@ -203,7 +225,7 @@ private suspend fun AwaitPointerEventScope.awaitDownAndSlop(
     var initialDelta = Offset.Zero
     val postPointerSlop = { event: PointerInputChange, overSlop: Float ->
       val isHorizontalSwipe = event.positionChange().let {
-        abs(it.x) > abs(it.y * 2f)  
+        abs(it.x) > abs(it.y * 2f)  // Accept swipes made at a max. of 22.5° in either direction.
       }
       if (isHorizontalSwipe) {
         velocityTracker.addPointerInputChange(event)
@@ -213,13 +235,16 @@ private suspend fun AwaitPointerEventScope.awaitDownAndSlop(
         throw CancellationException()
       }
     }
+
     val afterSlopResult = awaitHorizontalTouchSlopOrCancellation(
       pointerId = down.id,
       onTouchSlopReached = postPointerSlop
     )
+
     if (afterSlopResult != null) afterSlopResult to initialDelta else null
   }
 }
+
 private suspend fun AwaitPointerEventScope.awaitDrag(
   startEvent: PointerInputChange,
   initialDelta: Offset,
@@ -233,9 +258,14 @@ private suspend fun AwaitPointerEventScope.awaitDrag(
   val adjustedStart = startEvent.position -
     Offset(overSlopOffset.x * xSign, overSlopOffset.y * ySign)
   channel.trySend(DragStarted(adjustedStart))
+
   channel.trySend(DragDelta(if (reverseDirection) initialDelta * -1f else initialDelta))
+
   return drag(pointerId = startEvent.id) { event ->
+    // Velocity tracker takes all events, even UP
     velocityTracker.addPointerInputChange(event)
+
+    // Dispatch only MOVE events
     if (!event.changedToUpIgnoreConsumed()) {
       val delta = event.positionChange()
       event.consume()
@@ -243,6 +273,7 @@ private suspend fun AwaitPointerEventScope.awaitDrag(
     }
   }
 }
+
 private sealed class DragEvent {
   class DragStarted(val startPoint: Offset) : DragEvent()
   class DragStopped(val velocity: Velocity) : DragEvent()

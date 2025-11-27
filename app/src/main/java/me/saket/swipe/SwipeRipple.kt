@@ -1,4 +1,5 @@
 @file:Suppress("NAME_SHADOWING")
+
 package me.saket.swipe
 
 import androidx.compose.animation.core.Animatable
@@ -15,11 +16,13 @@ import kotlin.math.roundToInt
 @Stable
 internal class SwipeRippleState {
   private var ripple = mutableStateOf<SwipeRipple?>(null)
+
   suspend fun animate(
     action: SwipeActionMeta,
   ) {
     val drawOnRightSide = action.isOnRightSide
     val action = action.value
+
     ripple.value = SwipeRipple(
       isUndo = action.isUndo,
       rightSide = drawOnRightSide,
@@ -27,7 +30,10 @@ internal class SwipeRippleState {
       alpha = 0f,
       progress = 0f
     )
+
+    // Reverse animation feels faster (especially for larger swipe distances) so slow it down further.
     val animationDurationMs = (animationDurationMs * (if (action.isUndo) 1.75f else 1f)).roundToInt()
+
     coroutineScope {
       launch {
         Animatable(initialValue = 0f).animateTo(
@@ -52,13 +58,16 @@ internal class SwipeRippleState {
       }
     }
   }
+
   fun draw(scope: DrawScope) {
     ripple.value?.run {
       scope.clipRect {
         val size = scope.size
+        // Start the ripple with a radius equal to the available height so that it covers the entire edge.
         val startRadius = if (isUndo) size.width + size.height else size.height
         val endRadius = if (!isUndo) size.width + size.height else size.height
         val radius = lerp(startRadius, endRadius, fraction = progress)
+
         drawCircle(
           color = color,
           radius = radius,
@@ -69,6 +78,7 @@ internal class SwipeRippleState {
     }
   }
 }
+
 private data class SwipeRipple(
   val isUndo: Boolean,
   val rightSide: Boolean,
@@ -76,5 +86,6 @@ private data class SwipeRipple(
   val alpha: Float,
   val progress: Float,
 )
+
 private fun lerp(start: Float, stop: Float, fraction: Float) =
   (start * (1 - fraction) + stop * fraction)

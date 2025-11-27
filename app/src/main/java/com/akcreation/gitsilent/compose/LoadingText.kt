@@ -18,6 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.R
 
+/**
+ * 注：这个组件应该放到Scaffold里，不然背景色无法随系统主题变化(例如开了dark theme，这个背景色还是全白，会很刺眼)（旧版曾是这样 ，新版我没测试，总之放到脚手架里就稳了）
+ */
+
 @Composable
 fun LoadingText(
     contentPadding: PaddingValues,
@@ -27,6 +31,7 @@ fun LoadingText(
     text:(@Composable ()->Unit)? = null,
 ) {
     LoadingTextBase(
+        //默认启用滚动，不然滚动 隐藏/显示 的顶栏无法触发 隐藏/显示
         modifier = Modifier
             .fillMaxSize()
             .padding(contentPadding)
@@ -38,6 +43,7 @@ fun LoadingText(
         text?.invoke()
     }
 }
+
 @Composable
 fun LoadingTextBase(
     modifier: Modifier,
@@ -53,6 +59,7 @@ fun LoadingTextBase(
         text?.invoke()
     }
 }
+
 @Composable
 fun LoadingTextSimple(
     text:String= stringResource(R.string.loading),
@@ -65,6 +72,7 @@ fun LoadingTextSimple(
         }
     )
 }
+
 @Composable
 fun LoadingTextUnScrollable(
     text:String= stringResource(R.string.loading),
@@ -78,20 +86,24 @@ fun LoadingTextUnScrollable(
         }
     )
 }
+
 @Composable
 fun LoadingTextCancellable(
     text: String = stringResource(R.string.loading),
     contentPadding: PaddingValues,
     showCancel: Boolean,
     cancelText:String = stringResource(R.string.cancel),
-    onCancel:()->Unit,  
+    onCancel:()->Unit,  // 只有当showCancel为真时，才有可能被调用
 ) {
     LoadingText(
         contentPadding = contentPadding,
+        //如果运行的是可取消的任务，显示个取消
         text = {
             Text(text)
+
             if(showCancel) {
                 Spacer(Modifier.height(10.dp))
+
                 SingleLineClickableText(cancelText) {
                     onCancel()
                 }

@@ -33,18 +33,24 @@ fun FooterPager(currentPage:MutableIntState, sumPage:Int) {
             iconContentDesc = stringResource(R.string.previous_page),
             iconModifier = Modifier.size(100.dp),
             enabled = currentPage.intValue>1,
+
         ) {
             currentPage.intValue-=1
         }
+
+        //current page
         Text(text = ""+currentPage.intValue)
+
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.next_page),
             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             iconContentDesc = stringResource(R.string.next_page),
             iconModifier = Modifier.size(100.dp),
             enabled = currentPage.intValue<sumPage,
+
         ) {
             currentPage.intValue+=1
         }
+
     }
 }

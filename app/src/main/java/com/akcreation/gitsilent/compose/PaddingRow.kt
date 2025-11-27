@@ -17,6 +17,7 @@ fun PaddingRow(
         content()
     }
 }
+
 @Composable
 fun DefaultPaddingRow(content: @Composable RowScope.()->Unit) {
     PaddingRow(content = content)

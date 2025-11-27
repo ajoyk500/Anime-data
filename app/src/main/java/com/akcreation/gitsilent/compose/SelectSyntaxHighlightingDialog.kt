@@ -3,6 +3,7 @@ package com.akcreation.gitsilent.compose
 import androidx.compose.runtime.Composable
 import com.akcreation.gitsilent.syntaxhighlight.base.PLScope
 
+
 @Composable
 fun SelectSyntaxHighlightingDialog(
     plScope: PLScope,

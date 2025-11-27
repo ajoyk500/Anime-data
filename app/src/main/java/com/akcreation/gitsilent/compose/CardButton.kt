@@ -21,14 +21,17 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.ui.theme.Theme
 import com.akcreation.gitsilent.utils.UIHelper
 
+
 @Composable
 fun SingleLineCardButton(
     modifier: Modifier = Modifier,
+//    paddingValues: PaddingValues = PaddingValues(30.dp),
     text: String,
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val inDarkTheme = Theme.inDarkTheme
+
     CardButton(
         modifier = modifier,
         enabled = enabled,
@@ -44,6 +47,8 @@ fun SingleLineCardButton(
         },
     )
 }
+
+
 @Composable
 fun CardButton(
     modifier: Modifier = Modifier,
@@ -53,22 +58,27 @@ fun CardButton(
     onClick: () -> Unit,
     content:@Composable RowScope.()->Unit,
 ) {
+
     val maxHeight = maxHeight.coerceAtLeast(minHeight)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 2.dp)  
+            .padding(top = 2.dp)  //顶部加点margin，不然有时候显示不全
             .then(modifier)
         ,
+
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         MyCard(
+            //0.9f 占父元素宽度的百分之90
             modifier = Modifier
                 .clickable(enabled = enabled) {
                     onClick()
                 }
             ,
+
         ) {
             Row(
                 modifier = Modifier
@@ -76,6 +86,7 @@ fun CardButton(
                     .heightIn(min = minHeight.dp, max = maxHeight.dp)
                     .padding(5.dp)
                 ,
+
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -83,9 +94,16 @@ fun CardButton(
                     content()
                 }
             }
+
         }
+
+//        Spacer(modifier = Modifier.height(95.dp))
+
     }
+
 }
+
+
 @Composable
 fun TwoLineTextCardButton(
     enabled: Boolean,
@@ -101,6 +119,7 @@ fun TwoLineTextCardButton(
         content = {
             val color = if(enabled) Color.Unspecified else UIHelper.getDisableTextColor()
             val iconColor = if(enabled) LocalContentColor.current else color
+
             TwoLineTextsAndIcons(
                 text1 = textPair.first,
                 text2 = textPair.second,
@@ -113,15 +132,18 @@ fun TwoLineTextCardButton(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {
+
                         SizeIcon(
                             size = headIconWidth,
                             imageVector = headIcon,
                             contentDescription = headIconDesc,
                             tint = iconColor
                         )
+
                     }
                 }
             )
         },
     )
 }
+

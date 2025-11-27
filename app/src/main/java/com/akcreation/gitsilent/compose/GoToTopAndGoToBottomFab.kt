@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun GoToTopAndGoToBottomFab(
     filterModeOn: Boolean,
@@ -35,6 +36,8 @@ fun GoToTopAndGoToBottomFab(
     val goToBottom = {UIHelper.scrollToItem(scope, listState, listSize)}
     val goToBottomFiltered = {UIHelper.scrollToItem(scope, filterListState, listSize)}
     val hideButton = getHideButton(showFab, scope)
+
+
     GoToTopAndGoToBottomFab_Internal(
         filterModeOn = filterModeOn,
         scrollToTop = goToTop,
@@ -44,6 +47,7 @@ fun GoToTopAndGoToBottomFab(
         hideButton = hideButton
     )
 }
+
 @Composable
 fun GoToTopAndGoToBottomFab(
     filterModeOn: Boolean,
@@ -59,6 +63,7 @@ fun GoToTopAndGoToBottomFab(
     val goToBottom = {UIHelper.scrollToItem(scope, listState, Int.MAX_VALUE)}
     val goToBottomFiltered = {UIHelper.scrollToItem(scope, filterListState, Int.MAX_VALUE)}
     val hideButton = getHideButton(showFab, scope)
+
     GoToTopAndGoToBottomFab_Internal(
         filterModeOn = filterModeOn,
         scrollToTop = goToTop,
@@ -68,16 +73,19 @@ fun GoToTopAndGoToBottomFab(
         hideButton = hideButton
     )
 }
+
 @Composable
 fun GoToTopAndGoToBottomFab(
     scope: CoroutineScope,
     listState: LazyListState,
     listLastPosition: MutableState<Int>,
+
     showFab: MutableState<Boolean>
 ) {
     val goToTop = {UIHelper.switchBetweenTopAndLastVisiblePosition(scope, listState, listLastPosition)}
     val goToBottom = {UIHelper.scrollToItem(scope, listState, Int.MAX_VALUE)}
     val hideButton = getHideButton(showFab, scope)
+
     GoToTopAndGoToBottomFab_Internal(
         filterModeOn = false,
         scrollToTop = goToTop,
@@ -87,16 +95,19 @@ fun GoToTopAndGoToBottomFab(
         hideButton = hideButton
     )
 }
+
 @Composable
 fun GoToTopAndGoToBottomFab(
     scope: CoroutineScope,
     listState: ScrollState,
     listLastPosition: MutableState<Int>,
+
     showFab: MutableState<Boolean>
 ) {
     val goToTop = {UIHelper.switchBetweenTopAndLastVisiblePosition(scope, listState, listLastPosition)}
     val goToBottom = {UIHelper.scrollTo(scope, listState, Int.MAX_VALUE)}
     val hideButton = getHideButton(showFab, scope)
+
     GoToTopAndGoToBottomFab_Internal(
         filterModeOn = false,
         scrollToTop = goToTop,
@@ -106,6 +117,8 @@ fun GoToTopAndGoToBottomFab(
         hideButton = hideButton
     )
 }
+
+
 @Composable
 private fun GoToTopAndGoToBottomFab_Internal(
     filterModeOn: Boolean,
@@ -116,7 +129,9 @@ private fun GoToTopAndGoToBottomFab_Internal(
     hideButton:()->Unit,
 ) {
     val configuration = AppModel.getCurActivityConfig()
+
     Column(modifier = MyStyleKt.Fab.getFabModifier(UIHelper.isPortrait(configuration), UIHelper.getDeviceWidthHeightInDp(configuration))) {
+        //show go to top
         SmallFab(
             icon = Icons.Filled.VerticalAlignTop, iconDesc = stringResource(id = R.string.go_to_top)
         ) {
@@ -125,12 +140,19 @@ private fun GoToTopAndGoToBottomFab_Internal(
             } else {
                 scrollToTop()
             }
+
+            // hide fab after scrolled
+//            pageScrolled.value = false
         }
+
+        // temporary hide fab
         SmallFab(
             icon = Icons.Filled.HideSource, iconDesc = stringResource(id = R.string.hide)
         ) {
             hideButton()
         }
+
+        // go to bottom
         SmallFab(
             icon = Icons.Filled.VerticalAlignBottom, iconDesc = stringResource(id = R.string.go_to_bottom)
         ) {
@@ -139,15 +161,20 @@ private fun GoToTopAndGoToBottomFab_Internal(
             } else {
                 scrollToBottom()
             }
+
+//            pageScrolled.value = false
         }
     }
 }
+
 private fun getHideButton(showButton:MutableState<Boolean>, scope: CoroutineScope) :()->Unit {
     return {
         showButton.value = false
+
+        //隐藏10秒后自动重新显示
         scope.launch {
             runCatching {
-                delay(10_000) 
+                delay(10_000) // 10s
                 showButton.value = true
             }
         }

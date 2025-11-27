@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.R
 
+
 @Composable
 fun ConfirmDialog(
     title: String="",
@@ -25,6 +26,8 @@ fun ConfirmDialog(
     onCancel: () -> Unit,
     onOk: () -> Unit,
 ) {
+
+
     AlertDialog(
         title = {
             if(requireShowTitleCompose) {
@@ -44,6 +47,7 @@ fun ConfirmDialog(
                 }
             }
         },
+        //点击弹框外区域的时候触发此方法，一般设为和OnCancel一样的行为即可
         onDismissRequest = onCancel,
         dismissButton = {
             TextButton(
@@ -59,6 +63,7 @@ fun ConfirmDialog(
             TextButton(
                 enabled = okBtnEnabled,
                 onClick = {
+                    //执行用户传入的callback
                     onOk()
                 },
             ) {
@@ -68,5 +73,8 @@ fun ConfirmDialog(
                 )
             }
         },
+
     )
+
+
 }

@@ -1,7 +1,30 @@
-
+/*
+ *    sora-editor - the awesome code editor for Android
+ *    https://github.com/Rosemoe/sora-editor
+ *    Copyright (C) 2020-2024  Rosemoe
+ *
+ *     This library is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU Lesser General Public
+ *     License as published by the Free Software Foundation; either
+ *     version 2.1 of the License, or (at your option) any later version.
+ *
+ *     This library is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *     Lesser General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Lesser General Public
+ *     License along with this library; if not, write to the Free Software
+ *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ *     USA
+ *
+ *     Please contact Rosemoe by email 2073412493@qq.com if you need
+ *     additional information or have any questions
+ */
 package io.github.rosemoe.sora.langs.textmate.folding;
 
 import android.util.SparseIntArray;
+
 import java.util.Stack;
 
 public class FoldingRegions {
@@ -16,22 +39,30 @@ public class FoldingRegions {
         this._endIndexes = endIndexes;
         this._parentsComputed=false;
     }
+
     public int length() {
         return this._startIndexes.size();
     }
+
     public int getStartLineNumber(int index) {
         return this._startIndexes.get(index) & IndentRange.MAX_LINE_NUMBER;
     }
+
     public int getEndLineNumber(int index) {
         return this._endIndexes.get(index) & IndentRange.MAX_LINE_NUMBER;
     }
+
+
     public FoldingRegion toRegion(int index) {
         return new FoldingRegion(this, index);
     }
+
     private boolean isInsideLast(Stack<Integer> parentIndexes,int startLineNumber,int endLineNumber){
         int index = parentIndexes.get(parentIndexes.size() - 1);
         return this.getStartLineNumber(index) <= startLineNumber && this.getEndLineNumber(index) >= endLineNumber;
+
     }
+
     private void ensureParentIndices() throws Exception {
         if (!this._parentsComputed) {
             this._parentsComputed = true;
@@ -52,6 +83,7 @@ public class FoldingRegions {
             }
         }
     }
+
     public int getParentIndex(int index) throws Exception {
         this.ensureParentIndices();
         int parent = ((this._startIndexes.get(index) & IndentRange.MASK_INDENT) >>> 24) + ((this._endIndexes.get(index) & IndentRange.MASK_INDENT) >>> 16);

@@ -21,6 +21,7 @@ fun RepoCardTitleText(repoName:String) {
             bottom = 0.dp,
             end = 1.dp
         ),
+//        textAlign = TextAlign.Center,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
     )

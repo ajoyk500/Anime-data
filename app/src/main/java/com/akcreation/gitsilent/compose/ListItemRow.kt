@@ -22,6 +22,7 @@ fun ListItemRow(
             .fillMaxWidth(.85F),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
+
     ){
         content()
     }

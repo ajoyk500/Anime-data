@@ -69,10 +69,20 @@ fun BarContainer(
         verticalAlignment = verticalAlignment,
     ) {
         content()
+
+        /**
+         *     val icon:ImageVector,
+         *     val text:String,
+         *     val desc:String, // for accessbility
+         *     val enabled:()->Boolean,
+         *     val visible:()->Boolean,
+         *     val onClick:()->Unit,
+         */
         if(actions != null && actions.isNotEmpty()) {
             ScrollableRow {
                 for(a in actions) {
                     if(a.visible().not()) continue
+
                     LongPressAbleIconBtn(
                         iconModifier = modifier.size(a.size),
                         pressedCircleSize = a.pressedCircleSize,
@@ -83,7 +93,11 @@ fun BarContainer(
                         onClick = a.onClick
                     )
                 }
+
+
+                // 菜单
                 if(showMoreIcon && moreMenuIconBtnItem != null) {
+                    //菜单图标
                     val a = moreMenuIconBtnItem
                     LongPressAbleIconBtn(
                         iconModifier = modifier.size(a.size),
@@ -94,6 +108,8 @@ fun BarContainer(
                         enabled = a.enabled(),
                         onClick = a.onClick
                     )
+
+                    //菜单项，点击图标显示
                     if(moreMenuExpandState != null && !moreMenuItems.isNullOrEmpty()) {
                         DropdownMenu(
                             offset = DpOffset(x = 30.dp, y = 0.dp),
@@ -102,11 +118,13 @@ fun BarContainer(
                         ) {
                             for(it in moreMenuItems) {
                                 if(it.visible().not()) continue;
+
                                 DropdownMenuItem(
                                     text = { Text(it.text) },
                                     enabled = it.enabled(),
                                     onClick = {
                                         it.onClick()
+
                                         if(it.closeMenuAfterClick()) {
                                             moreMenuExpandState.value = false
                                         }
@@ -118,5 +136,6 @@ fun BarContainer(
                 }
             }
         }
+
     }
 }

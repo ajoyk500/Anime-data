@@ -26,6 +26,9 @@ import coil.ImageLoader
 import dev.jeziellago.compose.markdowntext.plugins.image.ImagesPlugin
 import io.noties.markwon.Markwon
 
+/**
+ * @param onLinkClicked handle the url and return a boolean indicated consumed, if return true, default url handler will not handle the link; if return false, default link handler will take it
+ */
 @Composable
 fun MarkdownText(
     markdown: String,
@@ -39,6 +42,8 @@ fun MarkdownText(
     style: TextStyle = LocalTextStyle.current,
     @IdRes viewId: Int? = null,
     onClick: (() -> Unit)? = null,
+    // this option will disable all clicks on links, inside the markdown text
+    // it also enable the parent view to receive the click event
     disableLinkMovementMethod: Boolean = false,
     imageLoader: ImageLoader? = null,
     coilStore: ImagesPlugin.CoilStore? = null,
@@ -49,7 +54,6 @@ fun MarkdownText(
     headingBreakColor: Color = Color.Transparent,
     enableUnderlineForLink: Boolean = true,
     importForAccessibility: Int = View.IMPORTANT_FOR_ACCESSIBILITY_AUTO,
-
     beforeSetMarkdown: ((TextView, Spanned) -> Unit)? = null,
     afterSetMarkdown: ((TextView) -> Unit)? = null,
     onLinkClicked: (String) -> Boolean = {false},
@@ -57,6 +61,10 @@ fun MarkdownText(
 ) {
     val defaultColor: Color = LocalContentColor.current
     val context: Context = LocalContext.current
+
+    // this was remembered, if remember, must set dependencies params as key of remember,
+    //   else will not update variable correctly, e.g. when navi to other file which parent difference to current,
+    //   then the coilStore will not update, so, all relative path resource will not load correctly
     val markdownRender: Markwon = MarkdownRender.create(
         context,
         imageLoader,
@@ -72,6 +80,7 @@ fun MarkdownText(
         onLinkClicked,
         style
     )
+
     val androidViewModifier = if (onClick != null) {
         Modifier
             .clickable { onClick() }
@@ -82,7 +91,9 @@ fun MarkdownText(
     AndroidView(
         modifier = androidViewModifier,
         factory = { factoryContext ->
+
             val linkTextColor = linkColor.takeOrElse { style.color.takeOrElse { defaultColor } }
+
             CustomTextView(factoryContext).apply {
                 viewId?.let { id = viewId }
                 fontResource?.let { font -> applyFontResource(font) }
@@ -90,9 +101,13 @@ fun MarkdownText(
 
                 setMaxLines(maxLines)
                 setLinkTextColor(linkTextColor.toArgb())
+
                 setTextIsSelectable(isTextSelectable)
+
                 movementMethod = LinkMovementMethod.getInstance()
+
                 if (truncateOnTextOverflow) enableTextOverflow()
+
                 autoSizeConfig?.let { config ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
@@ -112,6 +127,7 @@ fun MarkdownText(
                 applyFontSize(style)
                 applyLineHeight(style)
                 applyTextDecoration(style)
+
                 with(style) {
                     applyTextAlign(textAlign)
                     fontFamily?.let { applyFontFamily(this) }

@@ -94,29 +94,52 @@ fun StashListScreen(
     repoId:String,
     naviUp: () -> Boolean,
 ) {
+
     val stateKeyTag = Cache.getSubPageKey(TAG)
+
+    // softkeyboard show/hidden relate start
+
     val view = LocalView.current
     val density = LocalDensity.current
+
     val isKeyboardVisible = rememberSaveable { mutableStateOf(false) }
+    //indicate keyboard covered component
     val isKeyboardCoveredComponent = rememberSaveable { mutableStateOf(false) }
+    // which component expect adjust heghit or padding when softkeyboard shown
     val componentHeight = rememberSaveable { mutableIntStateOf(0) }
+    // the padding value when softkeyboard shown
     val keyboardPaddingDp = rememberSaveable { mutableIntStateOf(0) }
+
+    // softkeyboard show/hidden relate end
+
+
+
     val homeTopBarScrollBehavior = AppModel.homeTopBarScrollBehavior
     val navController = AppModel.navController
     val activityContext = LocalContext.current
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
     val settings = remember { SettingsUtil.getSettingsSnapshot() }
+
     val inDarkTheme = Theme.inDarkTheme
+
+    //获取假数据
     val list = mutableCustomStateListOf(keyTag = stateKeyTag, keyName = "list", initValue = listOf<StashDto>())
     val filterList = mutableCustomStateListOf(keyTag = stateKeyTag, keyName = "filterList", initValue = listOf<StashDto>())
+
+
+    //这个页面的滚动状态不用记住，每次点开重置也无所谓
     val listState = rememberLazyListState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = MyStyleKt.BottomSheet.skipPartiallyExpanded)
     val showBottomSheet = rememberSaveable { mutableStateOf(false)}
     val lastClickedItemKey = rememberSaveable{mutableStateOf(Cons.init_last_clicked_item_key)}
+
     val needRefresh = rememberSaveable { mutableStateOf("")}
+
     val curObjInPage = mutableCustomStateOf(keyTag = stateKeyTag, keyName = "curObjInPage", initValue =StashDto())
     val curRepo = mutableCustomStateOf(keyTag = stateKeyTag, keyName = "curRepo", initValue = RepoEntity(id=""))
+
+
     val defaultLoadingText = stringResource(R.string.loading)
     val loading = rememberSaveable { mutableStateOf(false)}
     val loadingText = rememberSaveable { mutableStateOf(defaultLoadingText)}
@@ -128,13 +151,19 @@ fun StashListScreen(
         loadingText.value = activityContext.getString(R.string.loading)
         loading.value=false
     }
+
+    //filter相关，开始
     val filterResultNeedRefresh = rememberSaveable { mutableStateOf("") }
+
     val filterKeyword = mutableCustomStateOf(
         keyTag = stateKeyTag,
         keyName = "filterKeyword",
         initValue = TextFieldValue("")
     )
     val filterModeOn = rememberSaveable { mutableStateOf(false)}
+    //filter相关，结束
+
+    // start: search states
     val lastKeyword = rememberSaveable { mutableStateOf("") }
     val token = rememberSaveable { mutableStateOf("") }
     val searching = rememberSaveable { mutableStateOf(false) }
@@ -143,9 +172,52 @@ fun StashListScreen(
         token.value = ""
         lastKeyword.value = ""
     }
+    // end: search states
+
+    // 向下滚动监听，开始
     val pageScrolled = rememberSaveable { mutableStateOf(settings.showNaviButtons) }
+
     val filterListState = rememberLazyListState()
+//    val filterListState = mutableCustomStateOf(
+//        keyTag = stateKeyTag,
+//        keyName = "filterListState",
+//        LazyListState(0,0)
+//    )
     val enableFilterState = rememberSaveable { mutableStateOf(false)}
+//    val firstVisible = remember { derivedStateOf { if(enableFilterState.value) filterListState.value.firstVisibleItemIndex else listState.firstVisibleItemIndex } }
+//    ScrollListener(
+//        nowAt = firstVisible.value,
+//        onScrollUp = {scrollingDown.value = false}
+//    ) { // onScrollDown
+//        scrollingDown.value = true
+//    }
+//
+//    val lastAt = remember { mutableIntStateOf(0) }
+//    val lastIsScrollDown = remember { mutableStateOf(false) }
+//    val forUpdateScrollState = remember {
+//        derivedStateOf {
+//            val nowAt = if(enableFilterState.value) {
+//                filterListState.firstVisibleItemIndex
+//            } else {
+//                listState.firstVisibleItemIndex
+//            }
+//            val scrolledDown = nowAt > lastAt.intValue  // scroll down
+////            val scrolledUp = nowAt < lastAt.intValue
+//
+//            val scrolled = nowAt != lastAt.intValue  // scrolled
+//            lastAt.intValue = nowAt
+//
+//            // only update state when this scroll down and last is not scroll down, or this is scroll up and last is not scroll up
+//            if(scrolled && ((lastIsScrollDown.value && !scrolledDown) || (!lastIsScrollDown.value && scrolledDown))) {
+//                pageScrolled.value = true
+//            }
+//
+//            lastIsScrollDown.value = scrolledDown
+//        }
+//    }.value
+    // 向下滚动监听，结束
+
+    //Details弹窗，开始
     val clipboardManager = LocalClipboardManager.current
     val showDetailsDialog = rememberSaveable { mutableStateOf(false)}
     val detailsString = rememberSaveable { mutableStateOf("")}
@@ -160,11 +232,16 @@ fun StashListScreen(
             Msg.requireShow(activityContext.getString(R.string.copied))
         }
     }
+    //Details弹窗，结束
+
     val showPopDialog = rememberSaveable { mutableStateOf(false) }
     val showApplyDialog = rememberSaveable { mutableStateOf(false) }
     val showDelDialog = rememberSaveable { mutableStateOf(false) }
     val showCreateDialog = rememberSaveable { mutableStateOf(false) }
+
     val stashMsgForCreateDialog = mutableCustomStateOf(stateKeyTag, "stashMsgForCreateDialog") { TextFieldValue("") }
+
+
     if(showPopDialog.value) {
         ConfirmDialog(
             title = stringResource(R.string.pop),
@@ -173,6 +250,7 @@ fun StashListScreen(
             onCancel = { showPopDialog.value=false}
         ) {
             showPopDialog.value=false
+
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.loading)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo->
@@ -188,8 +266,10 @@ fun StashListScreen(
                     changeStateTriggerRefreshPage(needRefresh)
                 }
             }
+
         }
     }
+
     if(showApplyDialog.value) {
         ConfirmDialog(
             title = stringResource(R.string.apply),
@@ -198,6 +278,7 @@ fun StashListScreen(
             onCancel = { showApplyDialog.value=false}
         ) {
             showApplyDialog.value=false
+
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.loading)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo->
@@ -213,8 +294,10 @@ fun StashListScreen(
                     changeStateTriggerRefreshPage(needRefresh)
                 }
             }
+
         }
     }
+
     if(showDelDialog.value) {
         ConfirmDialog(
             title = stringResource(R.string.apply),
@@ -223,6 +306,7 @@ fun StashListScreen(
             onCancel = { showDelDialog.value=false}
         ) {
             showDelDialog.value=false
+
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.loading)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo->
@@ -238,14 +322,18 @@ fun StashListScreen(
                     changeStateTriggerRefreshPage(needRefresh)
                 }
             }
+
         }
     }
+
     val clearCommitMsg = {
         stashMsgForCreateDialog.value = TextFieldValue("")
     }
+
     val genStashMsg = {
         Libgit2Helper.stashGenMsg()
     }
+
     if(showCreateDialog.value) {
         ConfirmDialog2(
             title = stringResource(R.string.create),
@@ -256,12 +344,16 @@ fun StashListScreen(
                         maxLines = MyStyleKt.defaultMultiLineTextFieldMaxLines,
                         modifier = Modifier.fillMaxWidth()
                             .onGloballyPositioned { layoutCoordinates ->
+//                                println("layoutCoordinates.size.height:${layoutCoordinates.size.height}")
+                                // 获取组件的高度
+                                // unit is px ( i am not very sure)
                                 componentHeight.intValue = layoutCoordinates.size.height
                             }
                             .then(
                                 if (isKeyboardCoveredComponent.value) Modifier.padding(bottom = keyboardPaddingDp.intValue.dp) else Modifier
                             )
                         ,
+
                         value = stashMsgForCreateDialog.value,
                         onValueChange = {
                             stashMsgForCreateDialog.value = it
@@ -283,6 +375,7 @@ fun StashListScreen(
             onCancel = { showCreateDialog.value=false}
         ) onOk@{
             showCreateDialog.value=false
+
             doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.loading)) {
                 try {
                     Repository.open(curRepo.value.fullSavePath).use { repo->
@@ -291,9 +384,11 @@ fun StashListScreen(
                             Msg.requireShowLongDuration(activityContext.getString(R.string.plz_set_git_username_and_email_first))
                             return@doJobThenOffLoading
                         }
+
                         val msg = stashMsgForCreateDialog.value.text.ifBlank { genStashMsg() }
                         Libgit2Helper.stashSave(repo, stasher = Libgit2Helper.createSignature(username, email, settings), msg=msg)
                     }
+
                     clearCommitMsg()
                     Msg.requireShow(activityContext.getString(R.string.success))
                 }catch (e:Exception) {
@@ -305,14 +400,21 @@ fun StashListScreen(
                     changeStateTriggerRefreshPage(needRefresh)
                 }
             }
+
         }
     }
+
     val showTitleInfoDialog = rememberSaveable { mutableStateOf(false)}
     if(showTitleInfoDialog.value) {
         RepoInfoDialog(curRepo.value, showTitleInfoDialog)
     }
+
     val filterLastPosition = rememberSaveable { mutableStateOf(0) }
     val lastPosition = rememberSaveable { mutableStateOf(0) }
+
+
+
+    // username and email start
     val repoOfSetUsernameAndEmailDialog = mutableCustomStateOf(stateKeyTag, "repoOfSetUsernameAndEmailDialog") { RepoEntity(id = "") }
     val username = rememberSaveable { mutableStateOf("") }
     val email = rememberSaveable { mutableStateOf("") }
@@ -321,11 +423,14 @@ fun StashListScreen(
     val initSetUsernameAndEmailDialog = { targetRepo:RepoEntity, callback:(()->Unit)? ->
         try {
             Repository.open(targetRepo.fullSavePath).use { repo ->
+                //回显用户名和邮箱
                 val (usernameFromConfig, emailFromConfig) = Libgit2Helper.getGitUsernameAndEmail(repo)
                 username.value = usernameFromConfig
                 email.value = emailFromConfig
             }
+
             repoOfSetUsernameAndEmailDialog.value = targetRepo
+
             afterSetUsernameAndEmailSuccessCallback.value = callback
             showUsernameAndEmailDialog.value = true
         }catch (e:Exception) {
@@ -333,11 +438,14 @@ fun StashListScreen(
             MyLog.e(TAG, "#initSetUsernameAndEmailDialog err: ${e.stackTraceToString()}")
         }
     }
+
+    //若仓库有有效用户名和邮箱，执行task，否则弹窗设置用户名和邮箱，并在保存用户名和邮箱后调用task
     val doTaskOrShowSetUsernameAndEmailDialog = { curRepo:RepoEntity, task:(()->Unit)? ->
         try {
             Repository.open(curRepo.fullSavePath).use { repo ->
                 if(Libgit2Helper.repoUsernameAndEmailInvaild(repo)) {
                     Msg.requireShowLongDuration(activityContext.getString(R.string.plz_set_username_and_email_first))
+
                     initSetUsernameAndEmailDialog(curRepo, task)
                 }else {
                     task?.invoke()
@@ -348,9 +456,12 @@ fun StashListScreen(
             MyLog.e(TAG, "#doTaskOrShowSetUsernameAndEmailDialog err: ${e.stackTraceToString()}")
         }
     }
+
     if(showUsernameAndEmailDialog.value) {
         val curRepo = repoOfSetUsernameAndEmailDialog.value
         val closeDialog = { showUsernameAndEmailDialog.value = false }
+
+        //请求用户设置用户名和邮箱的弹窗
         AskGitUsernameAndEmailDialogWithSelection(
             curRepo = curRepo,
             username = username,
@@ -362,12 +473,20 @@ fun StashListScreen(
             },
             onFinallyCallback = {},
             onSuccessCallback = {
+                //已经保存成功，调用回调
+
+                //取出callback
                 val successCallback = afterSetUsernameAndEmailSuccessCallback.value
                 afterSetUsernameAndEmailSuccessCallback.value = null
+
                 successCallback?.invoke()
             },
+
         )
     }
+    // username and email end
+
+
     val isInitLoading = rememberSaveable { mutableStateOf(SharedState.defaultLoadingValue) }
     val initLoadingOn = { msg:String ->
         isInitLoading.value = true
@@ -375,6 +494,7 @@ fun StashListScreen(
     val initLoadingOff = {
         isInitLoading.value = false
     }
+
     BackHandler {
         if(filterModeOn.value) {
             filterModeOn.value = false
@@ -383,6 +503,7 @@ fun StashListScreen(
             naviUp()
         }
     }
+
     Scaffold(
         modifier = Modifier.nestedScroll(homeTopBarScrollBehavior.nestedScrollConnection),
         topBar = {
@@ -397,7 +518,7 @@ fun StashListScreen(
                             onDoubleClick = {
                                 defaultTitleDoubleClick(scope, listState, lastPosition)
                             },
-                        ){  
+                        ){  //onClick
                             showTitleInfoDialog.value = true
                         }){
                             ScrollableRow {
@@ -416,6 +537,7 @@ fun StashListScreen(
                                 )
                             }
                         }
+
                     }
                 },
                 navigationIcon = {
@@ -424,8 +546,10 @@ fun StashListScreen(
                             tooltipText = stringResource(R.string.close),
                             icon = Icons.Filled.Close,
                             iconContentDesc = stringResource(R.string.close),
+
                         ) {
                             resetSearchVars()
+
                             filterModeOn.value = false
                         }
                     }else {
@@ -433,9 +557,11 @@ fun StashListScreen(
                             tooltipText = stringResource(R.string.back),
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
                             iconContentDesc = stringResource(R.string.back),
+
                         ) {
                             naviUp()
                         }
+
                     }
                 },
                 actions = {
@@ -445,9 +571,11 @@ fun StashListScreen(
                             icon =  Icons.Filled.FilterAlt,
                             iconContentDesc = stringResource(R.string.filter),
                         ) {
+                            // filter item
                             filterKeyword.value = TextFieldValue("")
                             filterModeOn.value = true
                         }
+
                         LongPressAbleIconBtn(
                             tooltipText = stringResource(R.string.refresh),
                             icon =  Icons.Filled.Refresh,
@@ -455,6 +583,7 @@ fun StashListScreen(
                         ) {
                             changeStateTriggerRefreshPage(needRefresh)
                         }
+
                         LongPressAbleIconBtn(
                             tooltipText = stringResource(R.string.create),
                             icon =  Icons.Filled.Add,
@@ -471,6 +600,7 @@ fun StashListScreen(
         },
         floatingActionButton = {
             if(pageScrolled.value) {
+
                 GoToTopAndGoToBottomFab(
                     filterModeOn = enableFilterState.value,
                     scope = scope,
@@ -480,6 +610,7 @@ fun StashListScreen(
                     listLastPosition = lastPosition,
                     showFab = pageScrolled
                 )
+
             }
         }
     ) { contentPadding ->
@@ -487,14 +618,21 @@ fun StashListScreen(
             contentPadding = contentPadding,
             onRefresh = { changeStateTriggerRefreshPage(needRefresh) }
         ) {
+
             if (loading.value) {
+//            LoadingText(text = loadingText.value, contentPadding = contentPadding)
                 LoadingDialog(text = loadingText.value)
             }
+
             if(showBottomSheet.value) {
+                // index@shortOid, e.g. 0@abc1234
                 val sheetTitle = ""+curObjInPage.value.index+"@"+Libgit2Helper.getShortOidStrByFull(curObjInPage.value.stashId.toString())
                 BottomSheet(showBottomSheet, sheetState, sheetTitle) {
+                    //merge into current 实际上是和HEAD进行合并，产生一个新的提交
+                    //x 对当前分支禁用这个选项，只有其他分支才能用
                     BottomSheetItem(sheetState, showBottomSheet, stringResource(R.string.pop),
                     ){
+                        //弹出确认框，如果确定，执行merge，否则不执行
                         showPopDialog.value = true
                     }
                     BottomSheetItem(sheetState, showBottomSheet, stringResource(R.string.apply),
@@ -505,8 +643,10 @@ fun StashListScreen(
                     ){
                         showDelDialog.value = true
                     }
+
                 }
             }
+
             if(list.value.isEmpty()) {
                 if(isInitLoading.value) {
                     FullScreenScrollableColumn(contentPadding) {
@@ -525,8 +665,10 @@ fun StashListScreen(
                     )
                 }
             }else {
-                val keyword = filterKeyword.value.text  
+                //根据关键字过滤条目
+                val keyword = filterKeyword.value.text  //关键字
                 val enableFilter = filterModeActuallyEnabled(filterModeOn.value, keyword)
+
                 val lastNeedRefresh = rememberSaveable { mutableStateOf("") }
                 val list = filterTheList(
                     needRefresh = filterResultNeedRefresh.value,
@@ -546,8 +688,16 @@ fun StashListScreen(
                                 || it.msg.contains(keyword, ignoreCase = true)
                     }
                 )
+
+
                 val listState = if(enableFilter) filterListState else listState
+//        if(enableFilter) {  //更新filter列表state
+//            filterListState.value = listState
+//        }
+                //更新是否启用filter
                 enableFilterState.value = enableFilter
+
+
                 MyLazyColumn(
                     contentPadding = contentPadding,
                     list = list,
@@ -556,24 +706,37 @@ fun StashListScreen(
                     requirePaddingAtBottom = true,
                     forEachCb = {},
                 ){idx, it->
-                    StashItem(repoId, showBottomSheet, curObjInPage, idx, lastClickedItemKey, it) {  
+                    //长按会更新curObjInPage为被长按的条目
+                    StashItem(repoId, showBottomSheet, curObjInPage, idx, lastClickedItemKey, it) {  //onClick
                         val suffix = "\n\n"
                         val sb = StringBuilder()
                         sb.append(activityContext.getString(R.string.index)).append(": ").append(it.index).append(suffix)
                         sb.append(activityContext.getString(R.string.stash_id)).append(": ").append(it.stashId).append(suffix)
                         sb.append(activityContext.getString(R.string.msg)).append(": ").append(it.msg).append(suffix)
+
+
                         detailsString.value = sb.removeSuffix(suffix).toString()
                         showDetailsDialog.value = true
                     }
+
                     MyHorizontalDivider()
                 }
+
             }
         }
+
+
     }
+
+
+    //compose创建时的副作用
     LaunchedEffect(needRefresh.value) {
         try {
+//            doJobThenOffLoading(loadingOn = loadingOn, loadingOff = loadingOff, loadingText = activityContext.getString(R.string.loading)) {
             doJobThenOffLoading(initLoadingOn, initLoadingOff) {
-                list.value.clear()  
+
+                list.value.clear()  //先清一下list，然后可能添加也可能不添加
+
                 if(!repoId.isNullOrBlank()) {
                     val repoDb = AppModel.dbContainer.repoRepository
                     val repoFromDb = repoDb.getById(repoId)
@@ -584,12 +747,17 @@ fun StashListScreen(
                         }
                     }
                 }
+
                 triggerReFilter(filterResultNeedRefresh)
             }
         } catch (e: Exception) {
             MyLog.e(TAG, "BranchListScreen#LaunchedEffect() err: "+e.stackTraceToString())
+//            ("LaunchedEffect: job cancelled")
         }
     }
+
+
+
     SoftkeyboardVisibleListener(
         view = view,
         isKeyboardVisible = isKeyboardVisible,
@@ -598,6 +766,7 @@ fun StashListScreen(
         keyboardPaddingDp = keyboardPaddingDp,
         density = density,
         skipCondition = {
+            //不显示弹窗的时候则忽略监听
             showCreateDialog.value.not()
         }
     )

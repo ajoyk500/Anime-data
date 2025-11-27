@@ -1,26 +1,55 @@
-
+/*
+ *    sora-editor - the awesome code editor for Android
+ *    https://github.com/Rosemoe/sora-editor
+ *    Copyright (C) 2020-2024  Rosemoe
+ *
+ *     This library is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU Lesser General Public
+ *     License as published by the Free Software Foundation; either
+ *     version 2.1 of the License, or (at your option) any later version.
+ *
+ *     This library is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *     Lesser General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Lesser General Public
+ *     License along with this library; if not, write to the Free Software
+ *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ *     USA
+ *
+ *     Please contact Rosemoe by email 2073412493@qq.com if you need
+ *     additional information or have any questions
+ */
 package io.github.rosemoe.sora.text;
 
 import android.util.Log;
+
 import androidx.annotation.Nullable;
+
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
 import io.github.rosemoe.sora.lang.styling.Span;
 
 public class SpanRecycler {
+
     private static SpanRecycler INSTANCE;
     private final BlockingQueue<List<Span>> taskQueue;
     private Thread recycleThread;
+
     private SpanRecycler() {
         taskQueue = new ArrayBlockingQueue<>(8);
     }
+
     public static synchronized SpanRecycler getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new SpanRecycler();
         }
         return INSTANCE;
     }
+
     public void recycle(@Nullable List<Span> spans) {
         if (spans == null) {
             return;
@@ -31,12 +60,16 @@ public class SpanRecycler {
         }
         taskQueue.offer(spans);
     }
+
     private class RecycleThread extends Thread {
+
         private final static String LOG_TAG = "SpanRecycler";
+
         RecycleThread() {
             setDaemon(true);
             setName("SpanRecycleDaemon");
         }
+
         @Override
         public void run() {
             try {
@@ -63,5 +96,7 @@ public class SpanRecycler {
             }
             Log.i(LOG_TAG, "Recycler exited");
         }
+
     }
+
 }

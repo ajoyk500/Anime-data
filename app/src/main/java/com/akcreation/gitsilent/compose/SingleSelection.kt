@@ -18,15 +18,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.style.MyStyleKt
 
+
 private val defaultMinHeight = MyStyleKt.RadioOptions.minHeight
+
+
+/**
+ * 左边一个圆圈的那种单选列表，适合条目不太多的选项，条目太多建议用dropdown list
+ */
 @Composable
 fun <T> SingleSelection(
     itemList:List<T>,
     selected:(idx:Int, T)->Boolean,
     text:(idx:Int, T)->String,
     onClick:(idx:Int, T)->Unit,
-    beforeShowItem:((idx:Int, T)->Unit)? = null, 
-    skip:(idx:Int, T)->Boolean = {idx, item -> false }, 
+    beforeShowItem:((idx:Int, T)->Unit)? = null, // run for each item before it rendering
+    skip:(idx:Int, T)->Boolean = {idx, item -> false }, // will not show item if skip return true
     itemDescContext: (@Composable (idx:Int, T) ->Unit)? = null,
     minHeight:Dp = defaultMinHeight
 ) {
@@ -35,10 +41,13 @@ fun <T> SingleSelection(
     ) {
         for ((idx, item) in itemList.withIndex()) {
             beforeShowItem?.invoke(idx, item)
+
             if(skip(idx, item)) {
                 continue
             }
+
             val selected = selected(idx, item)
+
             SingleSelectionItem(
                 idx = idx,
                 item = item,
@@ -50,7 +59,11 @@ fun <T> SingleSelection(
             )
         }
     }
+
 }
+
+
+
 @Composable
 fun <T> SingleSelectionItem(
     idx: Int,
@@ -77,8 +90,9 @@ fun <T> SingleSelectionItem(
     ) {
         RadioButton(
             selected = selected,
-            onClick = null 
+            onClick = null // null recommended for accessibility with screenreaders
         )
+
         MySelectionContainer {
             Column {
                 ScrollableRow {
@@ -88,8 +102,10 @@ fun <T> SingleSelectionItem(
                         modifier = Modifier.padding(start = 10.dp)
                     )
                 }
+
                 itemDescContext?.invoke(idx, item)
             }
         }
+
     }
 }

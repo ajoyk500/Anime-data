@@ -19,8 +19,10 @@ fun <T> SingleSelectDialog(
     closeDialog: () -> Unit,
     onClick: (selectedItem: T) -> Unit,
 ) {
+
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+
     PlainDialogWithPadding(onClose = closeDialog) {
         LazyColumn(state = listState) {
             itemList.forEachIndexed { idx, it ->
@@ -40,9 +42,12 @@ fun <T> SingleSelectDialog(
             }
         }
     }
+
+
     LaunchedEffect(Unit) {
         scope.launch {
             delay(200)
+
             UIHelper.scrollByPredicate(scope, itemList, listState, animation = true) { _, it ->
                 selected(it)
             }

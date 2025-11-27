@@ -14,13 +14,16 @@ import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.user.UserUtil
 
+
 @Composable
 fun DepthTextField(depth: MutableState<String>) {
     val isPro = UserUtil.isPro()
+
     TextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(MyStyleKt.defaultHorizontalPadding),
+
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
         enabled = isPro,
@@ -36,3 +39,4 @@ fun DepthTextField(depth: MutableState<String>) {
         }
     )
 }
+

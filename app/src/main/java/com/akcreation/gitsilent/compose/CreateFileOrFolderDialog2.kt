@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 
+
 @Composable
 fun CreateFileOrFolderDialog2(
     errMsg: MutableState<String>,
@@ -40,16 +41,20 @@ fun CreateFileOrFolderDialog2(
 ) {
     val activityContext = LocalContext.current
     val scope = rememberCoroutineScope()
+
     val doCreate = { isDir:Boolean ->
         val createSuccess = onOk(fileName.value.text, isDir)
         if(createSuccess) {
             onCancel()
         }
     }
+
     val hasErr = {
         errMsg.value.isNotEmpty()
     }
+
     val focusRequester = remember { FocusRequester() }
+
     AlertDialog(
         title = {
             DialogTitle(stringResource(R.string.create))
@@ -61,6 +66,9 @@ fun CreateFileOrFolderDialog2(
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                         .onPreviewKeyEvent { event ->
+                            // ctrl + enter to create folder
+                            // enter to create file
+
                             if (event.type != KeyEventType.KeyDown) {
                                 false
                             } else if(event.key == Key.Enter && event.isCtrlPressed) {
@@ -76,10 +84,13 @@ fun CreateFileOrFolderDialog2(
                             }
                         }
                     ,
+
                     value = fileName.value,
                     singleLine = true,
                     onValueChange = {
+                        //一修改就清空错误信息，然后点创建的时候会再检测，若有错误会再设置上
                         errMsg.value = ""
+
                         fileName.value = it
                     },
                     isError = hasErr(),
@@ -102,14 +113,17 @@ fun CreateFileOrFolderDialog2(
                     label = {
                         Text(stringResource(R.string.name))
                     },
+
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
                         val isDir = false
                         doCreate(isDir)
                     }),
                 )
+
             }
         },
+        //点击弹框外区域的时候触发此方法，一般设为和OnCancel一样的行为即可
         onDismissRequest = onCancel,
         dismissButton = {
             TextButton(
@@ -120,7 +134,10 @@ fun CreateFileOrFolderDialog2(
         },
         confirmButton = {
             ScrollableRow {
+                //按钮启用条件
                 val maybeIsGoodFileName = fileName.value.text.isNotEmpty() && !hasErr()
+
+                //创建文件夹（左边）
                 TextButton(
                     enabled = maybeIsGoodFileName,
                     onClick = {
@@ -132,6 +149,7 @@ fun CreateFileOrFolderDialog2(
                         text = activityContext.getString(R.string.folder),
                     )
                 }
+                //创建文件（右边）
                 TextButton(
                     enabled = maybeIsGoodFileName,
                     onClick = {
@@ -143,8 +161,14 @@ fun CreateFileOrFolderDialog2(
                         text = activityContext.getString(R.string.file),
                     )
                 }
+
+
             }
         },
+
     )
+
     Focuser(focusRequester, scope)
+
+
 }

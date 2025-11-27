@@ -27,6 +27,10 @@ import com.akcreation.gitsilent.utils.saf.MyOpenDocumentTree
 import com.akcreation.gitsilent.utils.saf.SafUtil
 
 private const val TAG = "SystemFolderChooserSaf"
+
+/**
+ * A Folder Chooser depend System File Chooser, may not work if system removed internal file picker, in that case, can input path instead
+ */
 @Deprecated("replace with `InternalFileChooser`")
 @Composable
 fun SystemFolderChooserSaf(
@@ -41,22 +45,37 @@ fun SystemFolderChooserSaf(
     chosenPathCallback:(uri: Uri?)->Unit = {uri->
         if(uri != null) {
             if(AppModel.devModeOn) {
+                //example of output: uri.toString() == uri.path: false, uri.toString()=content://com.android.externalstorage.documents/tree/primary%3ARepos, uri.path=/tree/primary:Repos
+                // toString更完整些，是我期望的safPath，uri.path缺乏一些信息，不行
                 MyLog.d(TAG, "uri.toString() == uri.path: ${uri.toString() == uri.path}, uri.toString()=${uri.toString()}, uri.path=${uri.path}")
             }
+
             safPath.value = SafUtil.uriToDbSupportedFormat(uri)
+
+            //最初是检查realPath.isNotBlank()才调用回调，但感觉检查与否意义不大，如果路径真为空，就清空也没什么
             nonSafPath.value = FsUtils.getRealPathFromUri(uri)
+
             path.value = if(safEnabled.value) safPath.value else nonSafPath.value
+
             MyLog.d(TAG, "#chooseDirLauncher: uri.toString()=${uri.toString()}, uri.path=${uri.path}, safEnabled=${safEnabled.value}, safPath=${safPath.value}, nonSafPath=${nonSafPath.value}")
         }
     }
 ) {
+
+
     val chooseDirLauncher = rememberLauncherForActivityResult(MyOpenDocumentTree()) { uri ->
         if(uri != null){
+            //获取永久访问权限
             SafUtil.takePersistableRWPermission(activityContext.contentResolver, uri)
+
+            //更新path
             chosenPathCallback(uri)
         }
     }
+
+
     GrantManageStoragePermissionClickableText(activityContext)
+
     TextField(
         modifier = Modifier.fillMaxWidth().padding(horizontal = MyStyleKt.defaultHorizontalPadding),
         value = path.value,
@@ -73,13 +92,21 @@ fun SystemFolderChooserSaf(
         trailingIcon = {
             IconButton(
                 onClick = {
+                    //show folder chooser
                     chooseDirLauncher.launch(null)
                 }
+
             ) {
                 Icon(imageVector = Icons.Filled.MoreHoriz, contentDescription = stringResource(R.string.three_dots_icon_for_choose_folder))
             }
         }
     )
+
+
+
+//        Spacer(Modifier.height(15.dp))
+//        Text(stringResource(R.string.if_unable_choose_a_path_just_copy_paste_instead), fontWeight = FontWeight.Light)
+
     if(showSafSwitchButton) {
         Spacer(Modifier.height(15.dp))
         MyCheckBox(text = stringResource(R.string.saf_mode), value = safEnabled, onValueChange = { newSafEnabledValue ->
@@ -88,6 +115,7 @@ fun SystemFolderChooserSaf(
             } else {
                 nonSafPath.value
             }
+
             safEnabled.value = newSafEnabledValue
         })
         DefaultPaddingText(stringResource(R.string.saf_mode_note))

@@ -1,6 +1,5 @@
 package com.akcreation.gitsilent.git
 
-
 data class ImportRepoResult (
     var all:Int=0,
     var success:Int=0,

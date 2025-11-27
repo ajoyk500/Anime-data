@@ -26,14 +26,22 @@ import com.github.git24j.core.Index
 import com.github.git24j.core.Repository
 import java.io.File
 
+
 private const val TAG = "DiffImg"
+
+
+
 @Composable
 fun DiffImg(
     stateKeyTag:String,
+    //本组件会把文件存到这个目录下，父组件在销毁时应把这个目录下的文件清空
     baseSavePath:String,
+
     repoFullPath:String,
+    //仓库下相对路径
     relativePath:String,
     fileName:String,
+
     leftHash:String,
     rightHash:String,
     changeType:String,
@@ -41,21 +49,31 @@ fun DiffImg(
     fromScreen: DiffFromScreen,
 ) {
     val stateKeyTag = Cache.getComponentKey(stateKeyTag, TAG)
+
     val activityContext = LocalContext.current
+
+    //可能在LazyColumn里用这个组件，而LazyColumn里用remmeberSavebaley有bug，可能会崩溃，所以这里一律用remember或自定义的状态存储器
     val needRefresh = mutableCustomStateOf(stateKeyTag, "needRefresh") {""}
+
     val leftSavePath = mutableCustomStateOf(stateKeyTag, "leftSavePath") {""}
     val rightSavePath = mutableCustomStateOf(stateKeyTag, "rightSavePath") {""}
     val leftLoading = mutableCustomStateOf(stateKeyTag, "leftLoading") {false}
     val rightLoading = mutableCustomStateOf(stateKeyTag, "rightLoading") {false}
     val leftErrMsg = mutableCustomStateOf(stateKeyTag, "leftErrMsg") {""}
     val rightErrMsg = mutableCustomStateOf(stateKeyTag, "rightErrMsg") {""}
+
+
     ShowImg(leftSavePath.value, activityContext, leftLoading.value, leftErrMsg.value)
     ShowImg(rightSavePath.value, activityContext, rightLoading.value, rightErrMsg.value)
+
+
+
     LaunchedEffect(needRefresh.value) {
         doJobThenOffLoading {
             leftSavePath.value = ""
             leftLoading.value = true
             leftErrMsg.value = ""
+
             val ret = loadFile(
                 hash = leftHash,
                 repoFullPath = repoFullPath,
@@ -63,14 +81,19 @@ fun DiffImg(
                 fileName = fileName,
                 baseSavePath = baseSavePath
             )
+
             leftSavePath.value = ret.savePath
             leftErrMsg.value = ret.errMsg
+
             leftLoading.value = false
         }
+
         doJobThenOffLoading {
             leftSavePath.value = ""
             rightLoading.value = true
             leftErrMsg.value = ""
+
+
             val ret = loadFile(
                 hash = rightHash,
                 repoFullPath = repoFullPath,
@@ -78,12 +101,15 @@ fun DiffImg(
                 fileName = fileName,
                 baseSavePath = baseSavePath
             )
+
             rightSavePath.value = ret.savePath
             rightErrMsg.value = ret.errMsg
+
             rightLoading.value = false
         }
     }
 }
+
 @Composable
 private fun MyImageView(
     modifier: Modifier = Modifier,
@@ -100,9 +126,12 @@ private fun MyImageView(
         modifier = modifier
     )
 }
+
 private fun genSavePath(entryId:String, fileName:String):String {
     return entryId.toString().substring(0,7)+fileName
 }
+
+
 private fun loadFile(hash:String, repoFullPath: String, relativePath: String, fileName:String, baseSavePath:String):LoadRet {
     try {
         if(hash == Cons.git_LocalWorktreeCommitHash) {
@@ -119,6 +148,7 @@ private fun loadFile(hash:String, repoFullPath: String, relativePath: String, fi
                     Libgit2Helper.saveFileOfCommitToPath(repo, hash,  relativePath, genFilePath = {entry -> genSavePath(entry.id().toString(), fileName)})
                 }
             }
+
             if(ret.code == SaveBlobRetCode.SUCCESS) {
                 return LoadRet(savePath = ret.savePath, errMsg = "")
             }else {
@@ -128,13 +158,16 @@ private fun loadFile(hash:String, repoFullPath: String, relativePath: String, fi
     }catch (e: Exception) {
         val errMsg = "err: ${e.localizedMessage}"
         MyLog.e(TAG, "#loadFile err: ${e.stackTraceToString()}")
+
         return LoadRet(savePath = "", errMsg = errMsg)
     }
 }
+
 private data class LoadRet(
     val savePath:String="",
     val errMsg:String="",
 )
+
 @Composable
 private fun ShowImg(savePath: String, activityContext: Context, loading: Boolean, errMsg:String) {
     if(savePath.isNotEmpty()) {
@@ -146,3 +179,4 @@ private fun ShowImg(savePath: String, activityContext: Context, loading: Boolean
         Text(if(loading) stringResource(R.string.loading) else errMsg)
     }
 }
+

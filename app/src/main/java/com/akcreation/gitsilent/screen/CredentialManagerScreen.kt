@@ -71,27 +71,43 @@ import com.akcreation.gitsilent.utils.doJobThenOffLoading
 import com.akcreation.gitsilent.utils.state.mutableCustomStateListOf
 import com.akcreation.gitsilent.utils.state.mutableCustomStateOf
 
+
 private const val TAG = "CredentialManagerScreen"
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CredentialManagerScreen(
+//    context: Context,
+//    navController: NavHostController,
+//    scope: CoroutineScope,
+//    haptic: HapticFeedback,
+//    homeTopBarScrollBehavior: TopAppBarScrollBehavior,
     remoteId:String,
+
     naviUp: () -> Boolean
 ) {
+
     val stateKeyTag = Cache.getSubPageKey(TAG)
+
+
     val homeTopBarScrollBehavior = AppModel.homeTopBarScrollBehavior
     val navController = AppModel.navController
     val activityContext = LocalContext.current
     val scope = rememberCoroutineScope()
+
+    // for link credential to remote
     val isLinkMode = remoteId.isNotBlank()
     val lastClickedItemKey = rememberSaveable{mutableStateOf(Cons.init_last_clicked_item_key)}
+
     val settings = remember { SettingsUtil.getSettingsSnapshot() }
+
     val list = mutableCustomStateListOf(keyTag = stateKeyTag, keyName = "list", initValue = listOf<CredentialEntity>() )
     val filterList = mutableCustomStateListOf(keyTag = stateKeyTag, keyName = "filterList", initValue = listOf<CredentialEntity>() )
     val listState = rememberLazyListState()
     val curCredential = mutableCustomStateOf(keyTag = stateKeyTag, keyName = "curCredential", initValue = CredentialEntity(id=""))
     val needRefresh = rememberSaveable { mutableStateOf("")}
     val showLoadingDialog = rememberSaveable { mutableStateOf(SharedState.defaultLoadingValue)}
+
     val loadingStrRes = stringResource(R.string.loading)
     val loadingText = rememberSaveable { mutableStateOf(loadingStrRes)}
     val loadingOn = {text:String ->
@@ -102,24 +118,29 @@ fun CredentialManagerScreen(
         showLoadingDialog.value=false
         loadingText.value=""
     }
+
+
     val remote =mutableCustomStateOf(keyTag = stateKeyTag, keyName = "remote", initValue = RemoteEntity(id=""))
     val curRepo =mutableCustomStateOf(keyTag = stateKeyTag, keyName = "curRepo", initValue = RepoEntity(id=""))
     val showLinkOrUnLinkDialog = rememberSaveable { mutableStateOf(false)}
-    val onClickCurItem =mutableCustomStateOf(keyTag = stateKeyTag, keyName = "onClickCurItem", initValue = CredentialEntity(id=""))  
+    val onClickCurItem =mutableCustomStateOf(keyTag = stateKeyTag, keyName = "onClickCurItem", initValue = CredentialEntity(id=""))  //非点击跳转页面的情况下，点击条目后更新此变量
     val requireDoLink = rememberSaveable { mutableStateOf(false)}
     val targetAll = rememberSaveable { mutableStateOf( false)}
     val remoteDtoForCredential = mutableCustomStateOf(keyTag = stateKeyTag, keyName = "remoteDtoForCredential", initValue = RemoteDtoForCredential(remoteId = remoteId))
+
     val linkOrUnLinkDialogTitle = rememberSaveable { mutableStateOf("")}
+
     if(showLinkOrUnLinkDialog.value) {
         LinkOrUnLinkCredentialAndRemoteDialog(
             curItemInPage = onClickCurItem,
             requireDoLink = requireDoLink.value,
             targetAll = targetAll.value,
-            title = linkOrUnLinkDialogTitle.value,  
+            title = linkOrUnLinkDialogTitle.value,  //若空字符串，会根据上面的flag自动判断显示link还是unlink
             thisItem = remoteDtoForCredential.value,
             onCancel = { showLinkOrUnLinkDialog.value=false},
             onFinallyCallback = {
                 showLinkOrUnLinkDialog.value=false
+                //关联模式下，似乎，没必要刷新页面啊？但刷新下其实也没什么
                 changeStateTriggerRefreshPage(needRefresh)
             },
             onErrCallback = { e->
@@ -131,8 +152,12 @@ fun CredentialManagerScreen(
             onOkCallback = {
                 Msg.requireShow(activityContext.getString(R.string.success))
             }
+
         )
+
     }
+
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = MyStyleKt.BottomSheet.skipPartiallyExpanded)
     val showBottomSheet = rememberSaveable { mutableStateOf(false)}
     val doDelete = {
@@ -146,6 +171,7 @@ fun CredentialManagerScreen(
             }
         }
     }
+
     val showDeleteDialog = rememberSaveable { mutableStateOf( false)}
     if(showDeleteDialog.value) {
         ConfirmDialog(
@@ -153,14 +179,57 @@ fun CredentialManagerScreen(
             text = stringResource(R.string.are_you_sure),
             okTextColor = MyStyleKt.TextColor.danger(),
             onCancel = { showDeleteDialog.value = false }
-        ) {   
+        ) {   // onOk
             showDeleteDialog.value=false
             doDelete()
         }
     }
+
+    // 向下滚动监听，开始
     val pageScrolled = rememberSaveable { mutableStateOf(settings.showNaviButtons) }
+
     val filterListState = rememberLazyListState()
+//    val filterListState = mutableCustomStateOf(
+//        keyTag = stateKeyTag,
+//        keyName = "filterListState",
+//        LazyListState(0,0)
+//    )
     val enableFilterState = rememberSaveable { mutableStateOf(false)}
+//    val firstVisible = remember { derivedStateOf { if(enableFilterState.value) filterListState.value.firstVisibleItemIndex else listState.firstVisibleItemIndex } }
+//    ScrollListener(
+//        nowAt = firstVisible.value,
+//        onScrollUp = {scrollingDown.value = false}
+//    ) { // onScrollDown
+//        scrollingDown.value = true
+//    }
+//
+//    val lastAt = remember { mutableIntStateOf(0) }
+//    val lastIsScrollDown = remember { mutableStateOf(false) }
+//    val forUpdateScrollState = remember {
+//        derivedStateOf {
+//            val nowAt = if(enableFilterState.value) {
+//                filterListState.firstVisibleItemIndex
+//            } else {
+//                listState.firstVisibleItemIndex
+//            }
+//            val scrolledDown = nowAt > lastAt.intValue  // scroll down
+////            val scrolledUp = nowAt < lastAt.intValue
+//
+//            val scrolled = nowAt != lastAt.intValue  // scrolled
+//            lastAt.intValue = nowAt
+//
+//            // only update state when this scroll down and last is not scroll down, or this is scroll up and last is not scroll up
+//            if(scrolled && ((lastIsScrollDown.value && !scrolledDown) || (!lastIsScrollDown.value && scrolledDown))) {
+//                pageScrolled.value = true
+//            }
+//
+//            lastIsScrollDown.value = scrolledDown
+//        }
+//    }.value
+    // 向下滚动监听，结束
+
+
+    //filter相关，开始
     val filterResultNeedRefresh = rememberSaveable { mutableStateOf("") }
     val filterKeyword = mutableCustomStateOf(
         keyTag = stateKeyTag,
@@ -168,6 +237,9 @@ fun CredentialManagerScreen(
         initValue = TextFieldValue("")
     )
     val filterModeOn = rememberSaveable { mutableStateOf(false)}
+    //filter相关，结束
+
+    // start: search states
     val lastKeyword = rememberSaveable { mutableStateOf("") }
     val token = rememberSaveable { mutableStateOf("") }
     val searching = rememberSaveable { mutableStateOf(false) }
@@ -176,16 +248,21 @@ fun CredentialManagerScreen(
         token.value = ""
         lastKeyword.value = ""
     }
+    // end: search states
+
+
     val titleString = rememberSaveable { mutableStateOf("")}
-    val titleSecondaryString = rememberSaveable { mutableStateOf("")}  
+    val titleSecondaryString = rememberSaveable { mutableStateOf("")}  // title secondary line string
     val showTitleInfoDialog = rememberSaveable { mutableStateOf(false)}
     if(showTitleInfoDialog.value) {
         InfoDialog(showTitleInfoDialog) {
             Text(titleString.value)
+
             if(titleSecondaryString.value.isNotBlank()) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(titleSecondaryString.value)
             }
+
             if(isLinkMode) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(stringResource(R.string.repo)+": "+curRepo.value.repoName)
@@ -197,8 +274,10 @@ fun CredentialManagerScreen(
             }
         }
     }
+
     val filterLastPosition = rememberSaveable { mutableStateOf(0) }
     val lastPosition = rememberSaveable { mutableStateOf(0) }
+
     BackHandler {
         if(filterModeOn.value) {
             filterModeOn.value = false
@@ -207,6 +286,7 @@ fun CredentialManagerScreen(
             naviUp()
         }
     }
+
     Scaffold(
         modifier = Modifier.nestedScroll(homeTopBarScrollBehavior.nestedScrollConnection),
         topBar = {
@@ -222,15 +302,18 @@ fun CredentialManagerScreen(
                             showTitleInfoDialog.value = true
                         }) {
                             titleString.value = stringResource(id = R.string.credential_manager)
+
                             ScrollableRow {
                                 Text(
                                     text = titleString.value,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
+
                             }
-                            if(remote.value.id.isNotEmpty()) {  
+                            if(remote.value.id.isNotEmpty()) {  //隐含 remoteId.isNotEmpty() 为 true
                                 titleSecondaryString.value = "${stringResource(R.string.link_mode)}: [${remote.value.remoteName} of ${curRepo.value.repoName}]";
+
                                 ScrollableRow  {
                                     Text(
                                         text= titleSecondaryString.value,
@@ -239,9 +322,11 @@ fun CredentialManagerScreen(
                                         fontSize = MyStyleKt.Title.secondLineFontSize
                                     )
                                 }
+
                             }
                         }
                     }
+
                 },
                 navigationIcon = {
                     if(filterModeOn.value) {
@@ -249,8 +334,10 @@ fun CredentialManagerScreen(
                             tooltipText = stringResource(R.string.close),
                             icon = Icons.Filled.Close,
                             iconContentDesc = stringResource(R.string.close),
+
                         ) {
                             resetSearchVars()
+
                             filterModeOn.value = false
                         }
                     }else{
@@ -258,9 +345,11 @@ fun CredentialManagerScreen(
                             tooltipText = stringResource(R.string.back),
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
                             iconContentDesc = stringResource(R.string.back),
+
                         ) {
                             naviUp()
                         }
+
                     }
                 },
                 actions = {
@@ -271,9 +360,11 @@ fun CredentialManagerScreen(
                                 icon =  Icons.Filled.FilterAlt,
                                 iconContentDesc = stringResource(R.string.filter),
                             ) {
+                                // filter item
                                 filterKeyword.value = TextFieldValue("")
                                 filterModeOn.value = true
                             }
+
                             LongPressAbleIconBtn(
                                 tooltipText = stringResource(R.string.refresh),
                                 icon =  Icons.Filled.Refresh,
@@ -288,14 +379,17 @@ fun CredentialManagerScreen(
                             ) {
                                 navController.navigate(Cons.nav_DomainCredentialListScreen)
                             }
+
                             LongPressAbleIconBtn(
                                 tooltipText = stringResource(R.string.create),
                                 icon =  Icons.Filled.Add,
                                 iconContentDesc = stringResource(id = R.string.create_new_credential),
                             ) {
+                                //从这跳是新建，直接传null
                                 navController.navigate(Cons.nav_CredentialNewOrEditScreen+"/"+null)
                             }
                         }
+
                     }
                 },
                 scrollBehavior = homeTopBarScrollBehavior,
@@ -303,6 +397,7 @@ fun CredentialManagerScreen(
         },
         floatingActionButton = {
             if(pageScrolled.value) {
+
                 GoToTopAndGoToBottomFab(
                     filterModeOn = enableFilterState.value,
                     scope = scope,
@@ -312,32 +407,53 @@ fun CredentialManagerScreen(
                     listLastPosition = lastPosition,
                     showFab = pageScrolled
                 )
+
             }
         }
     ) { contentPadding ->
+
         PullToRefreshBox(
             contentPadding = contentPadding,
             onRefresh = { changeStateTriggerRefreshPage(needRefresh) }
         ) {
+
             if(showBottomSheet.value) {
                 BottomSheet(showBottomSheet, sheetState, curCredential.value.name) {
                     BottomSheetItem(sheetState=sheetState, showBottomSheet=showBottomSheet, text=stringResource(R.string.edit)){
+                        //跳转到编辑页面
+                        //在这里可以直接用state curObj取到当前选中条目，curObjInState在长按条目后会被更新为当前被长按的条目
                         navController.navigate(Cons.nav_CredentialNewOrEditScreen+"/"+curCredential.value.id)
+
                     }
+
+                    //改成在关联页面有这个功能了，在这就不显示了
+                    //            BottomSheetItem(sheetState=sheetState, showBottomSheet=showBottomSheet, text=stringResource(R.string.unlink_all)){
+                    //                //显示弹窗，询问将会与所有remotes解除关联，是否确定？
+                    //            }
+
                     BottomSheetItem(sheetState=sheetState, showBottomSheet=showBottomSheet, text=stringResource(R.string.delete), textColor = MyStyleKt.TextColor.danger()){
                         showDeleteDialog.value=true
                     }
                 }
+
             }
+
             if (showLoadingDialog.value) {
+//            LoadingDialog()  //这个东西太阴间了，还是用LoadingText吧
+
                 LoadingTextSimple(text = loadingText.value, contentPadding = contentPadding)
+
             }else {
-                val keyword = filterKeyword.value.text  
+
+                //根据关键字过滤条目
+                val keyword = filterKeyword.value.text  //关键字
                 val enableFilter = filterModeActuallyEnabled(filterModeOn.value, keyword)
+
                 val lastNeedRefresh = rememberSaveable { mutableStateOf("") }
                 val list = filterTheList(
                     needRefresh = filterResultNeedRefresh.value,
                     lastNeedRefresh = lastNeedRefresh,
+
                     enableFilter = enableFilter,
                     keyword = keyword,
                     lastKeyword = lastKeyword,
@@ -351,8 +467,15 @@ fun CredentialManagerScreen(
                         it.name.contains(keyword, ignoreCase = true) || it.value.contains(keyword, ignoreCase = true)
                     }
                 )
+
                 val listState = if(enableFilter) filterListState else listState
+//            if(enableFilter) {  //更新filter列表state
+//                filterListState.value = listState
+//            }
+
+                //更新是否启用filter
                 enableFilterState.value = enableFilter
+
                 MyLazyColumn(
                     contentPadding = contentPadding,
                     list = list,
@@ -370,32 +493,51 @@ fun CredentialManagerScreen(
                         linkedPushId = remote.value.pushCredentialId,
                         lastClickedItemKey = lastClickedItemKey
                     ) {
-                        if(remoteId.isEmpty()) {  
+
+                        //这里value和it和传给CredentialItem的thisItem值都一样，只是参数传来传去而已
+
+                        if(remoteId.isEmpty()) {  //若remoteId为空，跳转到remote和凭据绑定页面
+                            // 点击跳转到关联列表，传1表示显示的是关联列表
                             navController.navigate(Cons.nav_CredentialRemoteListScreen+"/"+it.id+"/1")
-                        }else {  
-                            onClickCurItem.value = it  
+                        }else {  //若remoteId不为空，则代表为此remoteId绑定凭据，点击条目弹窗
+                            //为弹窗准备参数
+                            onClickCurItem.value = it  //虽然这里是被点击的条目，但其实用保存长按条目的状态变量curCredential也可以，不过为了避免混淆，没用那个
                             requireDoLink.value = true
                             targetAll.value=false
+
                             remoteDtoForCredential.value = RemoteDtoForCredential(
                                 remoteId = remoteId,
                                 credentialId = remote.value.credentialId,
                                 pushCredentialId = remote.value.pushCredentialId
                             )
+
                             linkOrUnLinkDialogTitle.value = activityContext.getString(R.string.link)+" '${it.name}'"
+                            //显示弹窗
                             showLinkOrUnLinkDialog.value=true
                         }
                     }
+
                     MyHorizontalDivider()
+
                 }
             }
         }
+
     }
+
+    //compose创建时的副作用
     LaunchedEffect(needRefresh.value) {
+//        println("LaunchedEffect: entered main")
+        // Just an example of coroutines usage
+        // don't use this way to track screen disappearance
+        // DisposableEffect is better for this
         try {
             doJobThenOffLoading(loadingOn = loadingOn, loadingOff = loadingOff, loadingText = activityContext.getString(R.string.loading)) job@{
                 val credentialDb = AppModel.dbContainer.credentialRepository
                 list.value.clear()
+//                list.value.addAll(credentialDb.getAll(includeMatchByDomain = isLinkMode, includeNone = isLinkMode))
                 list.value.addAll(credentialDb.getAll(includeMatchByDomain = true, includeNone = true))
+
                 if(isLinkMode) {
                     val remoteFromDb = AppModel.dbContainer.remoteRepository.getById(remoteId)
                     if(remoteFromDb!=null){
@@ -406,9 +548,20 @@ fun CredentialManagerScreen(
                         }
                     }
                 }
+
                 triggerReFilter((filterResultNeedRefresh))
+//                list.requireRefreshView()
             }
+//            读取配置文件，初始化状态之类的
         } catch (cancel: Exception) {
+//            println("LaunchedEffect: job cancelled")
         }
     }
+    //compose被销毁时执行的副作用
+//    DisposableEffect(Unit) {
+////        println("DisposableEffect: entered main")
+//        onDispose {
+////            println("DisposableEffect: exited main")
+//        }
+//    }
 }

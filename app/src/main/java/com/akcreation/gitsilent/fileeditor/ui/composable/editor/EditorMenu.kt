@@ -25,6 +25,7 @@ fun EditorMenu(
         Box(modifier = Modifier.align(Alignment.CenterHorizontally)) { label() }
     }
 }
+
 @Preview
 @Composable
 private fun EditorMenu_Preview() {

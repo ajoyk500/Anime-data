@@ -49,24 +49,32 @@ import com.akcreation.gitsilent.utils.ComposeHelper
 import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.baseVerticalScrollablePageModifier
 
+
 const val authorMail = "ajoykundu500@gmail.com"
 const val authorMailLink = "mailto:$authorMail"
+
 const val developerName = "AK_CREATION_DEV"
-const val developerTelegram = "https:
-const val sourceCodeLink = "https:
+const val developerTelegram = "https://t.me/AK_CREATION_DEV"
+
+const val sourceCodeLink = "https://github.com/"
 const val releasesLink = "$sourceCodeLink/releases"
 const val reportBugsLink = "$sourceCodeLink/issues/new"
-const val donateLink = "https:
+const val donateLink = "https://github.com/catpuppyapp/PuppyGit/blob/main/donate.md"
 const val httpServiceApiUrl = "$sourceCodeLink/blob/main/http_service_api.md"
 const val automationDocUrl = "$sourceCodeLink/blob/main/automation_doc.md"
+
+
 @Composable
 fun AboutInnerPage(
     listState: ScrollState,
     contentPadding: PaddingValues,
     openDrawer: () -> Unit,
 ) {
+
     val activityContext = LocalContext.current
     val exitApp = AppModel.exitApp
+
+    //back handler block start
     val isBackHandlerEnable = rememberSaveable { mutableStateOf(true) }
     val backHandlerOnBack = ComposeHelper.getDoubleClickBackHandler(
         context = activityContext,
@@ -74,13 +82,18 @@ fun AboutInnerPage(
         exitApp = exitApp
     )
     BackHandler(enabled = isBackHandlerEnable.value, onBack = { backHandlerOnBack() })
+    //back handler block end
+
     val appLogoEasterEggOn = rememberSaveable { mutableStateOf(false) }
     val appLogoEasterEggIconColor = remember { mutableStateOf(Color.Magenta) }
+
     Column(
         modifier = Modifier
             .baseVerticalScrollablePageModifier(contentPadding, listState)
             .padding(horizontal = 16.dp, vertical = 16.dp),
     ) {
+
+        // App Icon Card
         CardContainer {
             Column(
                 modifier = Modifier
@@ -88,6 +101,7 @@ fun AboutInnerPage(
                     .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // App Icon with Easter Egg
                 Surface(
                     modifier = Modifier
                         .size(80.dp)
@@ -108,21 +122,30 @@ fun AboutInnerPage(
                         AppIcon()
                     }
                 }
+
                 Spacer(Modifier.height(24.dp))
+
+                // App Name
                 Text(
                     text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
+
                 Spacer(Modifier.height(8.dp))
+
+                // Tagline
                 Text(
                     text = "A LightWeight, powerful GitSilent for Android.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
+
                 Spacer(Modifier.height(16.dp))
+
+                // Version
                 Text(
                     text = AppModel.getAppVersionNameAndCode(),
                     style = MaterialTheme.typography.bodyMedium,
@@ -130,7 +153,10 @@ fun AboutInnerPage(
                 )
             }
         }
+
         Spacer(Modifier.height(16.dp))
+
+        // Developer Card
         CardContainer {
             Column(
                 modifier = Modifier.padding(20.dp)
@@ -141,20 +167,26 @@ fun AboutInnerPage(
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+
                 DeveloperItem(
                     icon = Icons.Outlined.Person,
                     title = "Made by",
                     subtitle = developerName,
                     onClick = { ActivityUtil.openUrl(activityContext, sourceCodeLink) }
                 )
+
                 Spacer(Modifier.height(16.dp))
+
                 DeveloperItem(
                     icon = Icons.Outlined.Send,
                     title = "Telegram Channel",
                     subtitle = developerTelegram,
                     onClick = { ActivityUtil.openUrl(activityContext, developerTelegram) }
                 )
+
                 Spacer(Modifier.height(24.dp))
+
+                // Premium Download Button
                 Button(
                     onClick = { ActivityUtil.openUrl(activityContext, releasesLink) },
                     modifier = Modifier.fillMaxWidth(),
@@ -177,9 +209,12 @@ fun AboutInnerPage(
                 }
             }
         }
+
         Spacer(Modifier.height(16.dp))
     }
 }
+
+
 @Composable
 private fun CardContainer(
     content: @Composable () -> Unit,
@@ -195,6 +230,7 @@ private fun CardContainer(
         content()
     }
 }
+
 @Composable
 private fun DeveloperItem(
     icon: ImageVector,
@@ -214,7 +250,9 @@ private fun DeveloperItem(
             modifier = Modifier.size(24.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
+
         Spacer(Modifier.width(16.dp))
+
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -224,7 +262,9 @@ private fun DeveloperItem(
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface
             )
+
             Spacer(Modifier.height(4.dp))
+
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,

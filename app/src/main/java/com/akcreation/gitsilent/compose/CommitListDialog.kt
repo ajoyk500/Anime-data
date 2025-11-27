@@ -15,6 +15,7 @@ import androidx.compose.ui.text.withStyle
 import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.forEachBetter
 
+
 @Composable
 fun CommitListDialog(
     title:String,
@@ -29,6 +30,7 @@ fun CommitListDialog(
         requireShowTextCompose = true,
         textCompose = {
             Column {
+                //用 \n 是为了在复制文本的时候包含换行符
                 MySelectionContainer {
                     Row {
                         Text(
@@ -36,15 +38,19 @@ fun CommitListDialog(
                                 withStyle(SpanStyle(fontWeight = FontWeight.ExtraBold)) {
                                     append("$firstLineLabel: ")
                                 }
+
                                 append("$firstLineText\n")
                             }
                         )
                     }
                 }
+
                 MyHorizontalDivider()
+
                 MySelectionContainer {
                     Text("\n${commitListLabel}:\n", fontWeight = FontWeight.ExtraBold)
                 }
+
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                 ) {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018 Hai Zhang <dreaming.in.code.zh@gmail.com>
+ * All Rights Reserved.
+ */
 
 package com.akcreation.gitsilent.utils.mime
 
@@ -25,6 +29,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 val outLinedIcons = Icons.Outlined
 val filledIcons = Icons.Filled
 val autoMirroredOutLinedIcons = Icons.AutoMirrored.Outlined
+
 enum class MimeTypeIcon(val icon: ImageVector) {
     APK(outLinedIcons.Android),
     ARCHIVE(outLinedIcons.Archive),
@@ -49,10 +54,17 @@ enum class MimeTypeIcon(val icon: ImageVector) {
     EXCEL(outLinedIcons.TableView),
     POWERPOINT(outLinedIcons.VideoStable)
 }
+
+// See also https://android.googlesource.com/platform/frameworks/base.git/+/master/core/java/com/android/internal/util/MimeIconUtils.java
+// See also https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
+// See also http://www.iana.org/assignments/media-types/media-types.xhtml
+// See also /usr/share/mime/packages/freedesktop.org.xml
 val MimeType.icon: MimeTypeIcon
     get() =
         mimeTypeToIconMap[this] ?: typeToIconMap[type] ?: suffix?.let { suffixToIconMap[it] }
         ?: MimeTypeIcon.GENERIC
+
+// See also https://mimesniff.spec.whatwg.org/#mime-type-groups
 private val mimeTypeToIconMap = mapOf(
     "application/x-go" to MimeTypeIcon.CODE,
     "application/x-kotlin" to MimeTypeIcon.CODE,
@@ -63,6 +75,7 @@ private val mimeTypeToIconMap = mapOf(
     "application/x-powershell" to MimeTypeIcon.CODE,
     "application/x-fsharp" to MimeTypeIcon.CODE,
     "application/x-julia" to MimeTypeIcon.CODE,
+
     "application/x-less" to MimeTypeIcon.CODE,
     "application/x-scss" to MimeTypeIcon.CODE,
     "application/x-rust" to MimeTypeIcon.CODE,
@@ -82,10 +95,14 @@ private val mimeTypeToIconMap = mapOf(
     "application/x-zig" to MimeTypeIcon.CODE,
     "application/x-proguard" to MimeTypeIcon.CODE,
     "application/x-vue" to MimeTypeIcon.CODE,
+
+
     "application/vnd.android.package-archive" to MimeTypeIcon.APK,
     "application/gzip" to MimeTypeIcon.ARCHIVE,
+    // Not in IANA list, but Mozilla and Wikipedia say so.
     "application/java-archive" to MimeTypeIcon.ARCHIVE,
     "application/mac-binhex40" to MimeTypeIcon.ARCHIVE,
+    // Not in IANA list, but AOSP MimeUtils says so.
     "application/rar" to MimeTypeIcon.ARCHIVE,
     "application/zip" to MimeTypeIcon.ARCHIVE,
     "application/vnd.debian.binary-package" to MimeTypeIcon.ARCHIVE,
@@ -244,6 +261,7 @@ private val mimeTypeToIconMap = mapOf(
     "application/vnd.openxmlformats-officedocument.presentationml.template"
         to MimeTypeIcon.POWERPOINT
 ).mapKeys { it.key.asMimeType() }
+
 private val typeToIconMap = mapOf(
     "audio" to MimeTypeIcon.AUDIO,
     "font" to MimeTypeIcon.FONT,
@@ -251,10 +269,12 @@ private val typeToIconMap = mapOf(
     "text" to MimeTypeIcon.TEXT,
     "video" to MimeTypeIcon.VIDEO
 )
+
 private val suffixToIconMap = mapOf(
     "json" to MimeTypeIcon.CODE,
     "xml" to MimeTypeIcon.CODE,
     "zip" to MimeTypeIcon.ARCHIVE
 )
+
 val MimeType.iconRes: ImageVector
     get() = icon.icon

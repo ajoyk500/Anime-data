@@ -10,6 +10,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.R
 
+
+/**
+ * difference with `ConfirmDialog`: this support hidden onOk/onCancel Button and custom onDismiss(default do onCancel)
+ * and the default confirm text is "OK", denied text is "Cancel"
+ */
 @Composable
 fun ConfirmDialog3(
     modifier: Modifier=Modifier,
@@ -29,6 +34,11 @@ fun ConfirmDialog3(
     customOk:(@Composable ()->Unit)? = null,
     customCancel:(@Composable ()->Unit)? = null,
     onCancel: () -> Unit = {},
+
+    //点击非弹窗区域时执行的操作，若不指定则和onCancel行为一致，除非和onCancel行为不一样，
+    //   否则即使使用 `customCancel`，也推荐设置onCancel而不是设置onDismiss
+    //click outside of dialog will call this function, recommend use `onCancel` instead passing this param,
+    //  if it has same behavior with `onCancel`, even use `customCancel`.
     onDismiss: ()->Unit = onCancel,
     onOk: () -> Unit = {},
 ) {
@@ -52,6 +62,7 @@ fun ConfirmDialog3(
                 }
             }
         },
+        //点击弹框外区域的时候触发此方法，一般设为和OnCancel一样的行为即可
         onDismissRequest = onDismiss,
         dismissButton = {
             if(showCancel) {
@@ -77,6 +88,7 @@ fun ConfirmDialog3(
                     TextButton(
                         enabled = okBtnEnabled,
                         onClick = {
+                            //执行用户传入的callback
                             onOk()
                         },
                     ) {
@@ -86,7 +98,11 @@ fun ConfirmDialog3(
                         )
                     }
                 }
+
             }
         },
+
     )
+
+
 }

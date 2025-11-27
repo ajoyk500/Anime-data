@@ -7,9 +7,11 @@ class SyntaxHighlight(val textLiteral: String) : CustomNode(), Delimited {
     override fun getOpeningDelimiter(): String {
         return DELIMITER
     }
+
     override fun getClosingDelimiter(): String {
         return DELIMITER
     }
+
     companion object {
         private const val DELIMITER = "=="
     }

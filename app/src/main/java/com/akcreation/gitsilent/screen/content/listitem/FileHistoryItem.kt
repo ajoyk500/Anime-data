@@ -44,6 +44,7 @@ import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 import com.akcreation.gitsilent.utils.time.TimeZoneUtil
 import kotlinx.coroutines.delay
 
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FileHistoryItem(
@@ -52,43 +53,64 @@ fun FileHistoryItem(
     curCommitIdx:MutableIntState,
     idx:Int,
     dto:FileHistoryDto,
-    requireBlinkIdx:MutableIntState,  
+    requireBlinkIdx:MutableIntState,  //请求闪烁的索引，会闪一下对应条目，然后把此值设为无效
     lastClickedItemKey:MutableState<String>,
     shouldShowTimeZoneInfo:Boolean,
+
     showItemMsg:(FileHistoryDto)->Unit,
     onClick:(FileHistoryDto)->Unit={}
 ) {
+
     val clipboardManager = LocalClipboardManager.current
     val activityContext = LocalContext.current
+
     val haptic = LocalHapticFeedback.current
+
     val updateCurObjState = {
         curCommit.value = FileHistoryDto()
         curCommitIdx.intValue = -1
+
+        //设置当前条目
         curCommit.value = dto
         curCommitIdx.intValue = idx
     }
+    
     val defaultFontWeight = remember { MyStyleKt.TextItem.defaultFontWeight() }
+
+//    println("IDX::::::::::"+idx)
     Column(
+        //0.9f 占父元素宽度的百分之90
         modifier = Modifier
             .fillMaxWidth()
+//            .defaultMinSize(minHeight = 100.dp)
             .combinedClickable(
                 enabled = true,
                 onClick = {
                     lastClickedItemKey.value = dto.getItemKey()
                     onClick(dto)
                 },
-                onLongClick = {  
+                onLongClick = {  // x 算了)TODO 把长按也改成短按那样，在调用者那里实现，这里只负责把dto传过去，不过好像没必要，因为调用者那里还是要写同样的代码，不然弹窗不知道操作的是哪个对象
                     lastClickedItemKey.value = dto.getItemKey()
+
+                    //震动反馈
+//                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
                     updateCurObjState()
+
+                    //显示底部菜单
                     showBottomSheet.value = true
                 },
             )
+            //padding要放到 combinedClickable后面，不然点按区域也会padding
+//            .background(if(idx%2==0)  Color.Transparent else CommitListSwitchColor)
             .then(
+                //如果是请求闪烁的索引，闪烁一下
                 if (requireBlinkIdx.intValue != -1 && requireBlinkIdx.intValue==idx) {
                     val highlightColor = Modifier.background(UIHelper.getHighlightingBackgroundColor())
+                    //高亮2s后解除
                     doJobThenOffLoading {
-                        delay(UIHelper.getHighlightingTimeInMills())  
-                        requireBlinkIdx.intValue = -1  
+                        delay(UIHelper.getHighlightingTimeInMills())  //解除高亮倒计时
+                        requireBlinkIdx.intValue = -1  //解除高亮
                     }
                     highlightColor
                 } else if(dto.getItemKey() == lastClickedItemKey.value){
@@ -98,102 +120,177 @@ fun FileHistoryItem(
                 }
             )
             .listItemPadding()
+
+
+
+
     ) {
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
+
         ) {
+
             InLineIcon(
                 icon = Icons.Filled.Commit,
                 tooltipText = stringResource(R.string.commit_id)
             )
+
+//            Text(text = stringResource(R.string.commit_id) + ": ")
+
             Text(
                 text = dto.getCachedCommitShortOidStr(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
+
             )
+
             InLineCopyIcon {
                 clipboardManager.setText(AnnotatedString(dto.commitOidStr))
                 Msg.requireShow(activityContext.getString(R.string.copied))
             }
         }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
+
         ) {
+
             InLineIcon(
                 icon = Icons.AutoMirrored.Filled.InsertDriveFile,
                 tooltipText = stringResource(R.string.entry_id)
             )
+
+//            Text(text = stringResource(R.string.entry_id) + ": ")
+
             Text(
                 text = dto.getCachedTreeEntryShortOidStr(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
+
             )
+
             InLineCopyIcon {
                 clipboardManager.setText(AnnotatedString(dto.treeEntryOidStr))
                 Msg.requireShow(activityContext.getString(R.string.copied))
             }
         }
+//        Row (
+//            verticalAlignment = Alignment.CenterVertically,
+//
+//            ){
+//
+//            Text(text = stringResource(R.string.email) +":")
+//            Text(text = FileHistoryDto.email,
+//                maxLines = 1,
+//                overflow = TextOverflow.Ellipsis,
+//                fontWeight = defaultFontWeight
+//
+//            )
+//        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
+
         ) {
+
             InLineIcon(
                 icon = Icons.Filled.Person,
                 tooltipText = stringResource(R.string.author)
             )
+
+//            Text(text = stringResource(R.string.author) + ": ")
             ScrollableRow {
                 Text(
                     text = Libgit2Helper.getFormattedUsernameAndEmail(dto.authorUsername, dto.authorEmail),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = defaultFontWeight
+
                 )
             }
         }
+
+        //如果committer和author不同，显示
         if (!dto.authorAndCommitterAreSame()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+
                 InLineIcon(
                     icon = Icons.Outlined.Person,
                     tooltipText = stringResource(R.string.committer)
                 )
+
+//                Text(text = stringResource(R.string.committer) + ": ")
                 ScrollableRow {
                     Text(
                         text = Libgit2Helper.getFormattedUsernameAndEmail(dto.committerUsername, dto.committerEmail),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = defaultFontWeight
+
                     )
                 }
             }
         }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
+
         ) {
+
             InLineIcon(
                 icon = Icons.Filled.CalendarMonth,
                 tooltipText = stringResource(R.string.date)
             )
+
+//            Text(text = stringResource(R.string.date) + ": ")
             ScrollableRow {
                 Text(
                     text = if(shouldShowTimeZoneInfo) TimeZoneUtil.appendUtcTimeZoneText(dto.dateTime, dto.originTimeOffsetInMinutes) else dto.dateTime,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = defaultFontWeight
+
                 )
             }
         }
+
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//
+//        ) {
+//            //包含当前entry id的所有提交
+//
+//            InLineIcon(
+//                icon = Icons.Filled.ViewCompact,
+//                tooltipText = stringResource(R.string.commits)
+//            )
+//
+////            Text(text = stringResource(R.string.commits) + ": ")
+//
+//            SingleLineClickableText(dto.cachedShortCommitListStr()) {
+//                showCommits(dto)
+//            }
+//        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
+
             InLineIcon(
                 icon = Icons.AutoMirrored.Filled.Message,
                 tooltipText = stringResource(R.string.msg)
             )
+
+
+//            Text(text = stringResource(R.string.msg) + ": ")
+
             SingleLineClickableText(dto.getCachedOneLineMsg()) {
                 lastClickedItemKey.value = dto.getItemKey()
+
                 updateCurObjState()
                 showItemMsg(dto)
             }

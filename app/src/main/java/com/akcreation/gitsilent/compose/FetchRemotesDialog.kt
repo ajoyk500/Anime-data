@@ -16,6 +16,7 @@ import com.akcreation.gitsilent.utils.doJobThenOffLoading
 import com.github.git24j.core.Repository
 
 private const val TAG = "FetchRemotesDialog"
+
 @Composable
 fun FetchRemotesDialog(
     title:String = stringResource(R.string.fetch),
@@ -30,6 +31,7 @@ fun FetchRemotesDialog(
     refreshPage:()->Unit,
 ){
     val activityContext = LocalContext.current
+
     ConfirmDialog(
         title = title,
         requireShowTextCompose = true,
@@ -45,30 +47,40 @@ fun FetchRemotesDialog(
         cancelBtnText = cancelText,
     ) {
         closeDialog()
+
         doJobThenOffLoading(loadingOn, loadingOff, activityContext.getString(R.string.fetching)) {
             try {
-                if(remoteList.isEmpty()) {  
+                if(remoteList.isEmpty()) {  // remotes列表为空，无需执行操作
                     Msg.requireShowLongDuration(activityContext.getString(R.string.err_remote_list_is_empty))
-                }else {  
+                }else {  //remote列表如果是空就不用fetch了
+                    //获取remote名和凭据组合的列表
                     val remoteCredentialList = Libgit2Helper.genRemoteCredentialPairList(
                         remoteList,
                         AppModel.dbContainer.credentialRepository,
                         requireFetchCredential = true,
                         requirePushCredential = false
                     )
+
                     Repository.open(curRepo.fullSavePath).use { repo ->
+                        //执行fetch
                         Libgit2Helper.fetchRemoteListForRepo(repo, remoteCredentialList, curRepo)
+
+                        //显示成功通知
                         Msg.requireShow(activityContext.getString(R.string.success))
                     }
                 }
+
             }catch (e:Exception){
                 val errMsg = "fetch remotes err: "+e.localizedMessage
                 Msg.requireShowLongDuration(errMsg)
                 createAndInsertError(curRepo.id, errMsg)
+
                 MyLog.e(TAG, "fetch remotes err: "+e.stackTraceToString())
+
             }finally {
                 refreshPage()
             }
         }
+
     }
 }

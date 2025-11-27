@@ -22,6 +22,7 @@ import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.utils.changeStateTriggerRefreshPage
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 
+
 @Composable
 fun RepoPageActions(
     navController: NavHostController,
@@ -32,15 +33,26 @@ fun RepoPageActions(
     repoPageFilterKeyWord:CustomStateSaveable<TextFieldValue>,
     showImportRepoDialog:MutableState<Boolean>
 ) {
+    /*  TODO 添加个设置按钮
+     * 跳转到仓库全局设置页面，至少两个开关：
+     * Auto Fetch                default:Off
+     * Auto check Status         default:Off
+     */
+
+
     val dropDownMenuExpandState = rememberSaveable { mutableStateOf(false)}
+
+
     LongPressAbleIconBtn(
         tooltipText = stringResource(R.string.filter),
         icon =  Icons.Filled.FilterAlt,
         iconContentDesc = stringResource(id = R.string.filter),
+
     ) {
         repoPageFilterKeyWord.value = TextFieldValue("")
         repoPageFilterModeOn.value = true
     }
+
     LongPressAbleIconBtn(
         tooltipText = stringResource(R.string.refresh),
         icon = Icons.Filled.Refresh,
@@ -48,6 +60,7 @@ fun RepoPageActions(
     ) {
         changeStateTriggerRefreshPage(needRefreshRepoPage)
     }
+
     LongPressAbleIconBtn(
         tooltipText = stringResource(R.string.user_info),
         icon = Icons.Filled.Person,
@@ -55,6 +68,7 @@ fun RepoPageActions(
     ) {
         showGlobalUsernameAndEmailDialog.value=true
     }
+
     LongPressAbleIconBtn(
         tooltipText = stringResource(R.string.credential_manager),
         icon = Icons.Filled.Key,
@@ -62,6 +76,7 @@ fun RepoPageActions(
     ) {
         navController.navigate(Cons.nav_CredentialManagerScreen+"/${Cons.dbInvalidNonEmptyId}")
     }
+
     Column {
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.clone),
@@ -70,13 +85,14 @@ fun RepoPageActions(
         ) {
             dropDownMenuExpandState.value = !dropDownMenuExpandState.value
         }
+
         AddRepoDropDownMenu(
             showMenu = dropDownMenuExpandState.value,
             closeMenu = { dropDownMenuExpandState.value = false },
             importOnClick = {
-
                 showImportRepoDialog.value = true
             }
         )
+
     }
 }

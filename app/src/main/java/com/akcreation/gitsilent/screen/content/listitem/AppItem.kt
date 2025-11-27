@@ -16,16 +16,20 @@ import androidx.core.graphics.drawable.toBitmap
 import com.akcreation.gitsilent.compose.TwoLineTextsAndIcons
 import com.akcreation.gitsilent.dto.AppInfo
 
+
 @Composable
 fun AppItem(
     appInfo:AppInfo,
     trailIconWidth: Dp,
     trailIcons: @Composable BoxScope.(containerModifier:Modifier)->Unit,
 ) {
+
     Row(
         modifier = Modifier.fillMaxWidth(),
+
         verticalAlignment = Alignment.CenterVertically,
     ) {
+
         Image(
             bitmap = appInfo.appIcon.toBitmap().asImageBitmap(),
             contentDescription = null,
@@ -33,11 +37,14 @@ fun AppItem(
                 .size(48.dp)
                 .padding(start = 5.dp)
         )
+
         TwoLineTextsAndIcons(
             text1 = appInfo.appName,
             text2 = appInfo.packageName,
             trailIconWidth = trailIconWidth,
             trailIcons = trailIcons
         )
+
     }
+
 }

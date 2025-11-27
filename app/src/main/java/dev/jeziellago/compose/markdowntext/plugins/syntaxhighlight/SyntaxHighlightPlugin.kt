@@ -7,15 +7,18 @@ import io.noties.markwon.core.factory.CodeSpanFactory
 import org.commonmark.parser.Parser
 
 class SyntaxHighlightPlugin : AbstractMarkwonPlugin() {
+
     override fun configureParser(builder: Parser.Builder) {
         builder.extensions(setOf(SyntaxHighlightExtension.create()))
     }
+
     override fun configureSpansFactory(builder: MarkwonSpansFactory.Builder) {
         builder.setFactory(
             SyntaxHighlight::class.java,
             CodeSpanFactory()
         )
     }
+
     override fun configureVisitor(builder: MarkwonVisitor.Builder) {
         builder.on(
             SyntaxHighlight::class.java

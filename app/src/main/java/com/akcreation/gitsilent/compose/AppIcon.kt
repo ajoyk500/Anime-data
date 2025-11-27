@@ -13,6 +13,7 @@ import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.ui.theme.Theme
 import com.akcreation.gitsilent.utils.AppModel
 
+
 @Composable
 fun AppIcon(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -20,6 +21,7 @@ fun AppIcon(modifier: Modifier = Modifier) {
     val appIcon = AppModel.getAppIcon(context, inDarkTheme)
     Image(appIcon, contentDescription = stringResource(R.string.app_icon), modifier = modifier)
 }
+
 @Composable
 fun AppIconMonoChrome(
     modifier: Modifier = Modifier,

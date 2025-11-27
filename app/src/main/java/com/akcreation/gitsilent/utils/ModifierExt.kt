@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.style.MyStyleKt
 
+
 @Composable
 fun Modifier.fabBasePadding(
     density: Density = LocalDensity.current,
@@ -24,6 +25,7 @@ fun Modifier.fabBasePadding(
     return padding(
         UIHelper.getNaviBarsPadding(density, direction).let {
             PaddingValues(
+                //底部不用加，因为脚手架替你加上了，也可能是fab组件自己加的，我不知道，反正加上了
                 bottom = 0.dp,
                 top = it.calculateTopPadding(),
                 start = it.calculateLeftPadding(direction),
@@ -32,17 +34,23 @@ fun Modifier.fabBasePadding(
         }
     )
 }
+
+
 @Composable
 fun Modifier.addTopPaddingIfIsFirstLine(index:Int, topPadding:Dp = MyStyleKt.Padding.firstLineTopPaddingValuesInDp):Modifier {
     return if(index == 0) padding(top = topPadding) else this
 }
+
 private fun Modifier.basePageModifier(contentPadding: PaddingValues):Modifier {
+    //这个顺序不能换，fillMaxSize必须在padding和滚动前面，不然居中会作废
     return fillMaxSize()
         .padding(contentPadding)
 }
+
 fun Modifier.baseVerticalScrollablePageModifier(contentPadding: PaddingValues, scrollState: ScrollState):Modifier {
     return basePageModifier(contentPadding).verticalScroll(scrollState)
 }
+
 @Composable
 fun Modifier.dropDownItemContainerColor(selected:Boolean):Modifier {
     return if(selected) {
@@ -51,4 +59,5 @@ fun Modifier.dropDownItemContainerColor(selected:Boolean):Modifier {
         this
     }
 }
+
 fun Modifier.listItemPadding() = padding(MyStyleKt.defaultItemPadding)

@@ -22,6 +22,7 @@ import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.listItemPadding
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ErrorItem(
@@ -34,9 +35,12 @@ fun ErrorItem(
 ) {
     val haptic = LocalHapticFeedback.current
     val defaultFontWeight = remember { MyStyleKt.TextItem.defaultFontWeight() }
+
     Column(
+        //0.9f 占父元素宽度的百分之90
         modifier = Modifier
             .fillMaxWidth()
+//            .defaultMinSize(minHeight = 100.dp)
             .combinedClickable (
                 enabled = true,
                 onClick = {
@@ -45,47 +49,69 @@ fun ErrorItem(
                 },
                 onLongClick = {
                     lastClickedItemKey.value = curObj.id
+
+                    //震动反馈
+//                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
                     curObjInState.value = ErrorEntity()
+
+                    //设置当前条目
                     curObjInState.value = curObj
+
+                    //显示底部菜单
                     showBottomSheet.value = true
                 },
             )
+            //padding要放到 combinedClickable后面，不然点按区域也会padding
+//            .background(if(idx%2==0)  Color.Transparent else CommitListSwitchColor)
             .then(
                 if(lastClickedItemKey.value == curObj.id) {
                     Modifier.background(UIHelper.getLastClickedColor())
                 }else Modifier
             )
             .listItemPadding()
+
+
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
+
         ){
+
             Text(text = stringResource(R.string.id) +": ")
             Text(text = curObj.id,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
+
             )
         }
         Row (
             verticalAlignment = Alignment.CenterVertically,
+
             ){
+
             Text(text = stringResource(R.string.date) +": ")
             Text(text = curObj.date,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
+
             )
         }
         Row (
             verticalAlignment = Alignment.CenterVertically,
+
             ){
+
             Text(text = stringResource(R.string.msg) +": ")
             Text(text = curObj.getCachedOneLineMsg(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
+
             )
         }
+
     }
 }

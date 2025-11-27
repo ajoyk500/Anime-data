@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import java.io.Serializable
 
+
 object BroadcastUtil {
     private const val TAG = "BroadcastUtil"
+
     private fun sendMsg(ctx: Context, action: String, what: Int, content: Serializable) {
         try {
             val intent = Intent()

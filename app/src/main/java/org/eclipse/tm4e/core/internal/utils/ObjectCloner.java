@@ -1,4 +1,12 @@
-
+/**
+ * Copyright (c) 2022 Sebastian Thomschke and others.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.tm4e.core.internal.utils;
 
 import java.lang.reflect.Array;
@@ -13,19 +21,25 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 public final class ObjectCloner {
+
 	private static final WeakHashMap<Class<?>, Optional<Method>> CLONE_METHODS_CACHE = new WeakHashMap<>();
+
 	public static <@NonNull T> T deepClone(final T obj) {
 		return deepClone(obj, new IdentityHashMap<>());
 	}
+
 	@SuppressWarnings("unchecked")
 	private static <@NonNull T> T deepClone(final T obj, final Map<Object, @Nullable Object> clones) {
 		final Object clone = clones.get(obj);
+
 		if (clone != null)
 			return (T) clone;
+
 		if (obj instanceof List<?>) {
 			var list = (List<T>) obj;
 			final var listClone = shallowClone(list, () -> new ArrayList<>(list));
@@ -33,6 +47,7 @@ public final class ObjectCloner {
 			listClone.replaceAll(v -> deepCloneNullable(v, clones));
 			return (T) listClone;
 		}
+
 		if (obj instanceof Set<?>) {
 			var set = (Set<T>) obj;
 			final var setClone = (Set<@Nullable Object>) shallowClone(set, HashSet::new);
@@ -43,6 +58,7 @@ public final class ObjectCloner {
 			}
 			return (T) setClone;
 		}
+
 		if (obj instanceof Map<?, ?>) {
 			var map = (Map<?, T>) obj;
 			final var mapClone = shallowClone(map, () -> new HashMap<>(map));
@@ -50,6 +66,7 @@ public final class ObjectCloner {
 			mapClone.replaceAll((k, v) -> deepCloneNullable(v, clones));
 			return (T) mapClone;
 		}
+
 		if (obj.getClass().isArray()) {
 			final int len = Array.getLength(obj);
 			final var arrayType = obj.getClass().getComponentType();
@@ -60,10 +77,12 @@ public final class ObjectCloner {
 			}
 			return (T) arrayClone;
 		}
+
 		final var shallowClone = shallowClone(obj, () -> obj);
 		clones.put(obj, shallowClone);
 		return obj;
 	}
+
 	@Nullable
 	private static <@Nullable T> T deepCloneNullable(final T obj, final Map<Object, @Nullable Object> clones) {
 		if (obj == null) {
@@ -71,6 +90,7 @@ public final class ObjectCloner {
 		}
 		return deepClone(obj, clones);
 	}
+
 	@SuppressWarnings("unchecked")
 	private static <@NonNull T> T shallowClone(final T obj, final Supplier<T> fallback) {
 		if (obj instanceof Cloneable) {
@@ -91,6 +111,7 @@ public final class ObjectCloner {
 		}
 		return fallback.get();
 	}
+
 	private ObjectCloner() {
 	}
 }

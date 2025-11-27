@@ -3,6 +3,7 @@ package com.akcreation.gitsilent.compose
 import androidx.compose.runtime.Composable
 import com.akcreation.gitsilent.utils.EncodingUtil
 
+
 @Composable
 fun SelectEncodingDialog(
     currentCharset: String?,

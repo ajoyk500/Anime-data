@@ -14,12 +14,14 @@ fun AddRepoDropDownMenu(
     closeMenu:()->Unit,
     cloneOnClick:()->Unit = { goToCloneScreen() },
     importOnClick:()->Unit,
-
 ) {
+
+    //菜单列表
     DropdownMenu(
         expanded = showMenu,
         onDismissRequest = { closeMenu() }
     ) {
+
         DropdownMenuItem(
             text = { Text(stringResource(R.string.clone)) },
             onClick = {
@@ -27,13 +29,18 @@ fun AddRepoDropDownMenu(
                 cloneOnClick()
             }
         )
+
+        //之前觉得这里的功能和文件管理页面的导入仓库重复就设为开发者功能了，
+        // 但至少有过两个用户问怎么导入本地仓库，他们都觉得导入应该在仓库顶栏，索性加回来了
         DropdownMenuItem(
+//                text = { Text(DevFeature.appendDevPrefix(stringResource(R.string.import_repo))) },
             text = { Text(stringResource(R.string.import_str)) },
             onClick = {
                 closeMenu()
                 importOnClick()
-
             }
         )
+
+
     }
 }

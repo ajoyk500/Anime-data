@@ -33,19 +33,33 @@ import kotlinx.coroutines.delay
 fun PullToRefreshBox(
     contentPadding: PaddingValues,
     onRefresh: () -> Unit,
+
+    //这个变量一般设为真或假，若设为null，代表不使用这个值，这时lading圆圈会在执行任务时默认转几下，然后就消失
+    //因为我之前弄了其他的loading弹窗或文字，所以一般不需要这个东西指示是否loading，只要下拉刷新的功能就行了
+//    isRefreshing: Boolean? = null,
+
+
     modifier: Modifier = Modifier,
     content: @Composable ()->Unit,
 ) {
     val state = rememberPullToRefreshState()
+
+//    val isRefreshRawValue = remember(isRefreshing) { isRefreshing }
     val isRefreshing = remember { mutableStateOf(false) }
+
+
+    //如果设为null，代表不依赖此组件显示loading，但好歹让圆圈转一下，意思意思，不然一拉就弹回去了，感觉很奇怪
     val onRefresh = {
         doJobThenOffLoading {
             isRefreshing.value = true
             delay(500)
             isRefreshing.value = false
         }
+
         onRefresh()
     }
+
+
     PullToRefreshBox(
         isRefreshing = isRefreshing.value,
         onRefresh = onRefresh,
@@ -62,6 +76,8 @@ fun PullToRefreshBox(
         content()
     }
 }
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MyCustomIndicator(
@@ -89,6 +105,8 @@ private fun MyCustomIndicator(
                     modifier = Modifier
                         .padding(2.dp)
                     ,
+
+                    // line width
                     strokeWidth = 3.dp,
                 )
             } else {

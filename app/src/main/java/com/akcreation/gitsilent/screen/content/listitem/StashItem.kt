@@ -31,6 +31,7 @@ import com.akcreation.gitsilent.utils.UIHelper
 import com.akcreation.gitsilent.utils.listItemPadding
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StashItem(
@@ -39,16 +40,23 @@ fun StashItem(
     curObjFromParent: CustomStateSaveable<StashDto>,
     idx:Int,
     lastClickedItemKey:MutableState<String>,
+
     thisObj:StashDto,
     onClick:()->Unit
 ) {
+
     val clipboardManager = LocalClipboardManager.current
     val activityContext = LocalContext.current
+
     val haptic = LocalHapticFeedback.current
+
     val defaultFontWeight = remember { MyStyleKt.TextItem.defaultFontWeight() }
+
     Column(
+        //0.9f 占父元素宽度的百分之90
         modifier = Modifier
             .fillMaxWidth()
+//            .defaultMinSize(minHeight = 100.dp)
             .combinedClickable(
                 enabled = true,
                 onClick = {
@@ -57,11 +65,21 @@ fun StashItem(
                 },
                 onLongClick = {
                     lastClickedItemKey.value = thisObj.getItemKey()
+
+                    //震动反馈
+//                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+                    //设置当前条目
                     curObjFromParent.value = StashDto()
                     curObjFromParent.value = thisObj
+
+                    //显示底部菜单
                     showBottomSheet.value = true
                 },
             )
+            //padding要放到 combinedClickable后面，不然点按区域也会padding
+//            .background(if (idx % 2 == 0) Color.Transparent else CommitListSwitchColor)
+
             .then(
                 if(thisObj.getItemKey() == lastClickedItemKey.value){
                     Modifier.background(UIHelper.getLastClickedColor())
@@ -70,10 +88,13 @@ fun StashItem(
                 }
             )
             .listItemPadding()
+
+
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
+
             Text(text = stringResource(R.string.index) + ": ")
             Text(
                 text = thisObj.index.toString(),
@@ -81,22 +102,30 @@ fun StashItem(
                 overflow = TextOverflow.Ellipsis,
             )
         }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
+
+            // stash id 本质上是提交号，应该也能和其他提交对比或checkout、reset等，不过这个功能一般是临时用下，所以没添加复杂功能
             Text(text = stringResource(R.string.stash_id) + ": ")
+
             Text(
                 text = thisObj.getCachedShortStashId(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
+
             )
+
             InLineCopyIcon {
                 clipboardManager.setText(AnnotatedString(thisObj.stashId.toString()))
                 Msg.requireShow(activityContext.getString(R.string.copied))
             }
+
             InLineHistoryIcon {
                 lastClickedItemKey.value = thisObj.getItemKey()
+
                 fromTagToCommitHistory(
                     fullOid = thisObj.stashId.toString(),
                     shortName = thisObj.getCachedShortStashId(),
@@ -104,15 +133,18 @@ fun StashItem(
                 )
             }
         }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
+
             Text(text = stringResource(R.string.msg) + ": ")
             Text(
                 text = thisObj.getCachedOneLineMsg(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = defaultFontWeight
+
             )
         }
     }

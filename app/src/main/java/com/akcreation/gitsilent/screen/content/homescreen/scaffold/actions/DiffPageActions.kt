@@ -31,14 +31,16 @@ import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.settings.SettingsUtil
 
 private const val TAG = "DiffPageActions"
+
 @Composable
 fun DiffPageActions(
     isMultiMode: Boolean,
     fromTo:String,
     refreshPage: () -> Unit,
     request:MutableState<String>,
+//    fileFullPath:String,
     requireBetterMatchingForCompare:MutableState<Boolean>,
-    readOnlyModeOn:MutableState<Boolean>,  
+    readOnlyModeOn:MutableState<Boolean>,  // `readOnlyMode` was named `copyMode`，当时想的是只能拷贝不能编辑，所以叫拷贝模式，但后来发现这不就是只读模式吗，所以就改成只读模式了
     readOnlyModeSwitchable:Boolean,
     showLineNum:MutableState<Boolean>,
     showOriginType:MutableState<Boolean>,
@@ -47,9 +49,44 @@ fun DiffPageActions(
     groupDiffContentByLineNum:MutableState<Boolean>,
     enableSelectCompare:MutableState<Boolean>,
     matchByWords:MutableState<Boolean>,
+//    syntaxHighlightEnabled:MutableState<Boolean>,
 ) {
+
+//    val navController = AppModel.navController
+//    val activityContext = LocalContext.current
+
+    //这个变量相关的判断都没什么鸟用，都是禁用或启用都无所谓的，索性设为true了
+//    val fileChangeTypeIsModified = changeType == Cons.gitStatusModified
     val fileChangeTypeIsModified = remember { true }
+
     val dropDownMenuExpandState = rememberSaveable { mutableStateOf(false) }
+
+//    if (fileChangeTypeIsModified && UserUtil.isPro()
+//        && (dev_EnableUnTestedFeature || detailsDiffTestPassed)
+//    ){
+//        LongPressAbleIconBtn(
+//            tooltipText = stringResource(R.string.better_but_slow_compare),
+//            icon = Icons.Filled.没合适的图标,
+//            iconContentDesc = stringResource(R.string.better_but_slow_compare),
+//            iconColor = UIHelper.getIconEnableColorOrNull(requireBetterMatchingForCompare.value),
+//            enabled = true,
+//        ) {
+//            requireBetterMatchingForCompare.value = !requireBetterMatchingForCompare.value
+//
+//            // show msg: "better but slow compare: ON/OFF"
+////            Msg.requireShow(
+////                appContext.getString(R.string.better_but_slow_compare)+": "
+////                + (if(requireBetterMatchingForCompare.value) appContext.getString(R.string.on_str) else appContext.getString(R.string.off_str))
+////            )
+//
+//            SettingsUtil.update {
+//                it.diff.enableBetterButSlowCompare = requireBetterMatchingForCompare.value
+//            }
+//
+//        }
+//
+//    }
+
     if(fromTo == Cons.gitDiffFileHistoryFromTreeToPrev || fromTo == Cons.gitDiffFileHistoryFromTreeToLocal) {
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.restore),
@@ -58,7 +95,9 @@ fun DiffPageActions(
         ) {
             request.value = PageRequest.showRestoreDialog
         }
+
     }
+
     LongPressAbleIconBtn(
         tooltipText = stringResource(R.string.refresh),
         icon = Icons.Filled.Refresh,
@@ -66,7 +105,9 @@ fun DiffPageActions(
     ) {
         refreshPage()
     }
+
     if(isMultiMode){
+
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.expand_all),
             icon = Icons.Filled.DensityLarge,
@@ -74,6 +115,7 @@ fun DiffPageActions(
         ) label@{
             request.value = PageRequest.expandAll
         }
+
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.collapse_all),
             icon = Icons.Filled.DensitySmall,
@@ -81,6 +123,7 @@ fun DiffPageActions(
         ) label@{
             request.value = PageRequest.collapseAll
         }
+
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.go_to_bottom),
             icon = Icons.Filled.KeyboardDoubleArrowDown,
@@ -88,6 +131,8 @@ fun DiffPageActions(
         ) label@{
             request.value = PageRequest.goToBottomOfCurrentFile
         }
+
+
     } else {
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.open),
@@ -95,56 +140,85 @@ fun DiffPageActions(
             iconContentDesc = stringResource(id = R.string.open),
         ) label@{
             request.value = PageRequest.requireOpenInInnerEditor
+
         }
+
+
         LongPressAbleIconBtn(
             tooltipText = stringResource(R.string.open_as),
             icon = Icons.AutoMirrored.Filled.OpenInNew,
             iconContentDesc = stringResource(id = R.string.open_as),
         ) label@{
+            //显示OpenAs弹窗
             request.value = PageRequest.showOpenAsDialog
         }
+
     }
+
+    //menu icon
     LongPressAbleIconBtn(
+        //这种需展开的菜单，禁用内部的选项即可
+//        enabled = enableAction.value,
+
         tooltipText = stringResource(R.string.menu),
         icon = Icons.Filled.MoreVert,
         iconContentDesc = stringResource(R.string.menu),
         onClick = {
+            //切换菜单展开状态
             dropDownMenuExpandState.value = !dropDownMenuExpandState.value
         }
     )
+
+    // menu items
     DropdownMenu(
         offset = DpOffset(x=100.dp, y=8.dp),
         expanded = dropDownMenuExpandState.value,
         onDismissRequest = { dropDownMenuExpandState.value=false }
     ) {
+
         DropdownMenuItem(
+            // append a "All" suffix to clarify it is for all items when multi files mode on
             text = { Text(stringResource(R.string.create_patch) + (if(isMultiMode) " (${stringResource(R.string.all)})" else "")) },
             onClick = {
                 request.value = PageRequest.createPatchForAllItems
+
                 dropDownMenuExpandState.value = false
             }
+
         )
+
+        // if is multi mode, will show this at each item bar dropdown menu
         DropdownMenuItem(
             text = { Text(stringResource(R.string.syntax_highlighting)) },
             onClick = {
                 request.value = PageRequest.showSyntaxHighlightingSelectLanguageDialogForCurItem
+
                 dropDownMenuExpandState.value = false
             }
+
         )
+
         DropdownMenuItem(
             text = { Text(stringResource(R.string.font_size)) },
             onClick = {
                 adjustFontSizeModeOn.value = true
+
                 dropDownMenuExpandState.value = false
             }
+
         )
+
         DropdownMenuItem(
             text = { Text(stringResource(R.string.line_num_size)) },
+
             onClick = {
                 adjustLineNumSizeModeOn.value = true
+
                 dropDownMenuExpandState.value = false
             }
+
         )
+
         DropdownMenuItem(
             text = { Text(stringResource(R.string.show_line_num)) },
             trailingIcon = {
@@ -152,11 +226,17 @@ fun DiffPageActions(
             },
             onClick = {
                 showLineNum.value = !showLineNum.value
+
                 SettingsUtil.update {
                     it.diff.showLineNum = showLineNum.value
                 }
+
+//                dropDownMenuExpandState.value = false
             }
+
         )
+
+
         DropdownMenuItem(
             text = { Text(stringResource(R.string.show_change_type)) },
             trailingIcon = {
@@ -164,11 +244,17 @@ fun DiffPageActions(
             },
             onClick = {
                 showOriginType.value = !showOriginType.value
+
                 SettingsUtil.update {
                     it.diff.showOriginType = showOriginType.value
                 }
+
+//                dropDownMenuExpandState.value = false
             }
+
         )
+
+
         DropdownMenuItem(
             text = { Text(stringResource(R.string.group_by_line)) },
             trailingIcon = {
@@ -176,11 +262,16 @@ fun DiffPageActions(
             },
             onClick = {
                 groupDiffContentByLineNum.value = !groupDiffContentByLineNum.value
+
                 SettingsUtil.update {
                     it.diff.groupDiffContentByLineNum = groupDiffContentByLineNum.value
                 }
+
+//                dropDownMenuExpandState.value = false
             }
         )
+
+        //非modified也可以开关这些选项，就是可能没什么卵用，但如果用户手动选择两个行比较，就有卵用了
         if (fileChangeTypeIsModified && proFeatureEnabled(detailsDiffTestPassed)){
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.better_compare)) },
@@ -189,11 +280,15 @@ fun DiffPageActions(
                 },
                 onClick = {
                     requireBetterMatchingForCompare.value = !requireBetterMatchingForCompare.value
+
                     SettingsUtil.update {
                         it.diff.enableBetterButSlowCompare = requireBetterMatchingForCompare.value
                     }
+
+//                    dropDownMenuExpandState.value = false
                 }
             )
+
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.match_by_words)) },
                 trailingIcon = {
@@ -201,12 +296,37 @@ fun DiffPageActions(
                 },
                 onClick = {
                     matchByWords.value = !matchByWords.value
+
                     SettingsUtil.update {
                         it.diff.matchByWords = matchByWords.value
                     }
+
+//                    dropDownMenuExpandState.value = false
                 }
             )
+
         }
+
+        // disabled reason: almost useless and must update syntax highlighting for all items when switched, maintenance it is too much...
+        // 启用这个才会显示另一个同名的点击选择语言弹窗的选项
+//        DropdownMenuItem(
+//            enabled = true,
+//            text = { Text(stringResource(R.string.syntax_highlighting)) },
+//            trailingIcon = {
+//                SimpleCheckBox(syntaxHighlightEnabled.value)
+//            },
+//            onClick = {
+//                syntaxHighlightEnabled.value = !syntaxHighlightEnabled.value
+//
+//                SettingsUtil.update {
+//                    it.diff.syntaxHighlightEnabled = syntaxHighlightEnabled.value
+//                }
+//
+//                refreshPage()
+//            }
+//
+//        )
+
         DropdownMenuItem(
             enabled = readOnlyModeSwitchable,
             text = { Text(stringResource(R.string.read_only)) },
@@ -215,11 +335,16 @@ fun DiffPageActions(
             },
             onClick = {
                 readOnlyModeOn.value = !readOnlyModeOn.value
+
                 SettingsUtil.update {
                     it.diff.readOnly = readOnlyModeOn.value
                 }
+
+//                dropDownMenuExpandState.value = false
             }
+
         )
+
         DropdownMenuItem(
             enabled = fileChangeTypeIsModified,
             text = { Text(stringResource(R.string.select_compare)) },
@@ -228,10 +353,17 @@ fun DiffPageActions(
             },
             onClick = {
                 enableSelectCompare.value = !enableSelectCompare.value
+
                 SettingsUtil.update {
                     it.diff.enableSelectCompare = enableSelectCompare.value
                 }
+
+//                dropDownMenuExpandState.value = false
             }
+
         )
+
+
     }
 }
+

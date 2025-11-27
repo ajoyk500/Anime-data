@@ -23,6 +23,7 @@ import com.akcreation.gitsilent.utils.doJobThenOffLoading
 import com.akcreation.gitsilent.utils.state.CustomStateSaveable
 
 private const val TAG = "SshUnknownHostDialog"
+
 @Composable
 fun SshUnknownHostDialog(
     currentSshAskUserUnknownHostRequest: CustomStateSaveable<SshAskUserUnknownHostRequest?>,
@@ -44,19 +45,25 @@ fun SshUnknownHostDialog(
                     color = MyStyleKt.TextColor.danger()
                 )
                 Spacer(Modifier.height(spacerHeight + 5.dp))
+
                 Row {
                     Text("hostname: ")
                     Text((item?.sshCert?.hostname ?: "") + "\n", fontWeight = FontWeight.Bold)
                 }
+
                 Spacer(Modifier.height(spacerHeight))
+
                 val formattedSha256 = item?.sshCert?.formattedSha256()
                 if (formattedSha256?.isNotBlank() == true) {
                     Row {
                         Text("sha256: ")
                         Text(formattedSha256 + "\n", fontWeight = FontWeight.Bold)
+
                     }
                     Spacer(Modifier.height(spacerHeight))
                 }
+
+
                 val formattedSha1 = item?.sshCert?.formattedSha1()
                 if (formattedSha1?.isNotBlank() == true) {
                     Row {
@@ -65,6 +72,8 @@ fun SshUnknownHostDialog(
                     }
                     Spacer(Modifier.height(spacerHeight))
                 }
+
+
                 val formattedMd5 = item?.sshCert?.formattedMd5()
                 if (formattedMd5?.isNotBlank() == true) {
                     Row {
@@ -73,37 +82,48 @@ fun SshUnknownHostDialog(
                     }
                     Spacer(Modifier.height(spacerHeight))
                 }
+
                 if (item?.sshCert?.hostKey?.isNotBlank() == true) {
                     Row {
                         Text("host key: ")
                         Text(item.sshCert.hostKey + "\n", fontWeight = FontWeight.Bold)
                     }
+
                     Spacer(Modifier.height(spacerHeight))
                 }
+
                 MyCheckBox(stringResource(R.string.i_trust_the_host), iTrustTheHost)
+
                 if (iTrustTheHost.value) {
                     DefaultPaddingText(stringResource(R.string.operation_aborted_after_allowing_maybe_retry), color = MyStyleKt.TextColor.getHighlighting())
                 }
+
                 Spacer(Modifier.height(spacerHeight))
+
             }
         },
         okBtnEnabled = iTrustTheHost.value,
         okTextColor = if (iTrustTheHost.value) MyStyleKt.TextColor.danger() else Color.Unspecified,
         okBtnText = stringResource(R.string.allow),
         cancelBtnText = stringResource(R.string.reject),
-        onCancel = {  
+        onCancel = {  // reject
             closeSshDialog()
             allowOrRejectSshDialogCallback()
         }
-    ) {  
+    ) {  // allow
         closeSshDialog()
+
         doJobThenOffLoading {
             try {
                 if(item == null) {
                     Msg.requireShowLongDuration("err: ssh cert is `null`")
                     return@doJobThenOffLoading
                 }
+
+                // add to file
                 Lg2HomeUtils.addItemToUserKnownHostsFile(item.sshCert)
+
+                // show success msg
                 Msg.requireShowLongDuration(appContext.getString(R.string.allowed_plz_re_try_clone_fetch_push))
             }catch (e:Exception){
                 Msg.requireShowLongDuration("err: ${e.localizedMessage}")

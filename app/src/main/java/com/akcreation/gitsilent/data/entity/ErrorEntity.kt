@@ -17,10 +17,13 @@ data class ErrorEntity (
         var msg: String="",
         var repoId:String="",
         var isChecked:Int= Cons.dbCommonFalse,
+
         @Embedded
         var baseFields: BaseFields = BaseFields(),
+
 ) {
         @Ignore
         private var cached_OneLineMsg:String? = null
         fun getCachedOneLineMsg(): String = (cached_OneLineMsg ?: Libgit2Helper.zipOneLineMsg(msg).let { cached_OneLineMsg = it; it });
+
 }

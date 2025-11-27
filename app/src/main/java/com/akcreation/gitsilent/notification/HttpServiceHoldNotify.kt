@@ -17,11 +17,14 @@ class HttpServiceHoldNotify private constructor(
     channelDesc = "Show Http Foreground Service Notification",
     actionList = { context ->
         listOf(
+            // "stop" action, click stop service
             Action(
                 iconId = R.drawable.baseline_close_24,
                 text = context.getString(R.string.stop),
                 pendingIntent = createPendingIntentWithAct(context, HttpService.command_stop)
             ),
+
+            // copy addr
             Action(
                 iconId = R.drawable.baseline_content_copy_24,
                 text = context.getString(R.string.copy),
@@ -30,14 +33,22 @@ class HttpServiceHoldNotify private constructor(
         )
     }
 ){
+
     companion object {
         fun create(notifyId:Int):NotifyBase {
             return HttpServiceHoldNotify(notifyId)
         }
+
+
         fun createPendingIntentWithAct(context: Context, action:String): PendingIntent {
-            val intent = Intent(context, HttpService::class.java) 
+            val intent = Intent(context, HttpService::class.java) // 替换为您的主活动
+
             intent.action = action
+
+            //flag作用是如果pendingIntent已经存在，则取消之前的然后创建个新的，没验证，可能是
             return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
+
     }
+
 }

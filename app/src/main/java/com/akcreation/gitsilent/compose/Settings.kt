@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.akcreation.gitsilent.style.MyStyleKt
 import com.akcreation.gitsilent.ui.theme.Theme
 
+
 @Composable
 fun SettingsTitle(text:String){
     val inDarkTheme = Theme.inDarkTheme
@@ -32,6 +33,7 @@ fun SettingsTitle(text:String){
         Text(text)
     }
 }
+
 @Composable
 fun SettingsContent(onClick:(()->Unit)?=null, content:@Composable ()->Unit) {
     Row(
@@ -45,8 +47,10 @@ fun SettingsContent(onClick:(()->Unit)?=null, content:@Composable ()->Unit) {
     ) {
         content()
     }
+
     MyHorizontalDivider()
 }
+
 @Composable
 fun SettingsContentSelector(
     left:@Composable ColumnScope.() -> Unit,
@@ -59,6 +63,7 @@ fun SettingsContentSelector(
         right = right,
     )
 }
+
 @Composable
 fun SettingsContentSwitcher(
     left:@Composable ColumnScope.() -> Unit,
@@ -73,6 +78,7 @@ fun SettingsContentSwitcher(
         onClick = onClick,
     )
 }
+
 @Composable
 fun SettingsContentBox(
     leftModifier: Modifier,
@@ -86,6 +92,8 @@ fun SettingsContentBox(
             Column(modifier = leftModifier.align(Alignment.CenterStart)) {
                 left()
             }
+
+
             Column(modifier = rightModifier.align(Alignment.CenterEnd)) {
                 right()
             }

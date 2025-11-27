@@ -28,6 +28,7 @@ fun ReposTitle(
     Column (modifier = Modifier.combinedClickable(onDoubleClick = {
         defaultTitleDoubleClick(scope, listState, lastPosition)
     }) {
+            // onClick
     }){
         ScrollableRow {
             Text(
@@ -36,6 +37,7 @@ fun ReposTitle(
                 overflow = TextOverflow.Ellipsis
             )
         }
+
         if(allRepoCount > 0) {
             ScrollableRow {
                 Text(
@@ -44,7 +46,9 @@ fun ReposTitle(
                     overflow = TextOverflow.Ellipsis,
                     fontSize = MyStyleKt.Title.secondLineFontSize
                 )
+
             }
         }
     }
+
 }

@@ -15,12 +15,16 @@ fun Focuser(
     LaunchedEffect(Unit) {
         scope.launch {
             runCatching {
+                //等半秒，不然页面还没渲染完，容易聚焦失败
                 delay(500)
+                //弹出键盘
                 focusRequester.requestFocus()
             }
         }
     }
 }
+
+
 @Composable
 fun OneTimeFocusRightNow(focusRequester: FocusRequester) {
     LaunchedEffect(Unit) {

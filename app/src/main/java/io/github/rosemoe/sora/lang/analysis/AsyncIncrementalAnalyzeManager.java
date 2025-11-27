@@ -1,11 +1,36 @@
-
+/*
+ *    sora-editor - the awesome code editor for Android
+ *    https://github.com/Rosemoe/sora-editor
+ *    Copyright (C) 2020-2024  Rosemoe
+ *
+ *     This library is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU Lesser General Public
+ *     License as published by the Free Software Foundation; either
+ *     version 2.1 of the License, or (at your option) any later version.
+ *
+ *     This library is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *     Lesser General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Lesser General Public
+ *     License along with this library; if not, write to the Free Software
+ *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ *     USA
+ *
+ *     Please contact Rosemoe by email 2073412493@qq.com if you need
+ *     additional information or have any questions
+ */
 package io.github.rosemoe.sora.lang.analysis;
 
 import android.os.Message;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.akcreation.gitsilent.dev.DevFlagKt;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +39,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import io.github.rosemoe.sora.lang.styling.CodeBlock;
 import io.github.rosemoe.sora.lang.styling.Span;
 import io.github.rosemoe.sora.lang.styling.SpanFactory;
@@ -26,44 +52,64 @@ import io.github.rosemoe.sora.text.Content;
 import io.github.rosemoe.sora.util.IntPair;
 import io.github.rosemoe.sora.widget.schemes.EditorColorScheme;
 
+/**
+ * Asynchronous base implementation of {@link IncrementalAnalyzeManager}
+ * <p>
+ * {@inheritDoc}
+ *
+ * @author Rosemoe
+ */
 public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeManager implements IncrementalAnalyzeManager<S, T> {
+
     private final static int MSG_BASE = 11451400;
     private final static int MSG_INIT = MSG_BASE + 1;
     private final static int MSG_MOD = MSG_BASE + 2;
     private static int sThreadId = 0;
     private LooperThread thread;
     private volatile long runCount;
+
     private synchronized static int nextThreadId() {
         sThreadId++;
         return sThreadId;
     }
+
+    /**
+     * Run the given code block only when the receiver is currently non-null
+     */
     protected void withReceiver(@NonNull ReceiverConsumer consumer) {
         var r = getReceiver();
         if (r != null) {
             consumer.accept(r);
         }
     }
+
     @Override
     public void insert(@NonNull CharPosition start, @NonNull CharPosition end, @NonNull CharSequence insertedText, @Nullable StyleReceiver receiver) {
         StyleReceiver styleReceiver = (receiver == null) ? getReceiver() : receiver;
+
         if (thread != null) {
             increaseRunCount();
             Object data = new TextModification(IntPair.pack(start.line, start.column), IntPair.pack(end.line, end.column), insertedText);
+
             thread.offerMessage(MSG_MOD, new MsgObj(styleReceiver, data));
         }
     }
+
     @Override
     public void delete(@NonNull CharPosition start, @NonNull CharPosition end, @NonNull CharSequence deletedText, @Nullable StyleReceiver receiver) {
         StyleReceiver styleReceiver = (receiver == null) ? getReceiver() : receiver;
+
         if (thread != null) {
             increaseRunCount();
             Object data = new TextModification(IntPair.pack(start.line, start.column), IntPair.pack(end.line, end.column), null);
             thread.offerMessage(MSG_MOD, new MsgObj(styleReceiver, data));
         }
     }
+
     @Override
     public void rerun(@Nullable StyleReceiver receiver) {
         StyleReceiver styleReceiver = (receiver == null) ? getReceiver() : receiver;
+
         if (thread != null) {
             if (thread.isAlive()) {
                 thread.interrupt();
@@ -83,6 +129,7 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
             thread.start();
         }
     }
+
     @Override
     public LineTokenizeResult<S, T> getState(int line) {
         final var thread = this.thread;
@@ -94,15 +141,21 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
         }
         throw new SecurityException("Can not get state from non-analytical or abandoned thread");
     }
+
     @Override
     public void onAbandonState(S state) {
+
     }
+
     @Override
     public void onAddState(S state) {
+
     }
+
     private synchronized void increaseRunCount() {
         runCount++;
     }
+
     @Override
     public void destroy() {
         if (thread != null) {
@@ -114,17 +167,26 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
         thread = null;
         super.destroy();
     }
+
     private void sendNewStyles(Styles styles, StyleReceiver stylesReceiver) {
         if (stylesReceiver != null) {
             stylesReceiver.setStyles(this, styles);
         }
     }
+
     private void sendUpdate(Styles styles, int startLine, int endLine, StyleReceiver styleReceiver) {
         if (styleReceiver != null) {
             styleReceiver.updateStyles(this, styles, new SequenceUpdateRange(startLine, endLine));
         }
     }
+
+    /**
+     * Compute code blocks
+     *
+     * @param text The text. can be safely accessed.
+     */
     public abstract List<CodeBlock> computeBlocks(Content text, CodeBlockAnalyzeDelegate delegate);
+
     public Styles getManagedStyles() {
         var thread = Thread.currentThread();
         if (thread.getClass() != AsyncIncrementalAnalyzeManager.LooperThread.class) {
@@ -132,21 +194,29 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
         }
         return ((AsyncIncrementalAnalyzeManager<?, ?>.LooperThread) thread).styles;
     }
+
     private static class LockedSpans implements Spans {
+
         private static final String LOG_TAG = "LockedSpans";
+
         private final Lock lock;
         private final List<Line> lines;
+
         public LockedSpans() {
             lines = new ArrayList<>(128);
             lock = new ReentrantLock();
         }
+
         public LockedSpans(List<Line> lines) {
             this.lines = lines;
             lock = new ReentrantLock();
         }
+
+
         @Override
         public Spans copy() {
             ArrayList<Line> newLines = new ArrayList<>(this.lines.size());
+
             for(Line line : this.lines) {
                 ArrayList<Span> newSpans = new ArrayList<>(line.spans.size());
                 for (Span span : line.spans) {
@@ -154,39 +224,57 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                 }
                 newLines.add(new Line(newSpans));
             }
+
             return new LockedSpans(newLines);
         }
+
+
         @Override
         public void adjustOnDelete(CharPosition start, CharPosition end) {
+
         }
+
         @Override
         public void adjustOnInsert(CharPosition start, CharPosition end) {
+
         }
+
         @Override
         public int getLineCount() {
             return lines.size();
         }
+
         @Override
         public Reader read() {
             return new ReaderImpl();
         }
+
         @Override
         public Modifier modify() {
             return new ModifierImpl();
         }
+
         @Override
         public boolean supportsModify() {
             return true;
         }
+
         private static class Line {
+
             public Lock lock = new ReentrantLock();
+
             public List<Span> spans;
+
             public Line(List<Span> s) {
                 spans = s;
             }
+
         }
+
         private class ReaderImpl implements Spans.Reader {
+
             private Line line;
+
             public void moveToLine(int line) {
                 if (line < 0 || line >= lines.size()) {
                     if (this.line != null) {
@@ -220,14 +308,17 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                     }
                 }
             }
+
             @Override
             public int getSpanCount() {
                 return line == null ? 1 : line.spans.size();
             }
+
             @Override
             public Span getSpanAt(int index) {
                 return line == null ? SpanFactory.obtain(0, EditorColorScheme.TEXT_NORMAL) : line.spans.get(index);
             }
+
             @Override
             public List<Span> getSpansOnLine(int line) {
                 var spans = new ArrayList<Span>();
@@ -261,7 +352,9 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                 return spans;
             }
         }
+
         private class ModifierImpl implements Modifier {
+
             @Override
             public void setSpansOnLine(int line, List<Span> spans) {
                 lock.lock();
@@ -282,6 +375,7 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                     lock.unlock();
                 }
             }
+
             @Override
             public void addLineAt(int line, List<Span> spans) {
                 lock.lock();
@@ -291,6 +385,7 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                     lock.unlock();
                 }
             }
+
             @Override
             public void deleteLineAt(int line) {
                 lock.lock();
@@ -307,55 +402,83 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                 }
             }
         }
+
     }
+
     private static class TextModification {
+
         private final long start;
         private final long end;
+        /**
+         * null for deletion
+         */
         private final CharSequence changedText;
+
         TextModification(long start, long end, CharSequence text) {
             this.start = start;
             this.end = end;
             changedText = text;
         }
     }
+
+    /**
+     * Helper class for analyzing code block
+     */
     public class CodeBlockAnalyzeDelegate {
+
         private final LooperThread thread;
         int suppressSwitch;
+
         CodeBlockAnalyzeDelegate(@NonNull LooperThread lp) {
             thread = lp;
         }
+
         public void setSuppressSwitch(int suppressSwitch) {
             this.suppressSwitch = suppressSwitch;
         }
+
         void reset() {
             suppressSwitch = Integer.MAX_VALUE;
         }
+
         public boolean isCancelled() {
             return thread.myRunCount != runCount || thread.abort || thread.isInterrupted();
         }
+
         public boolean isNotCancelled() {
             return !isCancelled();
         }
+
     }
+
     private final class LooperThread extends Thread {
+
         private final BlockingQueue<Message> messageQueue = new LinkedBlockingQueue<>();
         volatile boolean abort;
         Content shadowed;
         long myRunCount;
+
         List<LineTokenizeResult<S, T>> states = new ArrayList<>();
         Styles styles;
         LockedSpans spans;
         CodeBlockAnalyzeDelegate delegate = new CodeBlockAnalyzeDelegate(this);
+
         public void offerMessage(int what, MsgObj obj) {
             var msg = Message.obtain();
             msg.what = what;
             msg.obj = obj;
             offerMessage(msg);
         }
+
         public void offerMessage(@NonNull Message msg) {
+            // Result ignored: capacity is enough as it is INT_MAX
+            //noinspection ResultOfMethodCallIgnored
             messageQueue.offer(msg);
         }
+
         private void initialize(StyleReceiver styleReceiver) {
+            // get receiver before action execute, that can make sure the act sent to expected receiver when reciver may ofthen change
+            // 在执行操作前先获取receiver，这样可在经常替换receiver时尽可能把样式发送给操作关联的receiver
             styles = new Styles(spans = new LockedSpans());
             S state = getInitialState();
             var mdf = spans.modify();
@@ -371,13 +494,16 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
             styles.blocks = computeBlocks(shadowed, delegate);
             styles.setSuppressSwitch(delegate.suppressSwitch);
             styles.finishBuilding();
+
             if (!abort)
                 sendNewStyles(styles, styleReceiver);
         }
+
         public boolean handleMessage(@NonNull Message msg) {
             try {
                 MsgObj msgObj = (MsgObj) msg.obj;
                 StyleReceiver styleReceiver = msgObj.getStyleReceiver();
+
                 myRunCount = runCount;
                 delegate.reset();
                 switch (msg.what) {
@@ -393,11 +519,13 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                             var mod = (TextModification) msgObj.getData();
                             int startLine = IntPair.getFirst(mod.start);
                             int endLine = IntPair.getFirst(mod.end);
+
                             updateStart = startLine;
                             if (mod.changedText == null) {
                                 shadowed.delete(IntPair.getFirst(mod.start), IntPair.getSecond(mod.start),
                                         IntPair.getFirst(mod.end), IntPair.getSecond(mod.end));
                                 S state = startLine == 0 ? getInitialState() : states.get(startLine - 1).state;
+                                // Remove states
                                 if (endLine >= startLine + 1) {
                                     var subList = states.subList(startLine + 1, endLine + 1);
                                     for (LineTokenizeResult<S, T> stLineTokenizeResult : subList) {
@@ -430,6 +558,7 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                                 S state = startLine == 0 ? getInitialState() : states.get(startLine - 1).state;
                                 int line = startLine;
                                 var spans = styles.spans.modify();
+                                // Add Lines
                                 while (line <= endLine) {
                                     var res = tokenizeLine(shadowed.getLine(line), state, line);
                                     if (line == startLine) {
@@ -446,6 +575,7 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                                     state = res.state;
                                     line++;
                                 }
+                                // line = end.line + 1, check whether the state equals
                                 boolean flag = true;
                                 while (line < shadowed.getLineCount() && flag) {
                                     var res = tokenizeLine(shadowed.getLine(line), state, line);
@@ -464,6 +594,7 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                                 updateEnd = line;
                             }
                         }
+                        // Do not update incomplete code blocks
                         var blocks = computeBlocks(shadowed, delegate);
                         if (delegate.isNotCancelled()) {
                             styles.blocks = blocks;
@@ -483,10 +614,12 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                 if(DevFlagKt.printIncrementalSyntaxHighlightText()) {
                     Log.i("AsyncAnalysis", "err: length: "+shadowed.length()+", content:\n" +shadowed);
                 }
+
                 Log.w("AsyncAnalysis", "Thread " + Thread.currentThread().getName() + " failed", e);
             }
             return false;
         }
+
         @Override
         public void run() {
             try {
@@ -498,10 +631,17 @@ public abstract class AsyncIncrementalAnalyzeManager<S, T> extends BaseAnalyzeMa
                     msg.recycle();
                 }
             } catch (InterruptedException e) {
+                // ignored
             }
         }
     }
+
+
     public interface ReceiverConsumer {
+
         void accept(@NonNull StyleReceiver receiver);
+
     }
+
+
 }

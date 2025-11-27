@@ -1,6 +1,5 @@
 package com.akcreation.gitsilent.utils.compare.param
 
-
 class StringCompareParam(
     chars:String,
     length:Int,

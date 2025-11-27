@@ -19,8 +19,13 @@ import com.akcreation.gitsilent.style.MyStyleKt
 fun ForcePushWithLeaseCheckBox(
     forcePush_pushWithLease: MutableState<Boolean>,
     forcePush_expectedRefspecForLease: MutableState<String>,
+
 ) {
+
+    // push with lease
     MyCheckBox(StrCons.withLease, forcePush_pushWithLease)
+
+
     if(forcePush_pushWithLease.value) {
         TextField(
             modifier = Modifier
@@ -35,9 +40,12 @@ fun ForcePushWithLeaseCheckBox(
                 Text(stringResource(R.string.expected_refspec))
             },
         )
+
         Spacer(Modifier.height(10.dp))
+
         SelectionRow {
             DefaultPaddingText(stringResource(R.string.push_force_with_lease_note))
         }
     }
 }
+

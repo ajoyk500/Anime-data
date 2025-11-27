@@ -9,7 +9,15 @@ import androidx.compose.ui.res.stringResource
 import com.akcreation.gitsilent.R
 import com.akcreation.gitsilent.constants.Cons
 
+//private val TAG = "ComposeHelper"
 object ComposeHelper {
+//    @Composable
+//    fun getCoroutineScope():CoroutineScope {
+//        return rememberCoroutineScope()
+//    }
+
+
+
     @Composable
     fun getDoubleClickBackHandler(
         context: Context,
@@ -23,8 +31,10 @@ object ComposeHelper {
             showToast(context, pressBackAgainForExitText, Toast.LENGTH_SHORT)
             backStartSec.longValue = getSecFromTime() + Cons.pressBackDoubleTimesInThisSecWillExit
         }
+
         val backHandlerOnBack = {
-            if (backStartSec.longValue > 0 && getSecFromTime() <= backStartSec.longValue) {  
+            //如果在两秒内按返回键，就会退出，否则会提示再按一次可退出程序
+            if (backStartSec.longValue > 0 && getSecFromTime() <= backStartSec.longValue) {  //大于0说明不是第一次执行此方法，那检测是上次获取的秒数，否则直接显示“再按一次退出app”的提示
                 exitApp()
             } else {
                 showTextAndUpdateTimeForPressBackBtn()
@@ -32,4 +42,5 @@ object ComposeHelper {
         }
         return backHandlerOnBack
     }
+
 }

@@ -11,11 +11,13 @@ object KnownHostRequestStateMan {
     fun init(requestList:MutableList<SshAskUserUnknownHostRequest>) {
         list = requestList
     }
+
     suspend fun getFirstThenRemove():SshAskUserUnknownHostRequest? {
         mutex.withLock {
             return getFirstOrNullThenRemove(list)
         }
     }
+
     suspend fun addToList(request: SshAskUserUnknownHostRequest) {
         mutex.withLock {
             list.add(request)

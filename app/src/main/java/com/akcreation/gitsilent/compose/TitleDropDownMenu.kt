@@ -33,11 +33,12 @@ import com.akcreation.gitsilent.utils.dropDownItemContainerColor
 fun <T> SimpleTitleDropDownMenu(
     dropDownMenuExpandState: MutableState<Boolean>,
     dropDownMenuItemContentPadding: PaddingValues = MenuDefaults.DropdownMenuItemContentPadding,
+
     curSelectedItem:T,
     itemList: List<T>,
     isItemSelected:(T)->Boolean,
     titleClickEnabled:Boolean,
-    showHideMenuIconContentDescription:String,  
+    showHideMenuIconContentDescription:String,  // 这个可能是为视力不好的人设置的语音提示文字
     menuItemFormatter:(T)->String,
     titleFirstLineFormatter:(T)->String,
     titleSecondLineFormatter:(T)->String,
@@ -60,6 +61,8 @@ fun <T> SimpleTitleDropDownMenu(
         },
         titleSecondLine={
             Text(
+                //  判断仓库是否处于detached，然后显示在这里(例如： "abc1234(detached)" )
+                // "main|StateT" or "main", eg, when merging show: "main|Merging", when 仓库状态正常时 show: "main"；如果是detached HEAD状态，则显示“提交号(Detached)|状态“，例如：abc2344(Detached) 或 abc2344(Detached)|Merging
                 text = titleSecondLineFormatter(curSelectedItem),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -82,14 +85,21 @@ fun <T> SimpleTitleDropDownMenu(
         itemOnClick = itemOnClick,
     )
 }
+
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <T> TitleDropDownMenu(
     dropDownMenuExpandState: MutableState<Boolean>,
     dropDownMenuItemContentPadding: PaddingValues = MenuDefaults.DropdownMenuItemContentPadding,
+
     curSelectedItem:T,
     itemList: List<T>,
+
+    // 这个是长按和点按共同的enabled
     titleClickEnabled:Boolean,
+
     switchDropDownMenuShowHide:()->Unit = {
         dropDownMenuExpandState.value = !dropDownMenuExpandState.value
     },
@@ -98,28 +108,36 @@ fun <T> TitleDropDownMenu(
     },
     titleFirstLine:@Composable (T)->Unit,
     titleSecondLine:@Composable (T)->Unit,
-    titleRightIcon:@Composable (T)->Unit,  
+    titleRightIcon:@Composable (T)->Unit,  // icon at the title text right
     menuItem:@Composable (T, selected:Boolean)->Unit,
     titleOnLongClick:(T)->Unit,
     isItemSelected:(T)->Boolean,
+
+    //展开的菜单的条目的onClick
     itemOnClick: (T)->Unit,
-    titleOnClick: ()->Unit = { switchDropDownMenuShowHide() },  
+    titleOnClick: ()->Unit = { switchDropDownMenuShowHide() },  //切换下拉菜单显示隐藏
     showExpandIcon: Boolean = true,
 ) {
     val haptic = LocalHapticFeedback.current
     val configuration = AppModel.getCurActivityConfig()
+
+    //最多占屏幕宽度一半
     val itemWidth = remember(configuration.screenWidthDp) { (configuration.screenWidthDp / 2).dp }
+
     val iconWidth = remember { 30.dp }
     val textWidth = remember (showExpandIcon, itemWidth, iconWidth) { if(showExpandIcon) itemWidth - iconWidth else itemWidth }
+
     Box(
         modifier = Modifier
             .width(itemWidth)
             .combinedClickable(
                 enabled = titleClickEnabled,
-                onLongClick = {  
+                onLongClick = {  //长按显示仓库名和分支名
+//                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
                     titleOnLongClick(curSelectedItem)
                 }
-            ) { 
+            ) { // onClick
                 titleOnClick()
             },
     ) {
@@ -131,9 +149,11 @@ fun <T> TitleDropDownMenu(
             Row(
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState()),
+                //限制下宽度，不然仓库名太长就看不到箭头按钮了，用户可能就不知道能点击仓库名切换仓库了
             ) {
                 titleFirstLine(curSelectedItem)
             }
+
             Row(
                 modifier = Modifier
                     .horizontalScroll(rememberScrollState()),
@@ -141,6 +161,7 @@ fun <T> TitleDropDownMenu(
                 titleSecondLine(curSelectedItem)
             }
         }
+
         if(showExpandIcon) {
             Column(
                 modifier = Modifier
@@ -151,12 +172,16 @@ fun <T> TitleDropDownMenu(
             }
         }
     }
+
+    //下拉菜单
     DropdownMenu(
         expanded = dropDownMenuExpandState.value,
         onDismissRequest = { closeDropDownMenu() }
     ) {
         for (i in itemList.toList()) {
             val selected = isItemSelected(i)
+
+            //列出条目
             DropdownMenuItem(
                 contentPadding = dropDownMenuItemContentPadding,
                 modifier = Modifier

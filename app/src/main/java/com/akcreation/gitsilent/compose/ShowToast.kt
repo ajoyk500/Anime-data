@@ -12,8 +12,13 @@ fun ShowToast(
     msg:MutableState<String>,
 ) {
     val activityContext = LocalContext.current
+
     if(showToast.value) {
+        //显示提示信息：
         showToast(activityContext, msg.value)
+
+
+        //reset msg
         showToast.value=false
         msg.value=""
     }

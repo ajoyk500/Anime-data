@@ -1,14 +1,45 @@
-
+/*
+ *    sora-editor - the awesome code editor for Android
+ *    https://github.com/Rosemoe/sora-editor
+ *    Copyright (C) 2020-2024  Rosemoe
+ *
+ *     This library is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU Lesser General Public
+ *     License as published by the Free Software Foundation; either
+ *     version 2.1 of the License, or (at your option) any later version.
+ *
+ *     This library is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *     Lesser General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Lesser General Public
+ *     License along with this library; if not, write to the Free Software
+ *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ *     USA
+ *
+ *     Please contact Rosemoe by email 2073412493@qq.com if you need
+ *     additional information or have any questions
+ */
 package io.github.rosemoe.sora.text;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import io.github.rosemoe.sora.annotations.UnsupportedUserUsage;
 
+/**
+ * Indexer Impl for Content
+ * With cache
+ *
+ * @author Rose
+ */
 public class CachedIndexer implements Indexer, ContentListener {
+
     private final Content content;
     private final CharPosition startPosition = new CharPosition().toBOF();
     private final CharPosition endPosition = new CharPosition();
@@ -16,18 +47,42 @@ public class CachedIndexer implements Indexer, ContentListener {
     private final int thresholdLine = 50;
     private int thresholdIndex = 50;
     private int maxCacheCount = 50;
+
+    /**
+     * Create a new CachedIndexer for the given content
+     *
+     * @param content Content to manage
+     */
     CachedIndexer(@NonNull Content content) {
         this.content = content;
         updateEnd();
     }
+
+    /**
+     * If the querying index is larger than the switch
+     * We will add its result to cache
+     *
+     * @param s Switch
+     */
     public void setThresholdIndex(int s) {
         thresholdIndex = s;
     }
+
+    /**
+     * Update the end position
+     */
     private void updateEnd() {
         endPosition.index = content.length();
         endPosition.line = content.getLineCount() - 1;
         endPosition.column = content.getColumnCount(endPosition.line);
     }
+
+    /**
+     * Get the nearest cache for the given index
+     *
+     * @param index Querying index
+     * @return Nearest cache
+     */
     @NonNull
     private synchronized CharPosition findNearestByIndex(int index) {
         int min = index, dis = index;
@@ -53,6 +108,13 @@ public class CachedIndexer implements Indexer, ContentListener {
         }
         return nearestCharPosition;
     }
+
+    /**
+     * Get the nearest cache for the given line
+     *
+     * @param line Querying line
+     * @return Nearest cache
+     */
     @NonNull
     private synchronized CharPosition findNearestByLine(int line) {
         int min = line, dis = line;
@@ -78,6 +140,13 @@ public class CachedIndexer implements Indexer, ContentListener {
         }
         return nearestCharPosition;
     }
+
+    /**
+     * From the given position to find forward in text
+     *
+     * @param start Given position
+     * @param index Querying index
+     */
     @VisibleForTesting
     void findIndexForward(@NonNull CharPosition start, int index, @NonNull CharPosition dest) {
         if (start.index > index) {
@@ -86,6 +155,7 @@ public class CachedIndexer implements Indexer, ContentListener {
         int workLine = start.line;
         int workColumn = start.column;
         int workIndex = start.index;
+        //Move the column to the line end
         {
             var addition = Math.max(content.getLineSeparatorUnsafe(workLine).getLength() - 1, 0);
             int column = content.getColumnCountUnsafe(workLine) + addition;
@@ -105,6 +175,13 @@ public class CachedIndexer implements Indexer, ContentListener {
         dest.line = workLine;
         dest.index = index;
     }
+
+    /**
+     * From the given position to find backward in text
+     *
+     * @param start Given position
+     * @param index Querying index
+     */
     @VisibleForTesting
     void findIndexBackward(@NonNull CharPosition start, int index, @NonNull CharPosition dest) {
         if (start.index < index) {
@@ -120,6 +197,7 @@ public class CachedIndexer implements Indexer, ContentListener {
                 var addition = Math.max(content.getLineSeparatorUnsafe(workLine).getLength() - 1, 0);
                 workColumn = content.getColumnCountUnsafe(workLine) + addition;
             } else {
+                // Reached the start of text,we have to use findIndexForward() as this method can not handle it
                 findIndexForward(startPosition, index, dest);
                 return;
             }
@@ -133,6 +211,14 @@ public class CachedIndexer implements Indexer, ContentListener {
         dest.line = workLine;
         dest.index = index;
     }
+
+    /**
+     * From the given position to find forward in text
+     *
+     * @param start  Given position
+     * @param line   Querying line
+     * @param column Querying column
+     */
     @VisibleForTesting
     void findLiCoForward(@NonNull CharPosition start, int line, int column, @NonNull CharPosition dest) {
         if (start.line > line) {
@@ -141,6 +227,7 @@ public class CachedIndexer implements Indexer, ContentListener {
         int workLine = start.line;
         int workIndex = start.index;
         {
+            //Make index to left of line
             workIndex = workIndex - start.column;
         }
         while (workLine < line) {
@@ -152,6 +239,14 @@ public class CachedIndexer implements Indexer, ContentListener {
         dest.index = workIndex;
         findInLine(dest, line, column);
     }
+
+    /**
+     * From the given position to find backward in text
+     *
+     * @param start  Given position
+     * @param line   Querying line
+     * @param column Querying column
+     */
     @VisibleForTesting
     void findLiCoBackward(@NonNull CharPosition start, int line, int column, @NonNull CharPosition dest) {
         if (start.line < line) {
@@ -160,6 +255,7 @@ public class CachedIndexer implements Indexer, ContentListener {
         int workLine = start.line;
         int workIndex = start.index;
         {
+            //Make index to the left of line
             workIndex = workIndex - start.column;
         }
         while (workLine > line) {
@@ -171,6 +267,14 @@ public class CachedIndexer implements Indexer, ContentListener {
         dest.index = workIndex;
         findInLine(dest, line, column);
     }
+
+    /**
+     * From the given position to find in this line
+     *
+     * @param pos    Given position
+     * @param line   Querying line
+     * @param column Querying column
+     */
     private void findInLine(@NonNull CharPosition pos, int line, int column) {
         if (pos.line != line) {
             throw new IllegalArgumentException("can not find other lines with findInLine()");
@@ -178,6 +282,12 @@ public class CachedIndexer implements Indexer, ContentListener {
         pos.index = pos.index - pos.column + column;
         pos.column = column;
     }
+
+    /**
+     * Add new cache
+     *
+     * @param pos New cache
+     */
     private synchronized void push(@NonNull CharPosition pos) {
         if (maxCacheCount <= 0) {
             return;
@@ -187,24 +297,40 @@ public class CachedIndexer implements Indexer, ContentListener {
             cachedPositions.remove(0);
         }
     }
+
+    /**
+     * Get max cache size
+     *
+     * @return max cache size
+     */
     protected int getMaxCacheCount() {
         return maxCacheCount;
     }
+
+    /**
+     * Set max cache size
+     *
+     * @param maxSize max cache size
+     */
     protected void setMaxCacheCount(int maxSize) {
         maxCacheCount = maxSize;
     }
+
     @Override
     public int getCharIndex(int line, int column) {
         return getCharPosition(line, column).index;
     }
+
     @Override
     public int getCharLine(int index) {
         return getCharPosition(index).line;
     }
+
     @Override
     public int getCharColumn(int index) {
         return getCharPosition(index).column;
     }
+
     @NonNull
     @Override
     public CharPosition getCharPosition(int index) {
@@ -212,6 +338,7 @@ public class CachedIndexer implements Indexer, ContentListener {
         getCharPosition(index, pos);
         return pos;
     }
+
     @Override
     public void getCharPosition(int index, @NonNull CharPosition dest) {
         content.checkIndex(index);
@@ -232,6 +359,7 @@ public class CachedIndexer implements Indexer, ContentListener {
             content.unlock(false);
         }
     }
+
     @NonNull
     @Override
     public CharPosition getCharPosition(int line, int column) {
@@ -239,6 +367,7 @@ public class CachedIndexer implements Indexer, ContentListener {
         getCharPosition(line, column, pos);
         return pos;
     }
+
     @Override
     public void getCharPosition(int line, int column, @NonNull CharPosition dest) {
         content.checkLineAndColumn(line, column);
@@ -263,10 +392,13 @@ public class CachedIndexer implements Indexer, ContentListener {
             content.unlock(false);
         }
     }
+
     @Override
     @UnsupportedUserUsage
     public void beforeReplace(@NonNull Content content) {
+        //Do nothing
     }
+
     @Override
     @UnsupportedUserUsage
     public synchronized void afterInsert(@NonNull Content content, int startLine, int startColumn, int endLine, int endColumn,
@@ -285,6 +417,7 @@ public class CachedIndexer implements Indexer, ContentListener {
         }
         updateEnd();
     }
+
     @Override
     @UnsupportedUserUsage
     public synchronized void afterDelete(@NonNull Content content, int startLine, int startColumn, int endLine, int endColumn,
@@ -308,4 +441,6 @@ public class CachedIndexer implements Indexer, ContentListener {
         cachedPositions.removeAll(garbage);
         updateEnd();
     }
+
 }
+
